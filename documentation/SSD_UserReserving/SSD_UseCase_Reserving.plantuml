@@ -1,0 +1,57 @@
+@startuml SSD_UseCase_Reserving
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 16
+skinparam DefaultFontStyle bold
+skinparam ArrowThickness 2.2
+skinparam sequenceMessageAlign center
+
+title <u>SSD Use Case Reserving</u>
+hide empty members
+
+actor "User" as User
+participant "Terminal" as System
+
+alt User is accessing the system for the first time
+    alt User uses their email to register
+        User -> System: registerCustomer(name, email, password)
+        activate System
+        System --> User: registration successful
+        deactivate System
+    end
+    alt User uses their phone number to register
+        User -> System: registerCustomer(name, phoneNumber, password)
+        activate System
+        System --> User: registration successful
+        deactivate System
+    end
+    alt User logs in
+        User -> System: logIn(email, phoneNumber, password)
+        activate System
+        System --> User: login successful
+        deactivate System
+    end
+end
+
+User -> System: searchAvailableEvents(date, category, location)
+        activate System
+System --> User: available events
+        deactivate System
+
+alt User filters events
+    User -> System: filterEvents(date, category, location)
+        activate System
+    System --> User: filtered events
+        deactivate System
+end
+
+User -> System: selectEvent(eventId)
+        activate System
+System --> User: event details
+        deactivate System
+
+User -> System: makeReservation(eventId, numberOfTickets)
+        activate System
+System --> User: reservation confirmation
+        deactivate System
+
+@enduml

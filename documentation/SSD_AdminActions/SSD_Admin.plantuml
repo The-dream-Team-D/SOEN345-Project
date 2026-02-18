@@ -1,0 +1,55 @@
+@startuml SSD_UseCase_AdminActions
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 16
+skinparam DefaultFontStyle bold
+skinparam ArrowThickness 2.2
+skinparam sequenceMessageAlign center
+
+title <u>SSD Use Case Admin Actions</u>
+hide empty members
+
+actor "Admin" as User
+participant "Terminal" as System
+
+alt User is not logged in
+    User -> System: logIn(id, password)
+    activate System
+    System --> User: login successful
+    deactivate System
+end
+
+User -> System: viewEvents()
+activate System
+System --> User: [events exist] events
+System --> User: [no events] no events message
+deactivate System
+
+loop
+    User -> System: addEvent(name, date, location, category)
+    activate System
+    System --> User: event creation confirmation
+    deactivate System
+end
+
+loop
+    User -> System: selectEvent(eventId)
+    activate System
+    System --> User: event details
+    deactivate System
+
+    alt Admin edits the event
+        User -> System: editEvent(eventId, newDetails)
+        activate System
+        System --> User: edit confirmation
+        deactivate System
+    end
+
+    alt Admin cancels the event
+        User -> System: cancelEvent(eventId)
+        activate System
+        System --> User: cancellation confirmation
+        deactivate System
+    end
+end
+
+@enduml

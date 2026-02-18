@@ -1,0 +1,39 @@
+@startuml SSD_UseCase_Canceling
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 16
+skinparam DefaultFontStyle bold
+skinparam ArrowThickness 2.2
+skinparam sequenceMessageAlign center
+
+title <u>SSD Use Case Canceling</u>
+hide empty members
+
+actor "Customer" as User
+participant "Terminal" as System
+
+alt User is not logged in
+    User -> System: logIn(email, phoneNumber, password)
+    activate System
+    System --> User: login successful
+    deactivate System
+end
+
+User -> System: viewReservations()
+activate System
+System --> User: [user has reservations] reservations
+System --> User: [user has no reservations] no reservation message
+deactivate System
+
+loop
+    User -> System: selectReservation(reservationId)
+    activate System
+    System --> User: reservation details
+    deactivate System
+
+    User -> System: cancelReservation(reservationId)
+    activate System
+    System --> User: cancellation confirmation
+    deactivate System
+end
+
+@enduml
