@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+        Calculator calc = new Calculator();
+        assertEquals(4, calc.add(2, 2)); // This actually "covers" code in src/main
     }
 }
