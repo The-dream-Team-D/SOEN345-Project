@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+  workflow_dispatch:
+
+concurrency:
+  group: coverage-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -18,6 +24,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'gradle'
+
+      - name: Make Gradlew Executable
+        run: chmod +x gradlew
 
       - name: Run Tests and Check Coverage Goal
         # >80% check
