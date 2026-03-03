@@ -5,7 +5,7 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 plugins {
     alias(libs.plugins.android.application)
     id("jacoco")
-
+    id ("org.sonarqube") version "4.4.1.3373"
 
 }
 
@@ -144,4 +144,19 @@ val jacocoTestCoverageVerification = tasks.register<JacocoCoverageVerification>(
 // 3. Link to standard 'check' task
 tasks.named("check") {
     dependsOn(jacocoTestCoverageVerification)
+}
+
+
+sonar {
+    properties {
+        property("sonar.projectKey", "YOUR_PROJECT_KEY")
+        property("sonar.organization", "YOUR_ORG_NAME")
+        property("sonar.host.url", "https://sonarcloud.io")
+
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+    }
+}
+
+tasks.named("sonar") {
+    dependsOn(jacocoTestReport)
 }
