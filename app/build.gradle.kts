@@ -5,6 +5,7 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 plugins {
     alias(libs.plugins.android.application)
     id("jacoco")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 configure<JacocoPluginExtension> {
@@ -140,6 +141,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.core:core-splashscreen:1.2.0")
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

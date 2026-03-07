@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1095489107938",
+    "project_id": "popin-7a69f",
+    "storage_bucket": "popin-7a69f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095489107938:android:a6fc64e9a5d52241c4abbb",
+        "android_client_info": {
+          "package_name": "com.example.popin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWjrGPK5J6SVQUxJ73o_b0vl2Hcg6Tspw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
