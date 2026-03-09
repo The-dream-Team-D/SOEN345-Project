@@ -4,21 +4,12 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 
 plugins {
     alias(libs.plugins.android.application)
-
-plugins {
-    alias(libs.plugins.android.application)
     id("jacoco")
-}
-
-configure<JacocoPluginExtension> {
-    toolVersion = "0.8.11"
 }
 
 android {
     namespace = "com.example.popin"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.popin"
@@ -31,7 +22,6 @@ android {
     }
 
     buildTypes {
-
         getByName("debug") {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = false   //This android E2E tests are not needed for the checks rn
