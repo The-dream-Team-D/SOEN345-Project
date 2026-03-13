@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,13 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button viewEventsButton = findViewById(R.id.btnViewEvents);
+        viewEventsButton.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ViewEventsActivity.class))
+        );
     }
+    
     public void Login(View view) {
 
         TextInputEditText emailInputField = findViewById(R.id.EmailInput);

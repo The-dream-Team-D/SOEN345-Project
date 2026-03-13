@@ -25,6 +25,7 @@
         </activity>
 
         <activity android:name=".EventsPageActivity" />
+        <activity android:name=".ViewEventsActivity" />
     </application>
 
 </manifest>
