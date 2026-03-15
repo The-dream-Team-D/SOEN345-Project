@@ -15,6 +15,7 @@ import java.util.Locale;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private final List<EventItem> allEvents;
     private final List<EventItem> visibleEvents;
+    private String currentQuery = "";
 
     public EventAdapter(List<EventItem> events) {
         this.allEvents = new ArrayList<>(events);
@@ -41,16 +42,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return visibleEvents.size();
     }
 
+    public void updateList(List<EventItem> newList) {
+        allEvents.clear();
+        allEvents.addAll(newList);
+        filter(currentQuery);
+    }
+
     public void filter(String query) {
-        String normalized = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
+        currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
         visibleEvents.clear();
-        if (normalized.isEmpty()) {
+        if (currentQuery.isEmpty()) {
             visibleEvents.addAll(allEvents);
         } else {
             for (EventItem event : allEvents) {
                 String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
                         .toLowerCase(Locale.ROOT);
-                if (haystack.contains(normalized)) {
+                if (haystack.contains(currentQuery)) {
                     visibleEvents.add(event);
                 }
             }

@@ -22,12 +22,7 @@ public class UserClassTests {
     private DataSnapshot mockSnapshot;
     @Mock
     private DataSnapshot mockUserSnapshot;
-    @Mock
-    private DataSnapshot mockPasswordSnapshot;
-    @Mock
-    private DataSnapshot mockNameSnapshot;
-    @Mock
-    private DataSnapshot mockAddressSnapshot;
+    
     private MockedStatic<FirebaseDatabase> mockedFirebase;
 
     // Simulate the one existing user in the DB
@@ -87,6 +82,7 @@ public class UserClassTests {
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
 
+    // --- Core Logic Tests (Firebase) ---
 
     @Test
     public void login_emptyEmail_returnsError() {
@@ -199,5 +195,26 @@ public class UserClassTests {
         verify(mockError).getMessage();
     }
 
+    // --- Simple Data Tests (Getters/Setters) ---
 
+    @Test
+    public void testSettersAndGetters() {
+        User user = new User("test@example.com", "pass123");
+        
+        user.setName("John Smith");
+        user.setAddress("456 Oak St");
+        user.setPassword("newPass456");
+
+        assertEquals("John Smith", user.getName());
+        assertEquals("456 Oak St", user.getAddress());
+        assertEquals("newPass456", user.getPassword());
+        assertEquals("test@example.com", user.getEmail());
+    }
+
+    @Test
+    public void testEmptyConstructor() {
+        User user = new User();
+        assertNull(user.getEmail());
+        assertNull(user.getPassword());
+    }
 }
