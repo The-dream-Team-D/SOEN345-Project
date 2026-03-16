@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/commonNavBar"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="90dp"
     android:background="@color/white"
     android:elevation="8dp">
@@ -12,7 +12,9 @@
     <LinearLayout
         android:id="@+id/nav_explore_container"
         android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
+
         android:orientation="vertical"
         android:gravity="center"
         android:clickable="true"
@@ -46,7 +48,9 @@
     <LinearLayout
         android:id="@+id/nav_tickets_container"
         android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
+
         android:orientation="vertical"
         android:gravity="center"
         android:clickable="true"
@@ -78,7 +82,9 @@
     <LinearLayout
         android:id="@+id/nav_profile_container"
         android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
+
         android:orientation="vertical"
         android:gravity="center"
         android:clickable="true"

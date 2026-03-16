@@ -43,7 +43,7 @@ public class EventsPageActivity extends AppCompatActivity {
         recyclerView.setAdapter(eventAdapter);
 
         // Initialize Firebase
-        databaseReference = FirebaseDatabase.getInstance("https://popin-7a69f-default-rtdb.firebaseio.com/")
+        databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Event database");
 
         // Check if DB is empty and upload sample data if needed
