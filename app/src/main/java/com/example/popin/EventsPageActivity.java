@@ -74,11 +74,36 @@ public class EventsPageActivity extends AppCompatActivity {
                 if (!snapshot.exists()) {
                     // Database is empty, upload the "shit" you wanted
                     List<EventItem> sampleEvents = Arrays.asList(
-                            new EventItem("SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby"),
-                            new EventItem("Board Games Night", "March 22, 2026 - 7:30 PM", "Hall A"),
-                            new EventItem("Hackathon Kickoff", "March 24, 2026 - 5:00 PM", "Room H-937"),
-                            new EventItem("Coffee and Code", "March 26, 2026 - 2:00 PM", "Library Cafe"),
-                            new EventItem("AI Study Jam", "March 28, 2026 - 4:30 PM", "Engineering Lounge")
+                            new EventItem(
+                                    "SOEN Mixer",
+                                    "March 20, 2026 - 6:00 PM",
+                                    "EV Building Lobby",
+                                    "Meet other SOEN students, network, and enjoy snacks in a casual social setting."
+                            ),
+                            new EventItem(
+                                    "Board Games Night",
+                                    "March 22, 2026 - 7:30 PM",
+                                    "Hall A",
+                                    "Join us for an evening of board games, team challenges, and friendly competition."
+                            ),
+                            new EventItem(
+                                    "Hackathon Kickoff",
+                                    "March 24, 2026 - 5:00 PM",
+                                    "Room H-937",
+                                    "Kick off the semester hackathon with team formation, project ideas, and event rules."
+                            ),
+                            new EventItem(
+                                    "Coffee and Code",
+                                    "March 26, 2026 - 2:00 PM",
+                                    "Library Cafe",
+                                    "Bring your laptop, grab a coffee, and code with classmates in a relaxed environment."
+                            ),
+                            new EventItem(
+                                    "AI Study Jam",
+                                    "March 28, 2026 - 4:30 PM",
+                                    "Engineering Lounge",
+                                    "Review AI concepts, solve practice problems, and prepare together for upcoming exams."
+                            )
                     );
 
                     for (EventItem event : sampleEvents) {
