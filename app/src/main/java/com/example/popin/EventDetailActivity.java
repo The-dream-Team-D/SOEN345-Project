@@ -9,7 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class EventDetailActivity extends AppCompatActivity {
 
-    private TextView tvDetailTitle, tvDetailDateTime, tvDetailLocation, tvDetailDetails;
+    private TextView tvDetailTitle;
+    private TextView tvDetailDateTime;
+    private TextView tvDetailLocation;
+    private TextView tvDetailDetails;
+
     private Button btnBack;
 
     @Override
