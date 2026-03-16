@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,6 +34,10 @@ public class EventsPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_events);
+
+        View navBar = findViewById(R.id.bottomNav);
+        boolean userInSessionAdminCheck = UserInSession.getInstance().getUser().getIsAdmin();
+        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
 
         eventList = new ArrayList<>();
         

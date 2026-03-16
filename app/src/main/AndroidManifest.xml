@@ -27,6 +27,8 @@
         <activity android:name=".EventsPageActivity" />
         <activity android:name=".MyTicketsActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".AdminDashboardActivity" />
+
     </application>
 
 </manifest>

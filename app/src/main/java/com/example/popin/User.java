@@ -13,6 +13,8 @@ public class User {
     private String password;
     private String address;
     private String name;
+    private boolean isAdmin = false;
+
 
     // apparently required by firebase
     public User() {}
@@ -23,6 +25,7 @@ public class User {
         this.password = password;
         this.address = "";
         this.name = "";
+        this.isAdmin = false;
     }
 
 
@@ -38,6 +41,9 @@ public class User {
         this.name = name;
     }
 
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
     //getters
 
     public String getAddress() {
@@ -51,6 +57,9 @@ public class User {
     }
     public String getName() {
         return this.name;
+    }
+    public boolean getIsAdmin() {
+        return this.isAdmin;
     }
     public interface LoginCallback {
         void onSuccess(User user);
@@ -91,6 +100,7 @@ public class User {
 
                         User.this.setName(userSnapshot.child("name").getValue(String.class));
                         User.this.setAddress(userSnapshot.child("address").getValue(String.class));
+                        User.this.setIsAdmin(Boolean.TRUE.equals(userSnapshot.child("isAdmin").getValue(boolean.class)));
 
                         callback.onSuccess(User.this);
                         return;
