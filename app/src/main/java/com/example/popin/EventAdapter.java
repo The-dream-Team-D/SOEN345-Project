@@ -1,5 +1,6 @@
 package com.example.popin;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.title.setText(event.getTitle());
         holder.dateTime.setText(event.getDateTime());
         holder.location.setText(event.getLocation());
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+            intent.putExtra("title", event.getTitle());
+            intent.putExtra("dateTime", event.getDateTime());
+            intent.putExtra("location", event.getLocation());
+            intent.putExtra("details", event.getDetails());
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
