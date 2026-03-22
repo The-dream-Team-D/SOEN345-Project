@@ -20,8 +20,10 @@ public class UserInSession {
         return instance;
     }
 
-    public void clear() {
+    public static void clear() {
+
         instance = null;
+        currentUser = null;
     }
 
 }

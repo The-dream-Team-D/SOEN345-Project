@@ -3,8 +3,8 @@ package com.example.popin;
 import static org.junit.Assert.*;
 
 import android.content.Intent;
+import android.view.View;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,14 +28,19 @@ import com.google.firebase.database.FirebaseDatabase;
 public class NavBarComponentViewTest {
     private ShadowActivity mockShadowActivity;
     private NavBarComponentView navBar;
+    private AppCompatActivity mockHostActivity;
     private static MockedStatic<FirebaseDatabase> mockedFirebaseDatabase;
 
-    private AppCompatActivity mockHostActivity;
+    @Before
+    public void setUp() {
+        setupWithAdmin(true);
+    }
+
 
     @BeforeClass
     public static void setUpClass() {
         FirebaseTestAssistant.setupMockFirebase();
-        mockedFirebaseDatabase = FirebaseTestAssistant.getMockedDatabase(); // expose the static ref
+        mockedFirebaseDatabase = FirebaseTestAssistant.getMockedDatabase();
     }
 
     @AfterClass
@@ -43,11 +48,16 @@ public class NavBarComponentViewTest {
         FirebaseTestAssistant.tearDown();
     }
 
-    @Before
-    public void setUp() {
+    private void setupWithAdmin(boolean isAdmin) {
+        User u = new User("TestMan", "Test");
+        u.setIsAdmin(isAdmin);
+        UserInSession.create(u);
+
         mockHostActivity = Robolectric.buildActivity(AppCompatActivity.class).create().get();
         mockShadowActivity = shadowOf(mockHostActivity);
         navBar = new NavBarComponentView(mockHostActivity, null);
+        NavBarComponentView.setup(navBar, isAdmin);
+
     }
 
 // ── Explore tab ──────────────────────────────────────────────────────────
@@ -119,5 +129,24 @@ public class NavBarComponentViewTest {
 
         assertNull(shadowOf(profileActivity).getNextStartedActivity());
     }
+
+    @Test
+    public void adminDashboardVisibleToAdminUser() {
+        navBar.findViewById(R.id.nav_adminDashboard_container).performClick();
+
+        Intent started = mockShadowActivity.getNextStartedActivity();
+        assertNotNull(started);
+        assertEquals(AdminDashboardActivity.class.getName(),
+                started.getComponent().getClassName());
+    }
+
+    @Test
+    public void adminDashboardNotVisibleToNonAdminUser() {
+        setupWithAdmin(false);
+
+        View adminNavBarOption = navBar.findViewById(R.id.nav_adminDashboard_container);
+        assertEquals(View.GONE, adminNavBarOption.getVisibility());
+    }
+
     
 }
