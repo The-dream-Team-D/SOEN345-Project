@@ -137,12 +137,25 @@
                     android:lineSpacingExtra="7dp" />
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnBuyTicket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#0A7FA8"
+                android:paddingVertical="14dp"
+                android:text="@string/buyTicketButton"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <!-- Back button -->
             <Button
                 android:id="@+id/btnBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Back to Events"
+                android:text="@string/backToEventsButton"
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:textSize="16sp"
