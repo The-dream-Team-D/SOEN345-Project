@@ -1,5 +1,6 @@
 package com.example.popin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,7 +54,7 @@ public class MyTicketsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         emptyStateText = findViewById(R.id.tvTicketsEmptyState);
-        ticketAdapter = new TicketAdapter(ticketList, this::cancelReservation);
+        ticketAdapter = new TicketAdapter(ticketList, this::cancelReservation, this::openTicketDetails);
         recyclerView.setAdapter(ticketAdapter);
 
         String userKey = sanitizeKey(session.getUser().getEmail());
@@ -150,6 +151,19 @@ public class MyTicketsActivity extends AppCompatActivity {
                         Toast.makeText(MyTicketsActivity.this, "Ticket cancelled", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(unused ->
                         Toast.makeText(MyTicketsActivity.this, "Cancellation failed", Toast.LENGTH_SHORT).show());
+    }
+
+    private void openTicketDetails(TicketItem ticket) {
+        if (ticket == null) {
+            return;
+        }
+
+        Intent intent = new Intent(MyTicketsActivity.this, EventDetailActivity.class);
+        intent.putExtra("title", ticket.getTitle());
+        intent.putExtra("dateTime", ticket.getDateTime());
+        intent.putExtra("location", ticket.getLocation());
+        intent.putExtra("details", ticket.getDetails());
+        startActivity(intent);
     }
 
     private void updateEmptyState() {

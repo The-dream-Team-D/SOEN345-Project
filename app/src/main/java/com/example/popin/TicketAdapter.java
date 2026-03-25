@@ -19,15 +19,25 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         void onCancelClick(TicketItem ticket);
     }
 
+    public interface OnTicketClickListener {
+        void onTicketClick(TicketItem ticket);
+    }
+
     private final List<TicketItem> allTickets;
     private final List<TicketItem> visibleTickets;
     private final OnCancelClickListener cancelClickListener;
+    private final OnTicketClickListener ticketClickListener;
     private String currentQuery = "";
 
-    public TicketAdapter(List<TicketItem> tickets, OnCancelClickListener cancelClickListener) {
+    public TicketAdapter(
+            List<TicketItem> tickets,
+            OnCancelClickListener cancelClickListener,
+            OnTicketClickListener ticketClickListener
+    ) {
         this.allTickets = new ArrayList<>(tickets);
         this.visibleTickets = new ArrayList<>(tickets);
         this.cancelClickListener = cancelClickListener;
+        this.ticketClickListener = ticketClickListener;
     }
 
     @NonNull
@@ -45,6 +55,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         holder.location.setText(ticket.getLocation());
 
         holder.cancelButton.setOnClickListener(v -> cancelClickListener.onCancelClick(ticket));
+        holder.itemView.setOnClickListener(v -> ticketClickListener.onTicketClick(ticket));
     }
 
     @Override
