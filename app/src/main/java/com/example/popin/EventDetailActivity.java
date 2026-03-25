@@ -9,9 +9,13 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -66,17 +70,15 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
-                    TicketItem existingTicket = ticketSnapshot.getValue(TicketItem.class);
-                    if (existingTicket != null
-                            && safeEquals(existingTicket.getTitle(), title)
-                            && safeEquals(existingTicket.getDateTime(), dateTime)
-                            && safeEquals(existingTicket.getLocation(), location)) {
+                    String existingTicketTitle = ticketSnapshot.child("title").getValue(String.class);
+                    if (safeEquals(existingTicketTitle, title)) {
                         Toast.makeText(EventDetailActivity.this, "You already have this ticket.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
 
-                TicketItem ticket = new TicketItem(null, title, dateTime, location);
+                Map<String, Object> ticket = new HashMap<>();
+                ticket.put("title", title);
                 userTicketsRef.push()
                         .setValue(ticket)
                         .addOnSuccessListener(unused ->
@@ -86,7 +88,7 @@ public class EventDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(com.google.firebase.database.DatabaseError error) {
+            public void onCancelled(DatabaseError error) {
                 Toast.makeText(EventDetailActivity.this, "Purchase failed.", Toast.LENGTH_SHORT).show();
             }
         });

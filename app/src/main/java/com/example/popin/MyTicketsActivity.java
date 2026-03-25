@@ -20,12 +20,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class MyTicketsActivity extends AppCompatActivity {
     private TicketAdapter ticketAdapter;
     private final List<TicketItem> ticketList = new ArrayList<>();
     private DatabaseReference userTicketsRef;
+    private DatabaseReference eventsRef;
     private TextView emptyStateText;
 
     @Override
@@ -56,6 +60,7 @@ public class MyTicketsActivity extends AppCompatActivity {
         userTicketsRef = FirebaseDatabase.getInstance()
                 .getReference("User tickets")
                 .child(userKey);
+        eventsRef = FirebaseDatabase.getInstance().getReference("Event database");
 
         fetchTickets();
 
@@ -84,10 +89,40 @@ public class MyTicketsActivity extends AppCompatActivity {
                 ticketList.clear();
 
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
-                    TicketItem ticket = ticketSnapshot.getValue(TicketItem.class);
-                    if (ticket != null) {
-                        ticket.setTicketId(ticketSnapshot.getKey());
+                    String title = ticketSnapshot.child("title").getValue(String.class);
+                    if (title != null && !title.trim().isEmpty()) {
+                        TicketItem ticket = new TicketItem(ticketSnapshot.getKey(), title, "", "");
                         ticketList.add(ticket);
+                    }
+                }
+
+                enrichTicketsFromEventDatabase();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(MyTicketsActivity.this, "Failed to load tickets", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void enrichTicketsFromEventDatabase() {
+        eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Map<String, EventItem> eventsByTitle = new HashMap<>();
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    EventItem event = eventSnapshot.getValue(EventItem.class);
+                    if (event != null && event.getTitle() != null) {
+                        eventsByTitle.put(normalize(event.getTitle()), event);
+                    }
+                }
+
+                for (TicketItem ticket : ticketList) {
+                    EventItem event = eventsByTitle.get(normalize(ticket.getTitle()));
+                    if (event != null) {
+                        ticket.setDateTime(event.getDateTime());
+                        ticket.setLocation(event.getLocation());
                     }
                 }
 
@@ -97,7 +132,8 @@ public class MyTicketsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(MyTicketsActivity.this, "Failed to load tickets", Toast.LENGTH_SHORT).show();
+                ticketAdapter.updateList(ticketList);
+                updateEmptyState();
             }
         });
     }
@@ -135,5 +171,12 @@ public class MyTicketsActivity extends AppCompatActivity {
                 .replace("[", "_")
                 .replace("]", "_")
                 .replace("/", "_");
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.trim().toLowerCase(Locale.ROOT);
     }
 }

@@ -47,4 +47,15 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white" />
 
+    <TextView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/bg_event_image_placeholder"
+        android:gravity="center"
+        android:text="Event\nImage"
+        android:textAlignment="center"
+        android:textColor="#0A7FA8"
+        android:textStyle="bold" />
+
 </LinearLayout>
