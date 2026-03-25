@@ -12,14 +12,25 @@
     <string name="signUpButton">Don\'t have an account? Sign Up</string>
 
     <string name="EventsTitle">Events</string>
+    <string name="MyTicketsTitle">My Tickets</string>
+    <string name="ProfileTitle">My Profile</string>
+    <string name="AdminDashboardTitle">Admin Dashboard</string>
 
     <string name="navBarComponent1ContentDescription">Explore Events icon</string>
     <string name="navBarComponent2ContentDescription">User Tickets icon</string>
     <string name="navBarComponent3ContentDescription">Profile icon</string>
+    <string name="navBarComponent4ContentDescription">Admin Dashboard icon</string>
+
 
     <string name="navBarComponent1ViewText">Explore Events</string>
     <string name="navBarComponent2ViewText">My Tickets</string>
     <string name="navBarComponent3ViewText">My Profile</string>
+    <string name="navBarComponent4ViewText">Dashboard</string>
+
+    <string name="EventsPageSearchBarHint">Search events…</string>
+    <string name="MyTicketsPageSearchBarHint">Search registered Events…</string>
+
+
 
 
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,6 +35,10 @@ public class EventsPageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_events);
 
+        View navBar = findViewById(R.id.bottomNav);
+        boolean userInSessionAdminCheck = UserInSession.getInstance().getUser().getIsAdmin();
+        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
+
         eventList = new ArrayList<>();
         
         RecyclerView recyclerView = findViewById(R.id.rvEvents);
@@ -43,7 +48,7 @@ public class EventsPageActivity extends AppCompatActivity {
         recyclerView.setAdapter(eventAdapter);
 
         // Initialize Firebase
-        databaseReference = FirebaseDatabase.getInstance("https://popin-7a69f-default-rtdb.firebaseio.com/")
+        databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Event database");
 
         // Check if DB is empty and upload sample data if needed

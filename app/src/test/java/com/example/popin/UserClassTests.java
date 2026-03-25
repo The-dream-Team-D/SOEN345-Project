@@ -10,6 +10,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UserClassTests {
     @Mock
@@ -31,8 +33,14 @@ public class UserClassTests {
     private static final String name_in_DB     = "John Doe";
     private static final String address_in_DB = "123 Main St";
 
+    @Captor
+    ArgumentCaptor<ValueEventListener> listenerCaptor;
+
     @Before
     public void setUp() {
+
+        MockitoAnnotations.openMocks(this); // make sure this is here
+
         mockedFirebase = mockStatic(FirebaseDatabase.class);
         mockedFirebase.when(FirebaseDatabase::getInstance).thenReturn(mockFirebaseDatabase);
 
@@ -41,18 +49,20 @@ public class UserClassTests {
         when(mockQuery.equalTo(anyString())).thenReturn(mockQuery);
 
         DataSnapshot mockPasswordSnapshot = mock(DataSnapshot.class);
-        DataSnapshot mockNameSnapshot = mock(DataSnapshot.class);
-        DataSnapshot mockAddressSnapshot = mock(DataSnapshot.class);
+        DataSnapshot mockNameSnapshot     = mock(DataSnapshot.class);
+        DataSnapshot mockAddressSnapshot  = mock(DataSnapshot.class);
+        DataSnapshot mockIsAdminSnapshot  = mock(DataSnapshot.class);
 
         when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
         when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
         when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
+        when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
 
+        when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
+        when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
+        when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
+        when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
 
-        // Wire up the single user snapshot
-        when(mockUserSnapshot.child("password").getValue(String.class)).thenReturn(password_in_DB);
-        when(mockUserSnapshot.child("name").getValue(String.class)).thenReturn(name_in_DB);
-        when(mockUserSnapshot.child("address").getValue(String.class)).thenReturn(address_in_DB);
     }
 
 
@@ -135,17 +145,26 @@ public class UserClassTests {
         setupSnapshotExists();
         User user = new User(email_in_DB, password_in_DB);
 
+        when(mockSnapshot.exists()).thenReturn(true);
+        when(mockSnapshot.getChildren()).thenReturn(List.of(mockUserSnapshot));
+
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) {
+                UserInSession.create(user);
                 assertNotNull(u);
                 assertEquals(name_in_DB,    u.getName());
                 assertEquals(address_in_DB, u.getAddress());
                 assertEquals(email_in_DB,   u.getEmail());
+                assertNotNull(UserInSession.getInstance().getUser());
             }
             @Override public void onError(String message) {
                 fail("Expected success, got error: " + message);
             }
         });
+
+        verify(mockQuery).addListenerForSingleValueEvent(listenerCaptor.capture());
+        listenerCaptor.getValue().onDataChange(mockSnapshot);
+
     }
 
     @Test
@@ -156,6 +175,7 @@ public class UserClassTests {
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
+                assertNull(UserInSession.getInstance());
                 assertEquals("Incorrect password", message);
             }
         });
