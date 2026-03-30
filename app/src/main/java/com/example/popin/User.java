@@ -118,7 +118,6 @@ public class User {
                             callback.onSuccess(User.this);
                         }
 
-                        callback.onSuccess(User.this);
                         return;
                     } else {
                         callback.onError("Incorrect password");
