@@ -79,8 +79,49 @@ public class User {
         void onError(String message);
     }
 
+    private interface SnapshotHandler {
+        void onSnapshot(DataSnapshot snapshot);
+    }
+
+    private static final String USERS_PATH = "Users";
+
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    private DatabaseReference getUsersRef() {
+        return FirebaseDatabase.getInstance().getReference(USERS_PATH);
+    }
+
+    private Query emailQuery(DatabaseReference usersRef) {
+        return usersRef.orderByChild("email").equalTo(this.email);
+    }
+
+    private void queryByEmail(DatabaseReference usersRef, SnapshotHandler onSnapshot, ErrorCallback onError) {
+        emailQuery(usersRef).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                onSnapshot.onSnapshot(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                onError.onError("Database error: " + error.getMessage());
+            }
+        });
+    }
+
+    private DataSnapshot firstChild(DataSnapshot snapshot) {
+        for (DataSnapshot child : snapshot.getChildren()) {
+            return child;
+        }
+        return null;
+    }
+
+    private void assignProfile(User user, String name, String address, boolean admin) {
+        user.setName(name);
+        user.setAddress(address);
+        user.setIsAdmin(admin);
     }
 
     private boolean validateCredentials(ErrorCallback callback) {
@@ -102,50 +143,39 @@ public class User {
             return;
         }
 
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onError("No user with that email");
-                    return;
-                }
-
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    String dbPassword = userSnapshot.child("password").getValue(String.class);
-
-                    if (password.equals(dbPassword)) {
-                        String dbName = userSnapshot.child("name").getValue(String.class);
-                        String dbAddress = userSnapshot.child("address").getValue(String.class);
-                        Boolean dbIsAdmin = userSnapshot.child("isAdmin").getValue(Boolean.class);
-
-                        if (Boolean.TRUE.equals(dbIsAdmin)) {
-                            Admin adminUser = new Admin(User.this.email, User.this.password, userSnapshot.getKey());
-                            adminUser.setName(dbName);
-                            adminUser.setAddress(dbAddress);
-                            adminUser.setIsAdmin(true);
-                            callback.onSuccess(adminUser);
-                        } else {
-                            User.this.setName(dbName);
-                            User.this.setAddress(dbAddress);
-                            User.this.setIsAdmin(false);
-                            callback.onSuccess(User.this);
-                        }
-                        return;
-                    } else {
-                        callback.onError("Incorrect password");
-                        return;
-                    }
-                }
+        DatabaseReference usersRef = getUsersRef();
+        queryByEmail(usersRef, snapshot -> {
+            if (!snapshot.exists()) {
+                callback.onError("No user with that email");
+                return;
             }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+            DataSnapshot userSnapshot = firstChild(snapshot);
+            if (userSnapshot == null) {
+                callback.onError("No user with that email");
+                return;
             }
-        });
+
+            String dbPassword = userSnapshot.child("password").getValue(String.class);
+            if (!password.equals(dbPassword)) {
+                callback.onError("Incorrect password");
+                return;
+            }
+
+            String dbName = userSnapshot.child("name").getValue(String.class);
+            String dbAddress = userSnapshot.child("address").getValue(String.class);
+            Boolean dbIsAdmin = userSnapshot.child("isAdmin").getValue(Boolean.class);
+
+            if (Boolean.TRUE.equals(dbIsAdmin)) {
+                Admin adminUser = new Admin(User.this.email, User.this.password, userSnapshot.getKey());
+                assignProfile(adminUser, dbName, dbAddress, true);
+                callback.onSuccess(adminUser);
+                return;
+            }
+
+            assignProfile(User.this, dbName, dbAddress, false);
+            callback.onSuccess(User.this);
+        }, callback::onError);
     }
 
     public void register(String name, String address, RegisterCallback callback) {
@@ -172,39 +202,27 @@ public class User {
             return;
         }
 
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    callback.onError("An account with this email already exists");
-                    return;
-                }
-
-                User.this.setName(name);
-                User.this.setAddress(address);
-                User.this.setIsAdmin(adminAccount);
-
-                String userId = usersRef.push().getKey();
-                if (userId == null) {
-                    callback.onError("Failed to generate user id");
-                    return;
-                }
-
-                usersRef.child(userId)
-                        .setValue(User.this)
-                        .addOnSuccessListener(unused ->
-                                callback.onSuccess(successMessage))
-                        .addOnFailureListener(e ->
-                                callback.onError(failurePrefix + e.getMessage()));
+        DatabaseReference usersRef = getUsersRef();
+        queryByEmail(usersRef, snapshot -> {
+            if (snapshot.exists()) {
+                callback.onError("An account with this email already exists");
+                return;
             }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+            assignProfile(User.this, name, address, adminAccount);
+
+            String userId = usersRef.push().getKey();
+            if (userId == null) {
+                callback.onError("Failed to generate user id");
+                return;
             }
-        });
+
+            usersRef.child(userId)
+                    .setValue(User.this)
+                    .addOnSuccessListener(unused ->
+                            callback.onSuccess(successMessage))
+                    .addOnFailureListener(e ->
+                            callback.onError(failurePrefix + e.getMessage()));
+        }, callback::onError);
     }
 }
