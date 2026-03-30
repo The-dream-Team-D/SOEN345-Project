@@ -31,6 +31,6 @@ public class Reservation {
     public void setEvent(Event event) {
         this.event = event;
     }
-    
+
 
 }

@@ -69,8 +69,10 @@ public class EventCatalogTest {
 
     @Test
     public void addEvent_validEvent_invokesSuccessCallback() {
-        when(childRef.setValue(any())).thenReturn(immediateSuccessTask());
+        Task<Void> successTask = immediateSuccessTask();
 
+        when(childRef.setValue(any())).thenReturn(successTask);
+        
         EventCatalog catalog = EventCatalog.getInstance();
         Event event = new Event("Concert", "Hall A", "Live music", new Date(), EventCategory.CONCERT);
 
