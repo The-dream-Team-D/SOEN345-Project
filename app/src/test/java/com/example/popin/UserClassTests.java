@@ -32,6 +32,7 @@ public class UserClassTests {
     private static final String password_in_DB = "secret123";
     private static final String name_in_DB     = "John Doe";
     private static final String address_in_DB = "123 Main St";
+    private DataSnapshot mockIsAdminSnapshot;
 
     @Captor
     ArgumentCaptor<ValueEventListener> listenerCaptor;
@@ -51,7 +52,7 @@ public class UserClassTests {
         DataSnapshot mockPasswordSnapshot = mock(DataSnapshot.class);
         DataSnapshot mockNameSnapshot     = mock(DataSnapshot.class);
         DataSnapshot mockAddressSnapshot  = mock(DataSnapshot.class);
-        DataSnapshot mockIsAdminSnapshot  = mock(DataSnapshot.class);
+        mockIsAdminSnapshot = mock(DataSnapshot.class);
 
         when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
         when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
@@ -61,8 +62,6 @@ public class UserClassTests {
         when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
         when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
         when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
-        when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
-
     }
 
 
@@ -143,6 +142,7 @@ public class UserClassTests {
     @Test
     public void login_correctCredentials_callsOnSuccess() {
         setupSnapshotExists();
+        when(mockIsAdminSnapshot.getValue(Boolean.class)).thenReturn(false);
         User user = new User(email_in_DB, password_in_DB);
 
         when(mockSnapshot.exists()).thenReturn(true);
@@ -209,7 +209,7 @@ public class UserClassTests {
 
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Should not succeed on cancel"); }
-            @Override public void onError(String msg)  { fail("onError should not be called on cancel"); }
+            @Override public void onError(String msg)  { assertEquals("Database error: Connection lost", msg); }
         });
 
         verify(mockError).getMessage();

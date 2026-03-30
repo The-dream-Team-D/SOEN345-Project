@@ -80,12 +80,12 @@ public class User {
         Query query = usersRef.orderByChild("email").equalTo(this.email);
 
         if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email input is empty");
+            callback.onError("Email/Phone input is Empty");
             return;
         }
 
         if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is empty");
+            callback.onError("Password input is Empty");
             return;
         }
 
@@ -93,7 +93,7 @@ public class User {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError("No user with that email");
+                    callback.onError("No user with that email/phone number");
                     return;
                 }
 
