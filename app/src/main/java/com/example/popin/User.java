@@ -75,19 +75,35 @@ public class User {
         void onError(String message);
     }
 
+    private interface ErrorCallback {
+        void onError(String message);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private boolean validateCredentials(ErrorCallback callback) {
+        if (isBlank(this.email)) {
+            callback.onError("Email input is empty");
+            return false;
+        }
+
+        if (isBlank(this.password)) {
+            callback.onError("Password input is empty");
+            return false;
+        }
+
+        return true;
+    }
+
     public void login(LoginCallback callback) {
+        if (!validateCredentials(callback::onError)) {
+            return;
+        }
+
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
         Query query = usersRef.orderByChild("email").equalTo(this.email);
-
-        if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email input is empty");
-            return;
-        }
-
-        if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is empty");
-            return;
-        }
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -133,65 +149,30 @@ public class User {
     }
 
     public void register(String name, String address, RegisterCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-
-        if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email input is empty");
-            return;
-        }
-
-        if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is empty");
-            return;
-        }
-
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    callback.onError("An account with this email already exists");
-                    return;
-                }
-
-                User.this.setName(name);
-                User.this.setAddress(address);
-
-                String userId = usersRef.push().getKey();
-                if (userId == null) {
-                    callback.onError("Failed to generate user id");
-                    return;
-                }
-
-                usersRef.child(userId)
-                        .setValue(User.this)
-                        .addOnSuccessListener(unused ->
-                                callback.onSuccess("User account created successfully"))
-                        .addOnFailureListener(e ->
-                                callback.onError("Failed to create account: " + e.getMessage()));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
-            }
-        });
+        createAccount(name, address, false,
+                "User account created successfully",
+                "Failed to create account: ",
+                callback);
     }
 
     public void createAdminAccount(String name, String address, RegisterCallback callback) {
+        createAccount(name, address, true,
+                "Admin account created successfully",
+                "Failed to create admin account: ",
+                callback);
+    }
+
+    private void createAccount(String name,
+                               String address,
+                               boolean adminAccount,
+                               String successMessage,
+                               String failurePrefix,
+                               RegisterCallback callback) {
+        if (!validateCredentials(callback::onError)) {
+            return;
+        }
+
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-
-        if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email input is empty");
-            return;
-        }
-
-        if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is empty");
-            return;
-        }
-
         Query query = usersRef.orderByChild("email").equalTo(this.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -204,7 +185,7 @@ public class User {
 
                 User.this.setName(name);
                 User.this.setAddress(address);
-                User.this.setIsAdmin(true);
+                User.this.setIsAdmin(adminAccount);
 
                 String userId = usersRef.push().getKey();
                 if (userId == null) {
@@ -215,9 +196,9 @@ public class User {
                 usersRef.child(userId)
                         .setValue(User.this)
                         .addOnSuccessListener(unused ->
-                                callback.onSuccess("Admin account created successfully"))
+                                callback.onSuccess(successMessage))
                         .addOnFailureListener(e ->
-                                callback.onError("Failed to create admin account: " + e.getMessage()));
+                                callback.onError(failurePrefix + e.getMessage()));
             }
 
             @Override
