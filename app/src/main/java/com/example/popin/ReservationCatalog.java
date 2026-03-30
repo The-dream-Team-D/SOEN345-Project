@@ -13,19 +13,19 @@ public class ReservationCatalog {
 
     public void addReservation(Event event, Customer customer) {
         if (event == null) {
-            System.out.println("Event information is required for reservation.");
+            android.util.Log.d("Debug", "Event information is required for reservation.");
             return;
         }
 
         //few checks before adding the reservation
         if (!event.isAvailable()) {
-            System.out.println("Event is not available for reservation.");
+            android.util.Log.d("Debug", "Event is not available for reservation.");
             return;
         } else if (customer == null) {
-            System.out.println("Customer information is required for reservation.");
+            android.util.Log.d("Debug", "Customer information is required for reservation.");
             return;
         } else if (event.getDate() != null && event.getDate().before(new Date())) {
-            System.out.println("Cannot reserve an event that has already occurred.");
+            android.util.Log.d("Debug","Cannot reserve an event that has already occurred.");
             return;
         }
 

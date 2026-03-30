@@ -1,7 +1,7 @@
 package com.example.popin;
 
 public class Reservation {
-    public static int idCounter = 0;
+    private static int idCounter = 0;
     private int id;
     private Customer customer;
     private Event event;
@@ -31,4 +31,6 @@ public class Reservation {
     public void setEvent(Event event) {
         this.event = event;
     }
+    
+
 }

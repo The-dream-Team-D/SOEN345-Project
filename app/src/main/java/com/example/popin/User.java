@@ -7,6 +7,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Iterator;
+
 public class User {
 
     private String email;
@@ -112,12 +114,8 @@ public class User {
     }
 
     private DataSnapshot firstChild(DataSnapshot snapshot) {
-        DataSnapshot firstChild = null;
-        for (DataSnapshot child : snapshot.getChildren()) {
-            firstChild = child;
-            break;
-        }
-        return firstChild;
+        Iterator<DataSnapshot> it = snapshot.getChildren().iterator();
+        return it.hasNext() ? it.next() : null;
     }
 
     private void assignProfile(User user, String name, String address, boolean admin) {

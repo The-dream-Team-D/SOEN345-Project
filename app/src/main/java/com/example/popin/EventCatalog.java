@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -56,12 +57,12 @@ public class EventCatalog {
                     return;
                 }
 
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    onFound.accept(eventSnapshot);
-                    break;
+                Iterator<DataSnapshot> it = snapshot.getChildren().iterator();
+                if (it.hasNext()) {
+                    onFound.accept(it.next());
+                }else {
+                    callback.onError("No event found with that name");
                 }
-
-                callback.onError("No event found with that name");
             }
 
             @Override
