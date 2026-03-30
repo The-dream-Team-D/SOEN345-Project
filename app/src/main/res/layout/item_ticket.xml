@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     android:background="@drawable/bg_cyan_rounded"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="16dp">
 
@@ -14,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvEventTitle"
+            android:id="@+id/tvTicketTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#082238"
@@ -22,19 +23,29 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvEventDateTime"
+            android:id="@+id/tvTicketDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:textColor="#082238" />
 
         <TextView
-            android:id="@+id/tvEventLocation"
+            android:id="@+id/tvTicketLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="#082238" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnCancelTicket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:backgroundTint="#C62828"
+        android:text="@string/cancelTicketButton"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:layout_width="96dp"
@@ -46,4 +57,5 @@
         android:textAlignment="center"
         android:textColor="#0A7FA8"
         android:textStyle="bold" />
+
 </LinearLayout>

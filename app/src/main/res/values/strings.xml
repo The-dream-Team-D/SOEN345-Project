@@ -4,7 +4,7 @@
 
     <string name="loginTitle">Login</string>
     <string name="loginCatchyPhrase">PopIn, and Join our Events!</string>
-    <string name="loginButton">Let\'s Go! =></string>
+    <string name="loginButton">Let\'s Go! =&gt;</string>
 
     <string name="emailInputHint">Email or Phone Number</string>
     <string name="passwordInputHint">Password</string>
@@ -21,16 +21,15 @@
     <string name="navBarComponent3ContentDescription">Profile icon</string>
     <string name="navBarComponent4ContentDescription">Admin Dashboard icon</string>
 
-
     <string name="navBarComponent1ViewText">Explore Events</string>
     <string name="navBarComponent2ViewText">My Tickets</string>
     <string name="navBarComponent3ViewText">My Profile</string>
     <string name="navBarComponent4ViewText">Dashboard</string>
 
-    <string name="EventsPageSearchBarHint">Search events…</string>
-    <string name="MyTicketsPageSearchBarHint">Search registered Events…</string>
-
-
-
-
+    <string name="EventsPageSearchBarHint">Search events...</string>
+    <string name="MyTicketsPageSearchBarHint">Search registered events...</string>
+    <string name="cancelTicketButton">Cancel</string>
+    <string name="buyTicketButton">Buy Ticket</string>
+    <string name="backToEventsButton">Back to Events</string>
+    <string name="ticketsEmptyState">No tickets found.</string>
 </resources>
