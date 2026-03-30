@@ -8,6 +8,7 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
@@ -29,7 +30,6 @@ public class UserClassTests {
 
     private MockedStatic<FirebaseDatabase> mockedFirebase;
 
-    // Simulate the one existing user in the DB
     private static final String email_in_DB = "john@example.com";
     private static final String password_in_DB = "secret123";
     private static final String name_in_DB     = "John Doe";
@@ -46,7 +46,7 @@ public class UserClassTests {
     @Before
     public void setUp() {
 
-        MockitoAnnotations.openMocks(this); // make sure this is here
+        MockitoAnnotations.openMocks(this);
 
         mockedFirebase = mockStatic(FirebaseDatabase.class);
         mockedFirebase.when(FirebaseDatabase::getInstance).thenReturn(mockFirebaseDatabase);
@@ -98,8 +98,6 @@ public class UserClassTests {
             return null;
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
-
-    // --- Core Logic Tests (Firebase) ---
 
     @Test
     public void login_emptyEmail_returnsError() {
@@ -255,12 +253,10 @@ public class UserClassTests {
         assertEquals("Database error: Connection lost", err[0]);
     }
 
-    // --- Simple Data Tests (Getters/Setters) ---
-
     @Test
     public void testSettersAndGetters() {
         User user = new User("test@example.com", "pass123");
-        
+
         user.setName("John Smith");
         user.setAddress("456 Oak St");
         user.setPassword("newPass456");

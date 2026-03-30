@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_dashboard_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DCE1E8"
+    tools:context=".AdminDashboardActivity"
+    tools:theme="@style/Base.Theme.PopIn">
+
+    <ScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingStart="24dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/AdminDashboardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="@string/AdminDashboardTitle"
+                android:textColor="?attr/colorSecondary"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add event"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editText4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:inputType="text"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date (yyyy-MM-dd)"
+                android:inputType="date"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Time (HH:mm)"
+                android:inputType="time"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Location"
+                android:inputType="text"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add event"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update event"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editText9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Event name to update"
+                android:inputType="text"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextDate3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New date (yyyy-MM-dd), optional"
+                android:inputType="date"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextTime3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New time (HH:mm), optional"
+                android:inputType="time"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editText10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New location, optional"
+                android:inputType="text"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editText11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New description, optional"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update event"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete event"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/textInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Enter the event name"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#F44336"
+                android:text="Delete the event" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.example.popin.NavBarComponentView
+        android:id="@+id/bottomNav"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

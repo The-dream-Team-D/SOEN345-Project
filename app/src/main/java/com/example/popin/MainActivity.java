@@ -40,10 +40,9 @@ public class MainActivity extends AppCompatActivity {
         user.login(new User.LoginCallback() {
             @Override
             public void onSuccess(User user) {
-                // Login successful
                 Toast.makeText(getApplicationContext(), "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
+                UserInSession.create(user);
 
-                // Proceed to next activity
                 Intent intent = new Intent(MainActivity.this, EventsPageActivity.class);
                 startActivity(intent);
                 finish();

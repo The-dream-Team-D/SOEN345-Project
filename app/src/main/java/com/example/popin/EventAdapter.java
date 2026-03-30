@@ -1,5 +1,6 @@
 package com.example.popin;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.Locale;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private final List<EventItem> allEvents;
     private final List<EventItem> visibleEvents;
+    private String currentQuery = "";
 
     public EventAdapter(List<EventItem> events) {
         this.allEvents = new ArrayList<>(events);
@@ -34,6 +36,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.title.setText(event.getTitle());
         holder.dateTime.setText(event.getDateTime());
         holder.location.setText(event.getLocation());
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+            intent.putExtra("title", event.getTitle());
+            intent.putExtra("dateTime", event.getDateTime());
+            intent.putExtra("location", event.getLocation());
+            intent.putExtra("details", event.getDetails());
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -41,16 +52,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return visibleEvents.size();
     }
 
+    public void updateList(List<EventItem> newList) {
+        allEvents.clear();
+        allEvents.addAll(newList);
+        filter(currentQuery);
+    }
+
     public void filter(String query) {
-        String normalized = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
+        currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
         visibleEvents.clear();
-        if (normalized.isEmpty()) {
+        if (currentQuery.isEmpty()) {
             visibleEvents.addAll(allEvents);
         } else {
             for (EventItem event : allEvents) {
                 String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
                         .toLowerCase(Locale.ROOT);
-                if (haystack.contains(normalized)) {
+                if (haystack.contains(currentQuery)) {
                     visibleEvents.add(event);
                 }
             }

@@ -8,8 +8,6 @@ import static org.junit.Assert.*;
 
 public class UserInSessionTest {
 
-    private NavBarComponentView navBar;
-
     @Test
     public void userInSessionCreateAffectsGetInstanceAndGetUser(){
         User u = new User("hos", "sam");

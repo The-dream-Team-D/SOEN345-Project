@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import android.content.Intent;
-import android.view.View;
-
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+
+import android.content.Intent;
+import android.view.View;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,8 +65,6 @@ public class NavBarComponentViewTest {
 
     }
 
-// ── Explore tab ──────────────────────────────────────────────────────────
-
     @Test
     public void exploreTab_click_launchesEventsPageActivity() {
         navBar.findViewById(R.id.nav_explore_container).performClick();
@@ -89,8 +87,6 @@ public class NavBarComponentViewTest {
                 shadowOf(eventsActivity).getNextStartedActivity());
     }
 
-// ── Tickets tab ──────────────────────────────────────────────────────────
-
     @Test
     public void ticketsTab_click_launchesMyTicketsActivity() {
         navBar.findViewById(R.id.nav_tickets_container).performClick();
@@ -111,8 +107,6 @@ public class NavBarComponentViewTest {
 
         assertNull(shadowOf(ticketsActivity).getNextStartedActivity());
     }
-
-// ── Profile tab ──────────────────────────────────────────────────────────
 
     @Test
     public void profileTab_click_launchesProfileActivity() {

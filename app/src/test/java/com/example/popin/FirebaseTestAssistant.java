@@ -7,23 +7,21 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
 import java.util.Collections;
 
 public class FirebaseTestAssistant {
 
-    @Mock
     private static MockedStatic<FirebaseDatabase> mockedFirebaseDatabase;
 
     private static MockedStatic<FirebaseDatabase> mockFirebaseDatabase;
+
     public static void setupMockFirebase() {
 
         if (mockedFirebaseDatabase != null) {
@@ -41,7 +39,6 @@ public class FirebaseTestAssistant {
         });
         when(mockRef.getRef()).thenReturn(mockRef);
 
-        //Reads
         when(mockDb.getReference(anyString())).thenAnswer(
                 invocation -> mockRef
         );
