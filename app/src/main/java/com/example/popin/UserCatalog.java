@@ -1,9 +1,12 @@
+package com.example.popin;
+
 import java.util.HashMap;
+import java.util.Map;
 
 public class UserCatalog {
-    private HashMap<String, User> users;
-    private HashMap<String, Customer> customers;
-    private HashMap<String, Admin> admins;
+    private final Map<String, User> users;
+    private final Map<String, Customer> customers;
+    private final Map<String, Admin> admins;
 
     public UserCatalog() {
         this.users = new HashMap<>();
@@ -18,7 +21,8 @@ public class UserCatalog {
     }
 
     public void addAdmin(String name, String email, String password) {
-        Admin admin = new Admin(name, email, password);
+        Admin admin = new Admin(email, password, null);
+        admin.setName(name);
         admins.put(email, admin);
         users.put(email, admin);
     }

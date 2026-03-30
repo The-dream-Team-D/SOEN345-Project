@@ -23,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class MyTicketsActivity extends AppCompatActivity {
@@ -57,7 +56,7 @@ public class MyTicketsActivity extends AppCompatActivity {
         ticketAdapter = new TicketAdapter(ticketList, this::cancelReservation, this::openTicketDetails);
         recyclerView.setAdapter(ticketAdapter);
 
-        String userKey = sanitizeKey(user.getEmail());
+        String userKey = FirebaseUserKey.sanitize(user.getEmail());
         userTicketsRef = FirebaseDatabase.getInstance()
                 .getReference("User tickets")
                 .child(userKey);
@@ -115,12 +114,12 @@ public class MyTicketsActivity extends AppCompatActivity {
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
                     EventItem event = eventSnapshot.getValue(EventItem.class);
                     if (event != null && event.getTitle() != null) {
-                        eventsByTitle.put(normalize(event.getTitle()), event);
+                        eventsByTitle.put(FirebaseUserKey.normalize(event.getTitle()), event);
                     }
                 }
 
                 for (TicketItem ticket : ticketList) {
-                    EventItem event = eventsByTitle.get(normalize(ticket.getTitle()));
+                    EventItem event = eventsByTitle.get(FirebaseUserKey.normalize(ticket.getTitle()));
                     if (event != null) {
                         ticket.setDateTime(event.getDateTime());
                         ticket.setLocation(event.getLocation());
@@ -174,23 +173,4 @@ public class MyTicketsActivity extends AppCompatActivity {
         }
     }
 
-    private String sanitizeKey(String raw) {
-        if (raw == null || raw.trim().isEmpty()) {
-            return "unknown_user";
-        }
-        return raw
-                .replace(".", "_")
-                .replace("#", "_")
-                .replace("$", "_")
-                .replace("[", "_")
-                .replace("]", "_")
-                .replace("/", "_");
-    }
-
-    private String normalize(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.trim().toLowerCase(Locale.ROOT);
-    }
 }

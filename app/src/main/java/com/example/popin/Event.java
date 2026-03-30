@@ -1,4 +1,6 @@
-import java.sql.Date;
+package com.example.popin;
+
+import java.util.Date;
 
 public class Event {
     private static int idCounter = 0;
@@ -7,6 +9,9 @@ public class Event {
     private Date date;
     private boolean isAvailable;
     private EventCategory eventCategory;
+
+    public Event() {
+    }
 
     public Event(String name, String location, String description, Date date, EventCategory eventCategory){
         this.id = ++idCounter;
@@ -75,7 +80,7 @@ public class Event {
     }
 }
 
-public enum EventCategory{
+enum EventCategory {
     CONCERT,
     SPORTS,
     THEATER,

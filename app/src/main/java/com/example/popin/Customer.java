@@ -1,16 +1,16 @@
-import com.example.popin.User;
-import com.example.popin.UserType;
+package com.example.popin;
+
 import java.util.HashMap;
+import java.util.Map;
 
-public class Customer extends User{
-    private String name, email, password, phoneNumber;
-    private UserType userType;
-    private HashMap<Integer, Reservation> reservations;
-
+public class Customer extends User {
+    private String phoneNumber;
+    private final Map<Integer, Reservation> reservations;
 
     public Customer(String name, String email, String password, String phoneNumber) {
-        super(name, email, password, UserType.CUSTOMER);
-
+        super(email, password);
+        setName(name);
+        setIsAdmin(false);
         this.phoneNumber = phoneNumber;
         this.reservations = new HashMap<>();
     }
@@ -23,12 +23,14 @@ public class Customer extends User{
         this.phoneNumber = phoneNumber;
     }
 
-    public HashMap<Integer, Reservation> getReservations() {
+    public Map<Integer, Reservation> getReservations() {
         return reservations;
     }
 
     public void addReservation(Reservation reservation) {
-        reservations.put(reservation.getId(), reservation);
+        if (reservation != null) {
+            reservations.put(reservation.getId(), reservation);
+        }
     }
 
     public void cancelReservation(int reservationId) {

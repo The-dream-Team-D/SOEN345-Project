@@ -8,6 +8,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class EventCatalog {
     private static EventCatalog instance;
@@ -34,6 +35,36 @@ public class EventCatalog {
         void onError(String message);
     }
 
+    private void findEventSnapshotByName(String eventName,
+                                         EventActionCallback callback,
+                                         Consumer<DataSnapshot> onFound) {
+        if (eventName == null || eventName.trim().isEmpty()) {
+            callback.onError("Event name is empty");
+            return;
+        }
+
+        Query query = eventsRef.orderByChild("name").equalTo(eventName);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    callback.onError("No event found with that name");
+                    return;
+                }
+
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    onFound.accept(eventSnapshot);
+                    return;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
+            }
+        });
+    }
+
     public void addEvent(Event event, EventActionCallback callback) {
         if (event == null) {
             callback.onError("Event is null");
@@ -54,86 +85,34 @@ public class EventCatalog {
     }
 
     public void deleteEventByName(String eventName, EventActionCallback callback) {
-        if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onError("Event name is empty");
-            return;
-        }
-
-        Query query = eventsRef.orderByChild("name").equalTo(eventName);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onError("No event found with that name");
-                    return;
-                }
-
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    eventSnapshot.getRef().removeValue()
-                            .addOnSuccessListener(unused ->
-                                    callback.onSuccess("Event deleted successfully"))
-                            .addOnFailureListener(e ->
-                                    callback.onError("Failed to delete event: " + e.getMessage()));
-                    return;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
-            }
-        });
+        findEventSnapshotByName(eventName, callback, eventSnapshot ->
+                eventSnapshot.getRef().removeValue()
+                        .addOnSuccessListener(unused ->
+                                callback.onSuccess("Event deleted successfully"))
+                        .addOnFailureListener(e ->
+                                callback.onError("Failed to delete event: " + e.getMessage()))
+        );
     }
 
     public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
-        if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onError("Event name is empty");
-            return;
-        }
-
         if (updatedEvent == null) {
             callback.onError("Updated event is null");
             return;
         }
 
-        Query query = eventsRef.orderByChild("name").equalTo(eventName);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onError("No event found with that name");
-                    return;
-                }
-
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Event existingEvent = eventSnapshot.getValue(Event.class);
-
-                    if (existingEvent == null) {
-                        callback.onError("Failed to read event data");
-                        return;
-                    }
-
-                    updatedEvent.setId(existingEvent.getId());
-
-                    if (!updatedEvent.isAvailable()) {
-                        updatedEvent.setAvailable(existingEvent.isAvailable());
-                    }
-
-                    eventSnapshot.getRef().setValue(updatedEvent)
-                            .addOnSuccessListener(unused ->
-                                    callback.onSuccess("Event updated successfully"))
-                            .addOnFailureListener(e ->
-                                    callback.onError("Failed to update event: " + e.getMessage()));
-                    return;
-                }
+        findEventSnapshotByName(eventName, callback, eventSnapshot -> {
+            Event existingEvent = eventSnapshot.getValue(Event.class);
+            if (existingEvent == null) {
+                callback.onError("Failed to read event data");
+                return;
             }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
-            }
+            updatedEvent.setId(existingEvent.getId());
+            eventSnapshot.getRef().setValue(updatedEvent)
+                    .addOnSuccessListener(unused ->
+                            callback.onSuccess("Event updated successfully"))
+                    .addOnFailureListener(e ->
+                            callback.onError("Failed to update event: " + e.getMessage()));
         });
     }
 
@@ -146,66 +125,43 @@ public class EventCatalog {
                                   Boolean newAvailability,
                                   EventActionCallback callback) {
 
-        if (currentEventName == null || currentEventName.trim().isEmpty()) {
-            callback.onError("Event name is empty");
-            return;
-        }
+        findEventSnapshotByName(currentEventName, callback, eventSnapshot -> {
+            Map<String, Object> updates = new HashMap<>();
 
-        Query query = eventsRef.orderByChild("name").equalTo(currentEventName);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onError("No event found with that name");
-                    return;
-                }
-
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Map<String, Object> updates = new HashMap<>();
-
-                    if (newName != null && !newName.trim().isEmpty()) {
-                        updates.put("name", newName);
-                    }
-
-                    if (newLocation != null && !newLocation.trim().isEmpty()) {
-                        updates.put("location", newLocation);
-                    }
-
-                    if (newDescription != null && !newDescription.trim().isEmpty()) {
-                        updates.put("description", newDescription);
-                    }
-
-                    if (newDate != null) {
-                        updates.put("date", newDate);
-                    }
-
-                    if (newCategory != null) {
-                        updates.put("eventCategory", newCategory);
-                    }
-
-                    if (newAvailability != null) {
-                        updates.put("isAvailable", newAvailability);
-                    }
-
-                    if (updates.isEmpty()) {
-                        callback.onError("No fields provided to update");
-                        return;
-                    }
-
-                    eventSnapshot.getRef().updateChildren(updates)
-                            .addOnSuccessListener(unused ->
-                                    callback.onSuccess("Event updated successfully"))
-                            .addOnFailureListener(e ->
-                                    callback.onError("Failed to update event: " + e.getMessage()));
-                    return;
-                }
+            if (newName != null && !newName.trim().isEmpty()) {
+                updates.put("name", newName);
             }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+            if (newLocation != null && !newLocation.trim().isEmpty()) {
+                updates.put("location", newLocation);
             }
+
+            if (newDescription != null && !newDescription.trim().isEmpty()) {
+                updates.put("description", newDescription);
+            }
+
+            if (newDate != null) {
+                updates.put("date", newDate);
+            }
+
+            if (newCategory != null) {
+                updates.put("eventCategory", newCategory);
+            }
+
+            if (newAvailability != null) {
+                updates.put("isAvailable", newAvailability);
+            }
+
+            if (updates.isEmpty()) {
+                callback.onError("No fields provided to update");
+                return;
+            }
+
+            eventSnapshot.getRef().updateChildren(updates)
+                    .addOnSuccessListener(unused ->
+                            callback.onSuccess("Event updated successfully"))
+                    .addOnFailureListener(e ->
+                            callback.onError("Failed to update event: " + e.getMessage()));
         });
     }
 }

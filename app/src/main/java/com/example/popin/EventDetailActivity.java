@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -45,23 +46,28 @@ public class EventDetailActivity extends AppCompatActivity {
         String location = getIntent().getStringExtra("location");
         String details = getIntent().getStringExtra("details");
 
-        tvDetailTitle.setText(title);
-        tvDetailDateTime.setText(dateTime);
-        tvDetailLocation.setText(location);
-        tvDetailDetails.setText(details);
+        tvDetailTitle.setText(orFallback(title, "Untitled event"));
+        tvDetailDateTime.setText(orFallback(dateTime, "Date unavailable"));
+        tvDetailLocation.setText(orFallback(location, "Location unavailable"));
+        tvDetailDetails.setText(orFallback(details, "No details provided"));
 
-        btnBuyTicket.setOnClickListener(v -> buyTicket(title, dateTime, location));
+        btnBuyTicket.setOnClickListener(v -> buyTicket(title));
         btnBack.setOnClickListener(v -> finish());
     }
 
-    private void buyTicket(String title, String dateTime, String location) {
+    private void buyTicket(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            Toast.makeText(this, "Event title is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         UserInSession session = UserInSession.getInstance();
         if (session == null || session.getUser() == null) {
             Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String userKey = sanitizeKey(session.getUser().getEmail());
+        String userKey = FirebaseUserKey.sanitize(session.getUser().getEmail());
         DatabaseReference userTicketsRef = FirebaseDatabase.getInstance()
                 .getReference("User tickets")
                 .child(userKey);
@@ -71,7 +77,7 @@ public class EventDetailActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
                     String existingTicketTitle = ticketSnapshot.child("title").getValue(String.class);
-                    if (safeEquals(existingTicketTitle, title)) {
+                    if (Objects.equals(existingTicketTitle, title)) {
                         Toast.makeText(EventDetailActivity.this, "You already have this ticket.", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -94,23 +100,10 @@ public class EventDetailActivity extends AppCompatActivity {
         });
     }
 
-    private boolean safeEquals(String left, String right) {
-        if (left == null) {
-            return right == null;
+    private String orFallback(String value, String fallback) {
+        if (value == null || value.trim().isEmpty()) {
+            return fallback;
         }
-        return left.equals(right);
-    }
-
-    private String sanitizeKey(String raw) {
-        if (raw == null || raw.trim().isEmpty()) {
-            return "unknown_user";
-        }
-        return raw
-                .replace(".", "_")
-                .replace("#", "_")
-                .replace("$", "_")
-                .replace("[", "_")
-                .replace("]", "_")
-                .replace("/", "_");
+        return value;
     }
 }
