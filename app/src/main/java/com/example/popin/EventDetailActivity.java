@@ -60,6 +60,7 @@ public class EventDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Event title is missing.", Toast.LENGTH_SHORT).show();
             return;
         }
+        String cleanTitle = title.trim();
 
         UserInSession session = UserInSession.getInstance();
         if (session == null || session.getUser() == null) {
@@ -77,14 +78,14 @@ public class EventDetailActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
                     String existingTicketTitle = ticketSnapshot.child("title").getValue(String.class);
-                    if (Objects.equals(existingTicketTitle, title)) {
+                    if (Objects.equals(existingTicketTitle, cleanTitle)) {
                         Toast.makeText(EventDetailActivity.this, "You already have this ticket.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
 
                 Map<String, Object> ticket = new HashMap<>();
-                ticket.put("title", title);
+                ticket.put("title", cleanTitle);
                 userTicketsRef.push()
                         .setValue(ticket)
                         .addOnSuccessListener(unused ->

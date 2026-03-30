@@ -139,6 +139,10 @@ public class User {
     }
 
     public void login(LoginCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
         if (!validateCredentials(callback::onError)) {
             return;
         }
@@ -179,6 +183,10 @@ public class User {
     }
 
     public void register(String name, String address, RegisterCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
         createAccount(name, address, false,
                 "User account created successfully",
                 "Failed to create account: ",
@@ -186,6 +194,10 @@ public class User {
     }
 
     public void createAdminAccount(String name, String address, RegisterCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
         createAccount(name, address, true,
                 "Admin account created successfully",
                 "Failed to create admin account: ",

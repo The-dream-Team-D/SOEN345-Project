@@ -38,6 +38,10 @@ public class EventCatalog {
     private void findEventSnapshotByName(String eventName,
                                          EventActionCallback callback,
                                          Consumer<DataSnapshot> onFound) {
+        if (callback == null || onFound == null) {
+            return;
+        }
+
         if (eventName == null || eventName.trim().isEmpty()) {
             callback.onError("Event name is empty");
             return;
@@ -56,6 +60,8 @@ public class EventCatalog {
                     onFound.accept(eventSnapshot);
                     return;
                 }
+
+                callback.onError("No event found with that name");
             }
 
             @Override
@@ -66,6 +72,10 @@ public class EventCatalog {
     }
 
     public void addEvent(Event event, EventActionCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
         if (event == null) {
             callback.onError("Event is null");
             return;
@@ -85,6 +95,10 @@ public class EventCatalog {
     }
 
     public void deleteEventByName(String eventName, EventActionCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
         findEventSnapshotByName(eventName, callback, eventSnapshot ->
                 eventSnapshot.getRef().removeValue()
                         .addOnSuccessListener(unused ->
@@ -95,6 +109,10 @@ public class EventCatalog {
     }
 
     public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
         if (updatedEvent == null) {
             callback.onError("Updated event is null");
             return;
@@ -124,6 +142,9 @@ public class EventCatalog {
                                   EventCategory newCategory,
                                   Boolean newAvailability,
                                   EventActionCallback callback) {
+        if (callback == null) {
+            return;
+        }
 
         findEventSnapshotByName(currentEventName, callback, eventSnapshot -> {
             Map<String, Object> updates = new HashMap<>();

@@ -89,9 +89,10 @@ public class MyTicketsActivity extends AppCompatActivity {
                 ticketList.clear();
 
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
+                    String ticketId = ticketSnapshot.getKey();
                     String title = ticketSnapshot.child("title").getValue(String.class);
-                    if (title != null && !title.trim().isEmpty()) {
-                        TicketItem ticket = new TicketItem(ticketSnapshot.getKey(), title, "", "");
+                    if (ticketId != null && title != null && !title.trim().isEmpty()) {
+                        TicketItem ticket = new TicketItem(ticketId, title.trim(), "", "");
                         ticketList.add(ticket);
                     }
                 }
