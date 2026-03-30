@@ -112,10 +112,12 @@ public class User {
     }
 
     private DataSnapshot firstChild(DataSnapshot snapshot) {
+        DataSnapshot firstChild = null;
         for (DataSnapshot child : snapshot.getChildren()) {
-            return child;
+            firstChild = child;
+            break;
         }
-        return null;
+        return firstChild;
     }
 
     private void assignProfile(User user, String name, String address, boolean admin) {

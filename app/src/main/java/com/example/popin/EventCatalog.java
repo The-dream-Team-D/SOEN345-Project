@@ -58,7 +58,7 @@ public class EventCatalog {
 
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
                     onFound.accept(eventSnapshot);
-                    return;
+                    break;
                 }
 
                 callback.onError("No event found with that name");
