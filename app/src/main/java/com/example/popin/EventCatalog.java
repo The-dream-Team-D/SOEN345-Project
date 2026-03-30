@@ -1,22 +1,20 @@
-import java.sql.Date;
+package com.example.popin;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
+import java.util.Map;
 
-import com.example.popin.Event;
-
-
-//SHOULD BE MODIFIED TO BE A SINGLETON CLASS
 public class EventCatalog {
-    private HashMap<Integer, org.w3c.dom.events.Event> events, concerts, sports, theaters, comedies, festivals, musics;
     private static EventCatalog instance;
+    private final DatabaseReference eventsRef;
 
     private EventCatalog() {
-        this.events = new HashMap<>();
-        this.concerts = new HashMap<>();
-        this.sports = new HashMap<>();
-        this.theaters = new HashMap<>();
-        this.comedies = new HashMap<>();
-        this.festivals = new HashMap<>();
-        this.musics = new HashMap<>();
+        eventsRef = FirebaseDatabase.getInstance().getReference("Events");
     }
 
     public static EventCatalog getInstance() {
@@ -26,370 +24,184 @@ public class EventCatalog {
         return instance;
     }
 
-    public void addEvent(String name, String location, String description, Date date, EventCategory eventCategory) {
-        Event e = new Event(name, location, description, date, eventCategory);
-        events.put(e.getId(), e);
-
-        switch (eventCategory) {
-            case CONCERT:
-                concerts.put(e.getId(), e);
-                break;
-            case SPORTS:
-                sports.put(e.getId(), e);
-                break;
-            case THEATER:
-                theaters.put(e.getId(), e);
-                break;
-            case COMEDY:
-                comedies.put(e.getId(), e);
-                break;
-            case FESTIVAL:
-                festivals.put(e.getId(), e);
-                break;
-            case MUSIC:
-                musics.put(e.getId(), e);
-                break;
-        
-            default:
-                break;
-        }
+    public interface EventActionCallback {
+        void onSuccess(String message);
+        void onError(String message);
     }
 
-    public void removeEvent(int id) {
-        events.remove(id);
-    }
-
-    public HashMap<Integer, Event> getEvents() {
-        return events;
-    }
-
-    public Event getEventById(int id){
-        return events.get(id);
-    }
-
-    public HashMap<Integer, Event> getEventsByCategory(EventCatalog eventCategory){
-        switch (eventCategory) {
-            case CONCERT:
-                return concerts;
-                break;
-            case SPORTS:
-                return sports;
-                break;
-            case THEATER:
-                return theaters;
-                break;
-            case COMEDY:
-                return comedies;
-                break;
-            case FESTIVAL:
-                return festivals;
-                break;
-            case MUSIC:
-                return musics;
-                break;
-        
-            default:
-                return null;
-                break;
-        }
-    }
-
-    public boolean makeUnavailableById(int id){
-        Event e = events.get(id);
-
-        if(e){
-            e.setIsAvailable(false);
-
-            //update the event in the category list as well
-            events.remove(id);
-            events.put(id, e);
-
-            EventCategory eventCategory = e.getEventCategory();
-            switch (eventCategory) {
-                case CONCERT:
-                    concerts.remove(id);
-                    concerts.put(id, e);
-                    break;
-                case SPORTS:
-                    sports.remove(id);
-                    sports.put(id, e);
-                    break;
-                case THEATER:
-                    theaters.remove(id);
-                    theaters.put(id, e);
-                    break;
-                case COMEDY:
-                    comedies.remove(id);
-                    comedies.put(id, e);
-                    break;
-                case FESTIVAL:
-                    festivals.remove(id);
-                    festivals.put(id, e);
-                    break;
-                case MUSIC:
-                    musics.remove(id);
-                    musics.put(id, e);
-                    break;
-            
-                default:
-                    break;
-            }
-            return 0;
+    public void addEvent(Event event, EventActionCallback callback) {
+        if (event == null) {
+            callback.onError("Event is null");
+            return;
         }
 
-        return 1; //error code returned if the event could not be found
-    }
-
-    public boolean changeDescById(int id, String desc){
-        Event e = events.get(id);
-
-        if(e){
-            e.setDescription(desc);
-            //update the event in the category list as well
-            events.remove(id);
-            events.put(id, e);
-
-            EventCategory eventCategory = e.getEventCategory();
-            switch (eventCategory) {
-                case CONCERT:
-                    concerts.remove(id);
-                    concerts.put(id, e);
-                    break;
-                case SPORTS:
-                    sports.remove(id);
-                    sports.put(id, e);
-                    break;
-                case THEATER:
-                    theaters.remove(id);
-                    theaters.put(id, e);
-                    break;
-                case COMEDY:
-                    comedies.remove(id);
-                    comedies.put(id, e);
-                    break;
-                case FESTIVAL:
-                    festivals.remove(id);
-                    festivals.put(id, e);
-                    break;
-                case MUSIC:
-                    musics.remove(id);
-                    musics.put(id, e);
-                    break;
-            
-                default:
-                    break;
-            }
-            return 0;
+        if (event.getName() == null || event.getName().trim().isEmpty()) {
+            callback.onError("Event name is empty");
+            return;
         }
 
-        return 1; //error code returned if the event could not be found
+        eventsRef.child(String.valueOf(event.getId()))
+                .setValue(event)
+                .addOnSuccessListener(unused ->
+                        callback.onSuccess("Event added successfully"))
+                .addOnFailureListener(e ->
+                        callback.onError("Failed to add event: " + e.getMessage()));
     }
 
-    public boolean changeNameById(int id, String name){
-
-        Event e = events.get(id);
-
-        if(e){
-            e.setName(name);
-            //update the event in the category list as well
-            events.remove(id);
-            events.put(id, e);
-
-            EventCategory eventCategory = e.getEventCategory();
-            switch (eventCategory) {
-                case CONCERT:
-                    concerts.remove(id);
-                    concerts.put(id, e);
-                    break;
-                case SPORTS:
-                    sports.remove(id);
-                    sports.put(id, e);
-                    break;
-                case THEATER:
-                    theaters.remove(id);
-                    theaters.put(id, e);
-                    break;
-                case COMEDY:
-                    comedies.remove(id);
-                    comedies.put(id, e);
-                    break;
-                case FESTIVAL:
-                    festivals.remove(id);
-                    festivals.put(id, e);
-                    break;
-                case MUSIC:
-                    musics.remove(id);
-                    musics.put(id, e);
-                    break;
-            
-                default:
-                    break;
-            }
-            return 0;
+    public void deleteEventByName(String eventName, EventActionCallback callback) {
+        if (eventName == null || eventName.trim().isEmpty()) {
+            callback.onError("Event name is empty");
+            return;
         }
 
-        return 1; //error code returned if the event could not be found
-    }
+        Query query = eventsRef.orderByChild("name").equalTo(eventName);
 
-    public boolean changeDateById(int id, Date date){
-        Event e = events.get(id);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    callback.onError("No event found with that name");
+                    return;
+                }
 
-        if(e){
-            e.setDate(date);
-            //update the event in the category list as well
-            events.remove(id);
-            events.put(id, e);
-
-            EventCategory eventCategory = e.getEventCategory();
-            switch (eventCategory) {
-                case CONCERT:
-                    concerts.remove(id);
-                    concerts.put(id, e);
-                    break;
-                case SPORTS:
-                    sports.remove(id);
-                    sports.put(id, e);
-                    break;
-                case THEATER:
-                    theaters.remove(id);
-                    theaters.put(id, e);
-                    break;
-                case COMEDY:
-                    comedies.remove(id);
-                    comedies.put(id, e);
-                    break;
-                case FESTIVAL:
-                    festivals.remove(id);
-                    festivals.put(id, e);
-                    break;
-                case MUSIC:
-                    musics.remove(id);
-                    musics.put(id, e);
-                    break;
-            
-                default:
-                    break;
-            }
-            return 0;
-        }
-
-        return 1; //error code returned if the event could not be found
-    }
-
-    public boolean changeLocationById(int id, String location){
-        Event e = events.get(id);
-
-        if(e){
-            e.setLocation(location);
-            //update the event in the category list as well
-            events.remove(id);
-            events.put(id, e);
-
-            EventCategory eventCategory = e.getEventCategory();
-            switch (eventCategory) {
-                case CONCERT:
-                    concerts.remove(id);
-                    concerts.put(id, e);
-                    break;
-                case SPORTS:
-                    sports.remove(id);
-                    sports.put(id, e);
-                    break;
-                case THEATER:
-                    theaters.remove(id);
-                    theaters.put(id, e);
-                    break;
-                case COMEDY:
-                    comedies.remove(id);
-                    comedies.put(id, e);
-                    break;
-                case FESTIVAL:
-                    festivals.remove(id);
-                    festivals.put(id, e);
-                    break;
-                case MUSIC:
-                    musics.remove(id);
-                    musics.put(id, e);
-                    break;
-            
-                default:
-                    break;
-            }
-            return 0;
-        }
-
-        return 1; //error code returned if the event could not be found
-    }
-
-    public boolean changeCategoryById(int id, EventCategory eventCategory){
-        Event e = events.get(id);
-
-        if(e){
-            e.setEventCategory(eventCategory);
-            //update the event in the category list as well
-            events.remove(id);
-            events.put(id, e);
-
-            EventCategory oldEventCategory = e.getEventCategory();
-            switch (oldEventCategory) {
-                case CONCERT:
-                    concerts.remove(id);
-                    break;
-                case SPORTS:
-                    sports.remove(id);
-                    break;
-                case THEATER:
-                    theaters.remove(id);
-                    break;
-                case COMEDY:
-                    comedies.remove(id);
-                    break;
-                case FESTIVAL:
-                    festivals.remove(id);
-                    break;
-                case MUSIC:
-                    musics.remove(id);
-                    break;
-            
-                default:
-                    break;
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    eventSnapshot.getRef().removeValue()
+                            .addOnSuccessListener(unused ->
+                                    callback.onSuccess("Event deleted successfully"))
+                            .addOnFailureListener(e ->
+                                    callback.onError("Failed to delete event: " + e.getMessage()));
+                    return;
+                }
             }
 
-            switch (eventCategory) {
-                case CONCERT:
-                    concerts.put(id, e);
-                    break;
-                case SPORTS:
-                    sports.put(id, e);
-                    break;
-                case THEATER:
-                    theaters.put(id, e);
-                    break;
-                case COMEDY:
-                    comedies.put(id, e);
-                    break;
-                case FESTIVAL:
-                    festivals.put(id, e);
-                    break;
-                case MUSIC:
-                    musics.put(id, e);
-                    break;
-            
-                default:
-                    break;
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
             }
-            return 0;
+        });
+    }
+
+    public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
+        if (eventName == null || eventName.trim().isEmpty()) {
+            callback.onError("Event name is empty");
+            return;
         }
 
-        return 1; //error code returned if the event could not be found
+        if (updatedEvent == null) {
+            callback.onError("Updated event is null");
+            return;
+        }
+
+        Query query = eventsRef.orderByChild("name").equalTo(eventName);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    callback.onError("No event found with that name");
+                    return;
+                }
+
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    Event existingEvent = eventSnapshot.getValue(Event.class);
+
+                    if (existingEvent == null) {
+                        callback.onError("Failed to read event data");
+                        return;
+                    }
+
+                    updatedEvent.setId(existingEvent.getId());
+
+                    if (!updatedEvent.isAvailable()) {
+                        updatedEvent.setAvailable(existingEvent.isAvailable());
+                    }
+
+                    eventSnapshot.getRef().setValue(updatedEvent)
+                            .addOnSuccessListener(unused ->
+                                    callback.onSuccess("Event updated successfully"))
+                            .addOnFailureListener(e ->
+                                    callback.onError("Failed to update event: " + e.getMessage()));
+                    return;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
+            }
+        });
+    }
+
+    public void updateEventByName(String currentEventName,
+                                  String newName,
+                                  String newLocation,
+                                  String newDescription,
+                                  java.util.Date newDate,
+                                  EventCategory newCategory,
+                                  Boolean newAvailability,
+                                  EventActionCallback callback) {
+
+        if (currentEventName == null || currentEventName.trim().isEmpty()) {
+            callback.onError("Event name is empty");
+            return;
+        }
+
+        Query query = eventsRef.orderByChild("name").equalTo(currentEventName);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    callback.onError("No event found with that name");
+                    return;
+                }
+
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    Map<String, Object> updates = new HashMap<>();
+
+                    if (newName != null && !newName.trim().isEmpty()) {
+                        updates.put("name", newName);
+                    }
+
+                    if (newLocation != null && !newLocation.trim().isEmpty()) {
+                        updates.put("location", newLocation);
+                    }
+
+                    if (newDescription != null && !newDescription.trim().isEmpty()) {
+                        updates.put("description", newDescription);
+                    }
+
+                    if (newDate != null) {
+                        updates.put("date", newDate);
+                    }
+
+                    if (newCategory != null) {
+                        updates.put("eventCategory", newCategory);
+                    }
+
+                    if (newAvailability != null) {
+                        updates.put("isAvailable", newAvailability);
+                    }
+
+                    if (updates.isEmpty()) {
+                        callback.onError("No fields provided to update");
+                        return;
+                    }
+
+                    eventSnapshot.getRef().updateChildren(updates)
+                            .addOnSuccessListener(unused ->
+                                    callback.onSuccess("Event updated successfully"))
+                            .addOnFailureListener(e ->
+                                    callback.onError("Failed to update event: " + e.getMessage()));
+                    return;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
+            }
+        });
     }
 }
 
-public enum EventCategory{
-    CONCERT,
-    SPORTS,
-    THEATER,
-    COMEDY,
-    FESTIVAL,
-    MUSIC
-}

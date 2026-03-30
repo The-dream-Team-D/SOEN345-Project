@@ -1,3 +1,4 @@
+package com.example.popin;
 import java.util.HashMap;
 
 public class ReservationCatalog{

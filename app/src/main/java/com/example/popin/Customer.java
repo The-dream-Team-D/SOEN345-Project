@@ -1,15 +1,13 @@
-import com.example.popin.User;
-import com.example.popin.UserType;
+package com.example.popin;
 import java.util.HashMap;
 
 public class Customer extends User{
     private String name, email, password, phoneNumber;
-    private UserType userType;
     private HashMap<Integer, Reservation> reservations;
 
 
-    public Customer(String name, String email, String password, String phoneNumber) {
-        super(name, email, password, UserType.CUSTOMER);
+    public Customer(String email, String password, String phoneNumber) {
+        super(email, password);
 
         this.phoneNumber = phoneNumber;
         this.reservations = new HashMap<>();

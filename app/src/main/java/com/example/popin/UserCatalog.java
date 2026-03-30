@@ -1,3 +1,4 @@
+package com.example.popin;
 import java.util.HashMap;
 
 public class UserCatalog {
@@ -11,14 +12,14 @@ public class UserCatalog {
         this.admins = new HashMap<>();
     }
 
-    public void addCustomer(String name, String email, String password, String phoneNumber) {
-        Customer customer = new Customer(name, email, password, phoneNumber);
+    public void addCustomer(String email, String password, String phoneNumber) {
+        Customer customer = new Customer(email, password, phoneNumber);
         customers.put(email, customer);
         users.put(email, customer);
     }
 
-    public void addAdmin(String name, String email, String password) {
-        Admin admin = new Admin(name, email, password);
+    public void addAdmin(String email, String password, String id) {
+        Admin admin = new Admin(email, password, id);
         admins.put(email, admin);
         users.put(email, admin);
     }

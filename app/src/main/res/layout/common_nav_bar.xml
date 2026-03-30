@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/commonNavBar"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="@color/white"
+    android:elevation="8dp">
+
+
+    <LinearLayout
+        android:id="@+id/nav_explore_container"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+
+        android:background="?attr/selectableItemBackground"
+
+        android:padding="4dp"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/nav_tickets_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/nav_explore"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/navBarComponent1ContentDescription"
+            android:src="@drawable/explore_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/navBarComponent1ViewText"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nav_tickets_container"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@id/nav_explore_container"
+        app:layout_constraintEnd_toStartOf="@id/nav_profile_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/nav_tickets"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/navBarComponent2ContentDescription"
+            android:src="@drawable/ticket_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/navBarComponent2ViewText"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nav_profile_container"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@id/nav_tickets_container"
+        app:layout_constraintEnd_toStartOf="@+id/nav_adminDashboard_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/nav_profile"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/navBarComponent3ContentDescription"
+            android:src="@drawable/account_icon_nav"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/navBarComponent3ViewText"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nav_adminDashboard_container"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@+id/nav_profile_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/nav_admin_dashboard"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/navBarComponent4ContentDescription"
+            android:src="@drawable/admin_icon"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/navBarComponent4ViewText"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

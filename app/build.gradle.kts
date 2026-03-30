@@ -5,17 +5,12 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 plugins {
     alias(libs.plugins.android.application)
     id("jacoco")
-}
-
-configure<JacocoPluginExtension> {
-    toolVersion = "0.8.11"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
     namespace = "com.example.popin"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.popin"
@@ -28,7 +23,6 @@ android {
     }
 
     buildTypes {
-
         getByName("debug") {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = false   //This android E2E tests are not needed for the checks rn
@@ -44,6 +38,15 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        unitTests.all {
+            it.extensions.configure(org.gradle.testing.jacoco.plugins.JacocoTaskExtension::class) {
+                isIncludeNoLocationClasses = true
+                excludes = listOf("jdk.internal.*")
+            }
+        }
     }
 }
 
@@ -139,8 +142,44 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.core:core-splashscreen:1.2.0")
+    implementation(libs.firebase.database)
+    implementation(libs.cardview)
     testImplementation(libs.junit)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.11.0")
+
+    testImplementation("org.robolectric:robolectric:4.12.2")
+    testImplementation("androidx.test:core:1.6.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+}
+
+tasks.register<JacocoReport>("jacocoDebugUnitTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*"
+    )
+
+    classDirectories.setFrom(
+        fileTree(layout.buildDirectory.dir("intermediates/javac/debug/compileDebugJavaWithJavac/classes")) {
+            exclude(excludes)
+        }
+    )
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(
+        files(
+            layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        )
+    )
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }

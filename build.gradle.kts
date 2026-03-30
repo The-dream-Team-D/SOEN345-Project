@@ -4,6 +4,7 @@ import org.gradle.kotlin.dsl.property
 plugins {
     alias(libs.plugins.android.application) apply false
     id("org.sonarqube") version "4.4.1.3373"
+    alias(libs.plugins.google.gms.google.services) apply false
 }
 
 sonar {

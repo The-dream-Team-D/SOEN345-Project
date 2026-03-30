@@ -1,6 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.PopIn" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <!-- Tertiary -->
+        <item name="colorTertiary">@color/action</item>
+        <item name="colorOnTertiary">@android:color/white</item>
+
+        <item name="colorOnBackground">@android:color/black</item>
+        <item name="android:textColorPrimary">?attr/colorOnBackground</item>
+        <item name="android:windowBackground">@color/bg</item>
     </style>
 
     <style name="Theme.PopIn.Starting" parent="Theme.SplashScreen">
@@ -8,6 +24,5 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.PopIn</item>
     </style>
-
 
 </resources>
