@@ -7,8 +7,11 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserClassTests {
@@ -22,12 +25,8 @@ public class UserClassTests {
     private DataSnapshot mockSnapshot;
     @Mock
     private DataSnapshot mockUserSnapshot;
-    @Mock
-    private DataSnapshot mockPasswordSnapshot;
-    @Mock
-    private DataSnapshot mockNameSnapshot;
-    @Mock
-    private DataSnapshot mockAddressSnapshot;
+    private DataSnapshot mockIsAdminSnapshot;
+
     private MockedStatic<FirebaseDatabase> mockedFirebase;
 
     // Simulate the one existing user in the DB
@@ -36,8 +35,19 @@ public class UserClassTests {
     private static final String name_in_DB     = "John Doe";
     private static final String address_in_DB = "123 Main St";
 
+    @Captor
+    ArgumentCaptor<ValueEventListener> listenerCaptor;
+
+    @Before
+    public void clearSession() {
+        UserInSession.clear();
+    }
+
     @Before
     public void setUp() {
+
+        MockitoAnnotations.openMocks(this); // make sure this is here
+
         mockedFirebase = mockStatic(FirebaseDatabase.class);
         mockedFirebase.when(FirebaseDatabase::getInstance).thenReturn(mockFirebaseDatabase);
 
@@ -46,18 +56,20 @@ public class UserClassTests {
         when(mockQuery.equalTo(anyString())).thenReturn(mockQuery);
 
         DataSnapshot mockPasswordSnapshot = mock(DataSnapshot.class);
-        DataSnapshot mockNameSnapshot = mock(DataSnapshot.class);
-        DataSnapshot mockAddressSnapshot = mock(DataSnapshot.class);
+        DataSnapshot mockNameSnapshot     = mock(DataSnapshot.class);
+        DataSnapshot mockAddressSnapshot  = mock(DataSnapshot.class);
+        mockIsAdminSnapshot = mock(DataSnapshot.class);
 
         when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
         when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
         when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
+        when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
 
+        when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
+        when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
+        when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
+        when(mockIsAdminSnapshot.getValue(Boolean.class)).thenReturn(false);
 
-        // Wire up the single user snapshot
-        when(mockUserSnapshot.child("password").getValue(String.class)).thenReturn(password_in_DB);
-        when(mockUserSnapshot.child("name").getValue(String.class)).thenReturn(name_in_DB);
-        when(mockUserSnapshot.child("address").getValue(String.class)).thenReturn(address_in_DB);
     }
 
 
@@ -87,6 +99,7 @@ public class UserClassTests {
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
 
+    // --- Core Logic Tests (Firebase) ---
 
     @Test
     public void login_emptyEmail_returnsError() {
@@ -94,7 +107,7 @@ public class UserClassTests {
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
-                assertEquals("Email/Phone input is Empty", message);
+                assertEquals("Email input is empty", message);
             }
         });
     }
@@ -105,7 +118,7 @@ public class UserClassTests {
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
-                assertEquals("Email/Phone input is Empty", message);
+                assertEquals("Email input is empty", message);
             }
         });
     }
@@ -116,7 +129,7 @@ public class UserClassTests {
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
-                assertEquals("Password input is Empty", message);
+                assertEquals("Password input is empty", message);
             }
         });
     }
@@ -129,7 +142,7 @@ public class UserClassTests {
                 fail("Expected error, got success");
             }
             @Override public void onError(String message) {
-                assertEquals("Password input is Empty", message);
+                assertEquals("Password input is empty", message);
             }
         });
     }
@@ -139,17 +152,53 @@ public class UserClassTests {
         setupSnapshotExists();
         User user = new User(email_in_DB, password_in_DB);
 
+        when(mockSnapshot.exists()).thenReturn(true);
+        when(mockSnapshot.getChildren()).thenReturn(List.of(mockUserSnapshot));
+
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) {
+                UserInSession.create(u);
                 assertNotNull(u);
-                assertEquals(name_in_DB,    u.getName());
+                assertEquals(name_in_DB, u.getName());
                 assertEquals(address_in_DB, u.getAddress());
-                assertEquals(email_in_DB,   u.getEmail());
+                assertEquals(email_in_DB, u.getEmail());
+                assertFalse(u instanceof Admin);
+                assertFalse(u.getIsAdmin());
+                assertNotNull(UserInSession.getInstance().getUser());
             }
             @Override public void onError(String message) {
                 fail("Expected success, got error: " + message);
             }
         });
+
+        verify(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
+    }
+
+    @Test
+    public void login_whenFirebaseMarksAdmin_returnsAdminInstance() {
+        when(mockIsAdminSnapshot.getValue(Boolean.class)).thenReturn(true);
+        when(mockUserSnapshot.getKey()).thenReturn("admin-user-id");
+
+        setupSnapshotExists();
+        User user = new User(email_in_DB, password_in_DB);
+
+        user.login(new User.LoginCallback() {
+            @Override
+            public void onSuccess(User u) {
+                assertTrue(u instanceof Admin);
+                assertEquals("admin-user-id", ((Admin) u).getId());
+                assertTrue(u.getIsAdmin());
+                assertEquals(name_in_DB, u.getName());
+                assertEquals(address_in_DB, u.getAddress());
+            }
+
+            @Override
+            public void onError(String message) {
+                fail("Expected success: " + message);
+            }
+        });
+
+        verify(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
 
     @Test
@@ -160,6 +209,7 @@ public class UserClassTests {
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
+                assertNull(UserInSession.getInstance());
                 assertEquals("Incorrect password", message);
             }
         });
@@ -173,13 +223,13 @@ public class UserClassTests {
         user.login(new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
-                assertEquals("No user with that email/phone number", message);
+                assertEquals("No user with that email", message);
             }
         });
     }
 
     @Test
-    public void login_databaseCancelled_logsError() {
+    public void login_databaseCancelled_callsOnError() {
         DatabaseError mockError = mock(DatabaseError.class);
         when(mockError.getMessage()).thenReturn("Connection lost");
 
@@ -191,13 +241,40 @@ public class UserClassTests {
 
         User user = new User(email_in_DB, password_in_DB);
 
+        final String[] err = new String[1];
         user.login(new User.LoginCallback() {
-            @Override public void onSuccess(User u) { fail("Should not succeed on cancel"); }
-            @Override public void onError(String msg)  { fail("onError should not be called on cancel"); }
+            @Override public void onSuccess(User u) {
+                fail("Should not succeed on cancel");
+            }
+
+            @Override public void onError(String msg) {
+                err[0] = msg;
+            }
         });
 
-        verify(mockError).getMessage();
+        assertEquals("Database error: Connection lost", err[0]);
     }
 
+    // --- Simple Data Tests (Getters/Setters) ---
 
+    @Test
+    public void testSettersAndGetters() {
+        User user = new User("test@example.com", "pass123");
+        
+        user.setName("John Smith");
+        user.setAddress("456 Oak St");
+        user.setPassword("newPass456");
+
+        assertEquals("John Smith", user.getName());
+        assertEquals("456 Oak St", user.getAddress());
+        assertEquals("newPass456", user.getPassword());
+        assertEquals("test@example.com", user.getEmail());
+    }
+
+    @Test
+    public void testEmptyConstructor() {
+        User user = new User();
+        assertNull(user.getEmail());
+        assertNull(user.getPassword());
+    }
 }
