@@ -136,8 +136,8 @@ public class User {
         });
     }
 
-    public void register(String name, String address, RegisterCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(usersTableRef);
+    private void createAccount(String name, String address, boolean isAdmin, RegisterCallback callback) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
         if (this.email == null || this.email.trim().isEmpty()) {
             callback.onError("Email input is empty");
@@ -149,7 +149,7 @@ public class User {
             return;
         }
 
-        Query query = usersRef.orderByChild(emailFieldInTable).equalTo(this.email);
+        Query query = usersRef.orderByChild("email").equalTo(this.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -161,6 +161,7 @@ public class User {
 
                 User.this.setName(name);
                 User.this.setAddress(address);
+                User.this.setIsAdmin(isAdmin);
 
                 String userId = usersRef.push().getKey();
                 if (userId == null) {
@@ -171,63 +172,23 @@ public class User {
                 usersRef.child(userId)
                         .setValue(User.this)
                         .addOnSuccessListener(unused ->
-                                callback.onSuccess("User account created successfully"))
+                                callback.onSuccess(isAdmin ? "Admin account created successfully" : "User account created successfully"))
                         .addOnFailureListener(e ->
-                                callback.onError("Failed to create account: " + e.getMessage()));
+                                callback.onError(isAdmin ? "Failed to create admin account: " + e.getMessage() : "Failed to create account: " + e.getMessage()));
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError(DBErrorTag + error.getMessage());
+                callback.onError("Database error: " + error.getMessage());
             }
         });
     }
 
+    public void register(String name, String address, RegisterCallback callback) {
+        createAccount(name, address, false, callback);
+    }
+
     public void createAdminAccount(String name, String address, RegisterCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(usersTableRef);
-
-        if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email input is empty");
-            return;
-        }
-
-        if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is empty");
-            return;
-        }
-
-        Query query = usersRef.orderByChild(emailFieldInTable).equalTo(this.email);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    callback.onError("An account with this email already exists");
-                    return;
-                }
-
-                User.this.setName(name);
-                User.this.setAddress(address);
-                User.this.setIsAdmin(true);
-
-                String userId = usersRef.push().getKey();
-                if (userId == null) {
-                    callback.onError("Failed to generate user id");
-                    return;
-                }
-
-                usersRef.child(userId)
-                        .setValue(User.this)
-                        .addOnSuccessListener(unused ->
-                                callback.onSuccess("Admin account created successfully"))
-                        .addOnFailureListener(e ->
-                                callback.onError("Failed to create admin account: " + e.getMessage()));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError(DBErrorTag + error.getMessage());
-            }
-        });
+        createAccount(name, address, true, callback);
     }
 }
