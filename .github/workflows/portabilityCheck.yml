@@ -27,6 +27,12 @@ jobs:
           
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la 
+        
         
       - name: Clean and Build
       #Ensuring project doesnt only work on our devices
