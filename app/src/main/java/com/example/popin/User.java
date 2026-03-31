@@ -75,9 +75,12 @@ public class User {
         void onError(String message);
     }
 
+    String usersTableRef = "Users";
+    String emailFieldInTable = "email";
+    String DBErrorTag = "Database error: ";
     public void login(LoginCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(usersTableRef);
+        Query query = usersRef.orderByChild(emailFieldInTable).equalTo(this.email);
 
         if (this.email == null || this.email.trim().isEmpty()) {
             callback.onError("Email/Phone input is Empty");
@@ -128,13 +131,13 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+                callback.onError(DBErrorTag + error.getMessage());
             }
         });
     }
 
     public void register(String name, String address, RegisterCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(usersTableRef);
 
         if (this.email == null || this.email.trim().isEmpty()) {
             callback.onError("Email input is empty");
@@ -146,7 +149,7 @@ public class User {
             return;
         }
 
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
+        Query query = usersRef.orderByChild(emailFieldInTable).equalTo(this.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -175,13 +178,13 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+                callback.onError(DBErrorTag + error.getMessage());
             }
         });
     }
 
     public void createAdminAccount(String name, String address, RegisterCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(usersTableRef);
 
         if (this.email == null || this.email.trim().isEmpty()) {
             callback.onError("Email input is empty");
@@ -193,7 +196,7 @@ public class User {
             return;
         }
 
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
+        Query query = usersRef.orderByChild(emailFieldInTable).equalTo(this.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -223,7 +226,7 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+                callback.onError(DBErrorTag + error.getMessage());
             }
         });
     }

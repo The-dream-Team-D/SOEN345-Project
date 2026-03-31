@@ -29,6 +29,9 @@ public class EventCatalog {
         void onError(String message);
     }
 
+    String eventError = "Event name is empty";
+    String noEventFoundWithNameError = "No event found with that name";
+    String DBErrorTag = "Database error: ";
     public void addEvent(Event event, EventActionCallback callback) {
         if (event == null) {
             callback.onError("Event is null");
@@ -36,7 +39,7 @@ public class EventCatalog {
         }
 
         if (event.getName() == null || event.getName().trim().isEmpty()) {
-            callback.onError("Event name is empty");
+            callback.onError(eventError);
             return;
         }
 
@@ -50,7 +53,7 @@ public class EventCatalog {
 
     public void deleteEventByName(String eventName, EventActionCallback callback) {
         if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onError("Event name is empty");
+            callback.onError(eventError);
             return;
         }
 
@@ -60,30 +63,28 @@ public class EventCatalog {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError("No event found with that name");
+                    callback.onError(noEventFoundWithNameError);
                     return;
                 }
 
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    eventSnapshot.getRef().removeValue()
-                            .addOnSuccessListener(unused ->
-                                    callback.onSuccess("Event deleted successfully"))
-                            .addOnFailureListener(e ->
-                                    callback.onError("Failed to delete event: " + e.getMessage()));
-                    return;
-                }
+                DataSnapshot firstEvent = snapshot.getChildren().iterator().next();
+                firstEvent.getRef().removeValue()
+                        .addOnSuccessListener(unused ->
+                                callback.onSuccess("Event deleted successfully"))
+                        .addOnFailureListener(e ->
+                                callback.onError("Failed to delete event: " + e.getMessage()));
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+                callback.onError(DBErrorTag + error.getMessage());
             }
         });
     }
 
     public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
         if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onError("Event name is empty");
+            callback.onError(eventError);
             return;
         }
 
@@ -98,7 +99,7 @@ public class EventCatalog {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError("No event found with that name");
+                    callback.onError(noEventFoundWithNameError);
                     return;
                 }
 
@@ -116,18 +117,18 @@ public class EventCatalog {
                         updatedEvent.setAvailable(existingEvent.isAvailable());
                     }
 
-                    eventSnapshot.getRef().setValue(updatedEvent)
+                    DataSnapshot firstEvent = snapshot.getChildren().iterator().next();
+                    firstEvent.getRef().setValue(updatedEvent)
                             .addOnSuccessListener(unused ->
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
-                    return;
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+                callback.onError(DBErrorTag + error.getMessage());
             }
         });
     }
@@ -142,7 +143,7 @@ public class EventCatalog {
                                   EventActionCallback callback) {
 
         if (currentEventName == null || currentEventName.trim().isEmpty()) {
-            callback.onError("Event name is empty");
+            callback.onError(eventError);
             return;
         }
 
@@ -152,7 +153,7 @@ public class EventCatalog {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError("No event found with that name");
+                    callback.onError(noEventFoundWithNameError);
                     return;
                 }
 
@@ -188,18 +189,19 @@ public class EventCatalog {
                         return;
                     }
 
-                    eventSnapshot.getRef().updateChildren(updates)
+                    DataSnapshot firstEvent = snapshot.getChildren().iterator().next();
+                    firstEvent.getRef().updateChildren(updates)
                             .addOnSuccessListener(unused ->
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
-                    return;
+
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError("Database error: " + error.getMessage());
+                callback.onError(DBErrorTag + error.getMessage());
             }
         });
     }

@@ -41,20 +41,21 @@ public class EventsPageActivity extends AppCompatActivity {
         setupSearch();
     }
 
+    String eventsLogTag = "EventsPageActivity";
     private void setupNavBar() {
         View navBar = findViewById(R.id.bottomNav);
 
         if (navBar == null) {
-            Log.e("EventsPageActivity", "bottomNav view not found");
+            Log.e(eventsLogTag, "bottomNav view not found");
             return;
         }
 
         User currentUser = UserInSession.getInstance().getUser();
         boolean userInSessionAdminCheck = currentUser != null && currentUser.getIsAdmin();
 
-        Log.d("EventsPageActivity", "Current user: "
+        Log.d(eventsLogTag, "Current user: "
                 + (currentUser != null ? currentUser.getEmail() : "null"));
-        Log.d("EventsPageActivity", "Is admin: " + userInSessionAdminCheck);
+        Log.d(eventsLogTag, "Is admin: " + userInSessionAdminCheck);
 
         NavBarComponentView.setup(navBar, userInSessionAdminCheck);
     }
@@ -147,7 +148,7 @@ public class EventsPageActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("EventsPageActivity", "Error checking DB: " + error.getMessage());
+                Log.e(eventsLogTag, "Error checking DB: " + error.getMessage());
             }
         });
     }
@@ -170,7 +171,7 @@ public class EventsPageActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("EventsPageActivity", "Database error: " + error.getMessage());
+                Log.e(eventsLogTag, "Database error: " + error.getMessage());
                 Toast.makeText(
                         EventsPageActivity.this,
                         "Failed to load events",
