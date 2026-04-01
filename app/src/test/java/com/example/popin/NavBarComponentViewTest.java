@@ -20,6 +20,13 @@ import static org.robolectric.Shadows.shadowOf;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.popin.UIpages.AdminDashboardActivity;
+import com.example.popin.UIpages.EventsPageActivity;
+import com.example.popin.UIpages.MyTicketsActivity;
+import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.logic.User;
+import com.example.popin.logic.UserInSession;
+import com.example.popin.reusableUI.NavBarComponentView;
 import com.google.firebase.database.FirebaseDatabase;
 
 

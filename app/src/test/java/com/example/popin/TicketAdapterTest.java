@@ -8,6 +8,9 @@ import android.widget.FrameLayout;
 
 import androidx.test.core.app.ApplicationProvider;
 
+import com.example.popin.logic.TicketAdapter;
+import com.example.popin.logic.TicketItem;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

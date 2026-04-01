@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.UIpages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.popin.R;
+import com.example.popin.logic.EventItem;
+import com.example.popin.logic.TicketAdapter;
+import com.example.popin.logic.TicketItem;
+import com.example.popin.logic.UserInSession;
+import com.example.popin.reusableUI.NavBarComponentView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

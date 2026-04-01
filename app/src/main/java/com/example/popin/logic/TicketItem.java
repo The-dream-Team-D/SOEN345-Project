@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.logic;
 
 public class TicketItem extends EventItem {
     private String ticketId;

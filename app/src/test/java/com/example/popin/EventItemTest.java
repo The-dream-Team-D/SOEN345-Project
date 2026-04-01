@@ -5,6 +5,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import com.example.popin.logic.EventItem;
+
 public class EventItemTest {
 
     @Test

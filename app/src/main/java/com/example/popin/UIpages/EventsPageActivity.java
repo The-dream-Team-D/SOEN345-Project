@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.UIpages;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.popin.R;
+import com.example.popin.logic.EventAdapter;
+import com.example.popin.logic.EventItem;
+import com.example.popin.logic.UserInSession;
+import com.example.popin.reusableUI.NavBarComponentView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,8 +41,15 @@ public class EventsPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_events);
 
         View navBar = findViewById(R.id.bottomNav);
-        boolean userInSessionAdminCheck = UserInSession.getInstance().getUser().getIsAdmin();
-        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
+
+        UserInSession session = UserInSession.getInstance();
+        if (session == null || session.getUser() == null) {
+            NavBarComponentView.setup(navBar, false);
+
+        }else{
+            boolean userInSessionAdminCheck = session.getUser().getIsAdmin();
+            NavBarComponentView.setup(navBar, userInSessionAdminCheck);
+        }
 
         eventList = new ArrayList<>();
         

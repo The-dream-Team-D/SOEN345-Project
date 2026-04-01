@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.logic;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.popin.UIpages.EventDetailActivity;
+import com.example.popin.R;
 
 import java.util.ArrayList;
 import java.util.List;

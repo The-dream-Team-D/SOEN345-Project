@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
 
     android:id="@+id/admin_dashboard_main"
-    tools:context=".AdminDashboardActivity"
+    tools:context=".UIpages.AdminDashboardActivity"
     tools:theme="@style/Base.Theme.PopIn"
     >
 
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.019" />
 
-    <com.example.popin.NavBarComponentView
+    <com.example.popin.reusableUI.NavBarComponentView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottomNav"

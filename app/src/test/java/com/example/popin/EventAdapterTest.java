@@ -10,6 +10,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+import com.example.popin.logic.EventAdapter;
+import com.example.popin.logic.EventItem;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34)
 public class EventAdapterTest {

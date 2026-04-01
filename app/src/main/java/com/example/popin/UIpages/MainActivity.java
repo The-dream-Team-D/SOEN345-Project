@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.UIpages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.popin.R;
+import com.example.popin.logic.User;
+import com.example.popin.logic.UserInSession;
 import com.google.android.material.textfield.TextInputEditText;
 
 
@@ -36,8 +40,11 @@ public class MainActivity extends AppCompatActivity {
         String email_or_phoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User user = new User(email_or_phoneNumber, password);
-        user.login(new User.LoginCallback() {
+
+
+
+
+        User.login(email_or_phoneNumber, password, new User.LoginCallback() {
             @Override
             public void onSuccess(User user) {
                 Toast.makeText(getApplicationContext(), "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
@@ -56,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case "Password input is Empty":
                         passwordInputField.setError("Input is Empty");
+                        break;
+                    case "Must be a valid email or phone number":
+                        emailInputField.setError("Not valid Email/Phone Number");
                         break;
                     case "No user with that email/phone number":
                         emailInputField.setError("No registered account with this email/phone number");

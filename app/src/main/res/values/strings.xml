@@ -30,6 +30,11 @@
     <string name="MyTicketsPageSearchBarHint">Search registered events...</string>
     <string name="cancelTicketButton">Cancel</string>
     <string name="buyTicketButton">Buy Ticket</string>
+    <string name="ticketPurchasedButton">Already registered to event</string>
+    <string name="guestUserTicketPurchaseButton">Login To Buy Tickets</string>
+
+
+
     <string name="backToEventsButton">Back to Events</string>
     <string name="ticketsEmptyState">No tickets found.</string>
 </resources>

@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import com.example.popin.logic.User;
+import com.example.popin.logic.UserInSession;
+import com.example.popin.reusableUI.NavBarComponentView;
+
 public class UserInSessionTest {
 
     private NavBarComponentView navBar;

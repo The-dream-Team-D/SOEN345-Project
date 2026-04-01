@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
 
     android:id="@+id/ticketsMain"
-    tools:context=".MyTicketsActivity"
+    tools:context=".UIpages.MyTicketsActivity"
     tools:theme="@style/Base.Theme.PopIn"
     >
 
@@ -78,7 +78,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etSearchEvents" />
 
-    <com.example.popin.NavBarComponentView
+    <com.example.popin.reusableUI.NavBarComponentView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottomNav"

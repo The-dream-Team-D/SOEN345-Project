@@ -150,6 +150,35 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/btnTicketPurchased"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#CCCCCC"
+                android:paddingVertical="14dp"
+                android:text="@string/ticketPurchasedButton"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:enabled="false"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnLoginToBuy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#0A7FA8"
+                android:paddingVertical="14dp"
+                android:text="@string/guestUserTicketPurchaseButton"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
             <!-- Back button -->
             <Button
                 android:id="@+id/btnBack"

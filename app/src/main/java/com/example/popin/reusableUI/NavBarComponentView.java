@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.reusableUI;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,6 +6,12 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.example.popin.UIpages.AdminDashboardActivity;
+import com.example.popin.UIpages.EventsPageActivity;
+import com.example.popin.UIpages.MyTicketsActivity;
+import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.R;
 
 public class NavBarComponentView extends LinearLayout {
 

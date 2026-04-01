@@ -12,12 +12,27 @@ android {
     namespace = "com.example.popin"
     compileSdk = 36
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.popin"
         minSdk = 25
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        val myKey = project.findProperty("SENDGRID_API_KEY")?.toString() ?: ""
+        val myKey1 = project.findProperty("TWILIO_ACCOUNT_SID")?.toString() ?: ""
+        val myKey2 = project.findProperty("TWILIO_AUTH_TOKEN")?.toString() ?: ""
+        val myKey3 = project.findProperty("TWILIO_PHONE_NUMBER")?.toString() ?: ""
+
+        buildConfigField("String", "SENDGRID_API_KEY", "\"$myKey\"")
+        buildConfigField("String", "TWILIO_ACCOUNT_SID", "\"$myKey1\"")
+        buildConfigField("String", "TWILIO_AUTH_TOKEN", "\"$myKey2\"")
+        buildConfigField("String", "TWILIO_PHONE_NUMBER", "\"$myKey3\"")
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
