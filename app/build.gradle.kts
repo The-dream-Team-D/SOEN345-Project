@@ -1,6 +1,13 @@
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -23,10 +30,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        val myKey = project.findProperty("SENDGRID_API_KEY")?.toString() ?: ""
-        val myKey1 = project.findProperty("TWILIO_ACCOUNT_SID")?.toString() ?: ""
-        val myKey2 = project.findProperty("TWILIO_AUTH_TOKEN")?.toString() ?: ""
-        val myKey3 = project.findProperty("TWILIO_PHONE_NUMBER")?.toString() ?: ""
+        val myKey = localProperties.getProperty("SENDGRID_API_KEY") ?: ""
+        val myKey1 = localProperties.getProperty("TWILIO_ACCOUNT_SID") ?: ""
+        val myKey2 = localProperties.getProperty("TWILIO_AUTH_TOKEN") ?: ""
+        val myKey3 = localProperties.getProperty("TWILIO_PHONE_NUMBER") ?: ""
 
         buildConfigField("String", "SENDGRID_API_KEY", "\"$myKey\"")
         buildConfigField("String", "TWILIO_ACCOUNT_SID", "\"$myKey1\"")
