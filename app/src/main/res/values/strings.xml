@@ -53,6 +53,8 @@
     <string name="cancelTicketButton">Cancel</string>
     <string name="buyTicketButton">Buy Ticket</string>
     <string name="ticketPurchasedButton">Already registered to event</string>
+    <string name="CapacityFullButton">Event Capacity Reached!</string>
+
     <string name="guestUserTicketPurchaseButton">Login To Buy Tickets</string>
 
     <string name="guestUserTicketViewButton">Login To View Your Tickets</string>
@@ -63,4 +65,10 @@
 
     <string name="backToEventsButton">Back to Events</string>
     <string name="ticketsEmptyState">No tickets found.</string>
+
+
+    <string name="deleteAccount">Delete Account</string>
+
+    <string name="warningText">Are you sure?</string>
+
 </resources>

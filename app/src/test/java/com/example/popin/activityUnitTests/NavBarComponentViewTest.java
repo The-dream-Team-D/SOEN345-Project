@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.activityUnitTests;
 
 import static org.junit.Assert.*;
 
@@ -20,6 +20,8 @@ import static org.robolectric.Shadows.shadowOf;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.popin.FirebaseTestAssistant;
+import com.example.popin.R;
 import com.example.popin.UIpages.AdminDashboardActivity;
 import com.example.popin.UIpages.EventsPageActivity;
 import com.example.popin.UIpages.MyTicketsActivity;
@@ -66,8 +68,6 @@ public class NavBarComponentViewTest {
         NavBarComponentView.setup(navBar);
     }
 
-// ── Explore tab ──────────────────────────────────────────────────────────
-
     @Test
     public void exploreTab_click_launchesEventsPageActivity() {
         navBar.findViewById(R.id.nav_explore_container).performClick();
@@ -90,8 +90,6 @@ public class NavBarComponentViewTest {
                 shadowOf(eventsActivity).getNextStartedActivity());
     }
 
-// ── Tickets tab ──────────────────────────────────────────────────────────
-
     @Test
     public void ticketsTab_click_launchesMyTicketsActivity() {
         navBar.findViewById(R.id.nav_tickets_container).performClick();
@@ -112,8 +110,6 @@ public class NavBarComponentViewTest {
 
         assertNull(shadowOf(ticketsActivity).getNextStartedActivity());
     }
-
-// ── Profile tab ──────────────────────────────────────────────────────────
 
     @Test
     public void profileTab_click_launchesProfileActivity() {

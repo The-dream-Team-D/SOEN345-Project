@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 
 import com.example.popin.R;
+import com.example.popin.logic.GenericCallback;
 import com.example.popin.logic.User;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -58,7 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
         String email_or_phoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User.SignUp(name, email_or_phoneNumber, password, new User.SignUpCallback() {
+        User.SignUp(name, email_or_phoneNumber, password, new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 Toast.makeText(getApplicationContext(), "Account Created!", Toast.LENGTH_SHORT).show();

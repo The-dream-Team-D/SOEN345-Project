@@ -1,6 +1,7 @@
 package com.example.popin.UIpages;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,21 +15,29 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.popin.R;
+import com.example.popin.logic.GenericCallback;
+import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 import com.example.popin.reusableUI.NavBarComponentView;
+import com.google.android.material.card.MaterialCardView;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String NOT_PROVIDED = "Not provided";
 
 
-    private TextView tvName, tvEmail, tvAddress, tvPhone, tvBio, tvRole;
+    private TextView tvName, tvEmail, tvAddress, tvPhone, tvBio, tvNotifPref;
     private EditText etName, etAddress, etPhone, etBio;
-    private Button btnEdit, btnSave, btnLogout;
+    private Button btnEdit, btnSave, btnLogout, btnDelete;
     private LinearLayout displayContainer, editContainer;
+
+    private MaterialCardView SMSOption, EmailOption;
+
+    private final boolean[] notificationPreference = {false, false};   // (email, SMS)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
             tvAddress = findViewById(R.id.tvAddress);
             tvPhone = findViewById(R.id.tvPhone);
             tvBio = findViewById(R.id.tvBio);
-            tvRole = findViewById(R.id.tvRole);
+            tvNotifPref = findViewById(R.id.tvNotifPref);
 
             etName = findViewById(R.id.etName);
             etAddress = findViewById(R.id.etAddress);
@@ -75,17 +84,19 @@ public class ProfileActivity extends AppCompatActivity {
 
             btnEdit = findViewById(R.id.btnEdit);
             btnSave = findViewById(R.id.btnSave);
+            btnLogout = findViewById(R.id.btnLogout);
+            btnDelete = findViewById(R.id.btnDelete);
+
 
             displayContainer = findViewById(R.id.displayContainer);
             editContainer = findViewById(R.id.editContainer);
-            btnLogout = findViewById(R.id.btnLogout);
 
             loadUserData();
 
             btnEdit.setOnClickListener(v -> enableEditMode());
             btnSave.setOnClickListener(v -> saveUserData());
 
-            btnLogout.setOnClickListener(v ->{
+            btnLogout.setOnClickListener(v -> {
 
                 UserInSession.clear();
                 startActivity(new Intent(this, MainActivity.class));
@@ -93,6 +104,90 @@ public class ProfileActivity extends AppCompatActivity {
 
             });
 
+            final int[] clickCount = {0};
+
+            btnDelete.setOnClickListener(v -> {
+                clickCount[0]++;
+                if (clickCount[0] == 1) {
+                    btnDelete.setText(R.string.warningText);
+                    btnDelete.setTextColor(ContextCompat.getColorStateList(this, R.color.white));
+                    btnDelete.setBackgroundTintList(
+                            ColorStateList.valueOf(
+                                    ContextCompat.getColor(this, R.color.warning)
+                            )
+                    );
+                    btnDelete.postDelayed(() -> {
+                        clickCount[0] = 0;
+                        btnDelete.setText(R.string.deleteAccount);
+                        btnDelete.setBackgroundTintList(
+                                ColorStateList.valueOf(
+                                        ContextCompat.getColor(this, R.color.action)
+                                )
+                        );
+                    }, 3000);
+
+                } else {
+                    clickCount[0] = 0;
+                    btnDelete.setText(R.string.deleteAccount);
+                    btnDelete.setBackgroundTintList(
+                            ColorStateList.valueOf(
+                                    ContextCompat.getColor(this, R.color.action)
+                            )
+                    );
+
+                    session.getUser().delete(new GenericCallback() {
+                        @Override
+                        public void onSuccess(String message) {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                            UserInSession.clear();
+                            startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                            finish();
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+
+
+            EmailOption = findViewById(R.id.boxEmail);
+            SMSOption = findViewById(R.id.boxSMS);
+
+            if (session.getUser().getUserNotificationPreference() == NotificationPreferenceOptions.Email) {
+                notificationPreference[0] = true;
+                EmailOption.setStrokeColor(ContextCompat.getColor(this,
+                        R.color.action));
+            } else {
+                notificationPreference[1] = true;
+                SMSOption.setStrokeColor(ContextCompat.getColor(this,
+                        R.color.action));
+            }
+
+            EmailOption.setOnClickListener(v -> {
+                notificationPreference[0] = true;
+                notificationPreference[1] = false;
+
+                EmailOption.setStrokeColor(ContextCompat.getColor(this,
+                        R.color.action));
+
+                SMSOption.setStrokeColor(ContextCompat.getColor(this,
+                        R.color.black));
+            });
+
+            SMSOption.setOnClickListener(v -> {
+                notificationPreference[1] = true;
+                notificationPreference[0] = false;
+
+                SMSOption.setStrokeColor(ContextCompat.getColor(this,
+                        R.color.action));
+
+                EmailOption.setStrokeColor(ContextCompat.getColor(this,
+                        R.color.black));
+            });
         }
     }
 
@@ -106,14 +201,16 @@ public class ProfileActivity extends AppCompatActivity {
         String address = safeValue(user.getAddress());
         String phone = safeValue(user.getPhoneNumber());
         String bio = safeValue(user.getBio());
-        String role = user.getIsAdmin() ? "Admin" : "User";
+        String notifPref = safeValue(user.getUserNotificationPreference().toString());
 
         tvName.setText("Name: " + name);
         tvEmail.setText("Email: " + email);
         tvAddress.setText("Address: " + address);
         tvPhone.setText("Phone: " + phone);
         tvBio.setText("Bio: " + bio);
-        tvRole.setText("Account Type: " + role);
+        tvNotifPref.setText("Notification Preference:" + notifPref);
+
+
 
         etName.setText(name.equals(NOT_PROVIDED) ? "" : name);
         etAddress.setText(address.equals(NOT_PROVIDED) ? "" : address);
@@ -152,6 +249,13 @@ public class ProfileActivity extends AppCompatActivity {
         String newAddress = etAddress.getText().toString().trim();
         String newPhone = etPhone.getText().toString().trim();
         String newBio = etBio.getText().toString().trim();
+        NotificationPreferenceOptions newNotificationPreference;
+
+        if (notificationPreference[0]) {
+            newNotificationPreference = NotificationPreferenceOptions.Email;
+        } else{
+            newNotificationPreference = NotificationPreferenceOptions.SMS;
+        }
 
         if (newName.isEmpty()) {
             Toast.makeText(this, "Name cannot be empty", Toast.LENGTH_SHORT).show();
@@ -163,13 +267,19 @@ public class ProfileActivity extends AppCompatActivity {
         user.setAddress(newAddress);
         user.setPhoneNumber(newPhone);
         user.setBio(newBio);
+        String notifChangeResult = user.setUserNotificationPreference(newNotificationPreference);
 
-        user.updateProfile(new User.UpdateCallback() {
+        if (!notifChangeResult.equals("Preference updated successfully")) {
+            Toast.makeText(this, notifChangeResult, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        user.updateProfile(new GenericCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String message) {
                 loadUserData();
                 disableEditMode();
-                Toast.makeText(ProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this,  message, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -177,12 +287,5 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void Logout(){
-
-        UserInSession.clear();
-
-
     }
 }

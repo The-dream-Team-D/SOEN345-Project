@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.activityUnitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,6 +7,11 @@ import static org.junit.Assert.assertTrue;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.popin.R;
+import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.logic.User;
+import com.example.popin.logic.UserInSession;
 
 import org.junit.After;
 import org.junit.Before;
@@ -110,12 +115,12 @@ public class ProfileActivityTest {
 
         btnEdit.performClick();
 
-        assertTrue(etName.getVisibility() == EditText.VISIBLE);
-        assertTrue(etAddress.getVisibility() == EditText.VISIBLE);
-        assertTrue(etPhone.getVisibility() == EditText.VISIBLE);
-        assertTrue(etBio.getVisibility() == EditText.VISIBLE);
-        assertTrue(btnSave.getVisibility() == Button.VISIBLE);
-        assertTrue(btnEdit.getVisibility() == Button.GONE);
+        assertEquals(EditText.VISIBLE, etName.getVisibility());
+        assertEquals(EditText.VISIBLE, etAddress.getVisibility());
+        assertEquals(EditText.VISIBLE, etPhone.getVisibility());
+        assertEquals(EditText.VISIBLE, etBio.getVisibility());
+        assertEquals(Button.VISIBLE, btnSave.getVisibility());
+        assertEquals(Button.GONE, btnEdit.getVisibility());
     }
 
     @Test

@@ -4,4 +4,5 @@ public enum NotificationType {
     RegisterEvent,
     RegisterAccount,
     DeleteAccount,
+    CancelTicket,
 }

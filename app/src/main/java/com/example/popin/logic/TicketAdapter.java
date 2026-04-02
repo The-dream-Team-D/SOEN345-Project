@@ -102,7 +102,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         notifyDataSetChanged();
     }
 
-    static class TicketViewHolder extends RecyclerView.ViewHolder {
+    public static class TicketViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
         private final TextView dateTime;
         private final TextView location;

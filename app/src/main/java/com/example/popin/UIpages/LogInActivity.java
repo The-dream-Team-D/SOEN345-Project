@@ -81,9 +81,6 @@ public class LogInActivity extends AppCompatActivity {
                     case "Password input is Empty":
                         passwordInputField.setError("Input is Empty");
                         break;
-                    case "Must be a valid email or phone number":
-                        emailInputField.setError("Not valid Email/Phone Number");
-                        break;
                     case "No user with that email/phone number":
                         emailInputField.setError("No registered account with this email/phone number");
                         break;

@@ -105,6 +105,41 @@
                     android:text="EV Building Lobby"
                     android:textColor="#082238"
                     android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="CATEGORY"
+                    android:textColor="#0A7FA8"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvEventCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Entertainment"
+                    android:textColor="#082238"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="ATTENDANCE"
+                    android:textColor="#0A7FA8"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvEventAttendance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tickets sold:"
+                    android:textColor="#082238"
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
             <!-- About section -->
@@ -157,6 +192,21 @@
                 android:enabled="false"
                 android:paddingVertical="14dp"
                 android:text="@string/ticketPurchasedButton"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnCapacityReached"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#CCCCCC"
+                android:enabled="false"
+                android:paddingVertical="14dp"
+                android:text="@string/CapacityFullButton"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"

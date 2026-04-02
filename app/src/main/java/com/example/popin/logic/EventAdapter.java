@@ -1,6 +1,8 @@
 package com.example.popin.logic;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -16,14 +19,15 @@ import com.example.popin.UIpages.EventDetailActivity;
 import com.example.popin.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private final List<EventItem> allEvents;
     private final List<EventItem> visibleEvents;
     private String currentQuery = "";
-
     public EventAdapter(List<EventItem> events) {
         this.allEvents = new ArrayList<>(events);
         this.visibleEvents = new ArrayList<>(events);
@@ -42,6 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.title.setText(event.getTitle());
         holder.dateTime.setText(event.getDateTime());
         holder.location.setText(event.getLocation());
+        holder.eventCategory.setText(event.getCategory().toString());
 
         if (holder.eventImage != null) {
             Glide.with(holder.itemView.getContext())
@@ -54,6 +59,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     .into(holder.eventImage);
 
         }
+        applyTagColor(holder.eventCategory, event.getCategory().toString());
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
             intent.putExtra("title", event.getTitle());
@@ -61,6 +68,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             intent.putExtra("location", event.getLocation());
             intent.putExtra("details", event.getDetails());
             intent.putExtra("imgURL", event.getImgURL());
+            intent.putExtra("eventCategory", event.getCategory().toString());
+            intent.putExtra("capacity", event.getCapacity());
+            intent.putExtra("attendees", event.getAttendeeCount());
+
             v.getContext().startActivity(intent);
         });
     }
@@ -98,12 +109,39 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         private final TextView dateTime;
         private final TextView location;
         private final ImageView eventImage;
+        private final TextView eventCategory;
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.tvEventTitle);
             dateTime = itemView.findViewById(R.id.tvEventDateTime);
             location = itemView.findViewById(R.id.tvEventLocation);
             eventImage = itemView.findViewById(R.id.ivEventImage);
+            eventCategory = itemView.findViewById(R.id.tvEventCategory);
         }
+    }
+
+
+
+    private void applyTagColor(TextView tag, String category) {
+        String key = category == null ? "" : category.trim().toLowerCase();
+        int color;
+
+        switch (key) {
+            case "social":        color = ContextCompat.getColor(tag.getContext(), R.color.categorySocialColor); break;
+            case "educational":   color = ContextCompat.getColor(tag.getContext(), R.color.categoryEducationalColor); break;
+            case "professional":  color = ContextCompat.getColor(tag.getContext(), R.color.categoryProfessionalColor); break;
+            case "sports":        color = ContextCompat.getColor(tag.getContext(), R.color.categorySportsColor); break;
+            case "entertainment": color = ContextCompat.getColor(tag.getContext(), R.color.categoryEntertainmentColor); break;
+            case "community":     color = ContextCompat.getColor(tag.getContext(), R.color.categoryCommunityColor); break;
+            default:              color = ContextCompat.getColor(tag.getContext(), R.color.categoryDefaultColor); break;
+        }
+
+        GradientDrawable bg = new GradientDrawable();
+        bg.setShape(GradientDrawable.RECTANGLE);
+        bg.setCornerRadius(40f);
+        bg.setColor(color);
+
+        tag.setText(category);
+        tag.setBackground(bg);
     }
 }

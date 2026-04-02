@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.logicUnitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,9 +8,11 @@ import android.widget.FrameLayout;
 
 import androidx.test.core.app.ApplicationProvider;
 
+import com.example.popin.R;
 import com.example.popin.logic.TicketAdapter;
 import com.example.popin.logic.TicketItem;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -24,6 +26,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @Config(sdk = 34)
 public class TicketAdapterTest {
 
+    @Before
+    public void setUp() {
+        ApplicationProvider.getApplicationContext()
+                .setTheme(com.google.android.material.R.style.Theme_MaterialComponents_Light_NoActionBar);
+    }
     private List<TicketItem> sampleTickets() {
         return Arrays.asList(
                 new TicketItem("t1", "SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby"),

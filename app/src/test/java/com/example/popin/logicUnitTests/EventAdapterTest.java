@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.logicUnitTests;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

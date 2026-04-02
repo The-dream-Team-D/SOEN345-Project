@@ -1,13 +1,11 @@
 package com.example.popin.logic;
 
-import android.util.Log;
-
 import com.example.popin.logic.service.EmailServicer;
 import com.example.popin.logic.service.SMServicer;
 
 public class Notifications {
 
-    public static void sendEmailNotification(User user, String eventTitle, NotificationType n){
+    public static void sendNotification(User user, String eventTitle, NotificationType n){
         String subject;
         String html;
         String message;
@@ -15,19 +13,28 @@ public class Notifications {
         switch (n) {
             case RegisterEvent:
                 subject = "Event Registration Confirmed";
-                html = "Hi " + user.getName() + "!<br>You have successfully registered for " + eventTitle + ".";
-                message = "Hi " + user.getName() + "!\nYou have successfully registered for " + eventTitle + ".";
+                html = "Hi " + user.getName() + "!<br><br>You have successfully registered for " + eventTitle + ".";
+                message = "Hi " + user.getName() + "!\n\nYou have successfully registered for " + eventTitle + ".";
                 break;
             case RegisterAccount:
                 subject = "Welcome to PopIn!";
-                html = "Welcome " + user.getName() + "!<br>Your PopIn account has been successfully created.";
-                message = "Welcome " + user.getName() + "!\nYour PopIn account has been successfully created.";
+                html = "Welcome " + user.getName() + "!<br><br>Your PopIn account has been successfully created.";
+                message = "Welcome " + user.getName() + "!\n\nYour PopIn account has been successfully created.";
                 break;
             case DeleteAccount:
                 subject = "Account Deleted";
-                html = "We are sorry to see you go " + user.getName() + "!<br>Your account has been successfully deleted.";
-                message = "We are sorry to see you go " + user.getName() + "!\nYour account has been successfully deleted.";
+                html = "We are sorry to see you go " + user.getName() + "!<br><br>Your account has been successfully deleted.";
+                message = "We are sorry to see you go " + user.getName() + "!\n\nYour account has been successfully deleted.";
                 break;
+
+            case CancelTicket:
+                subject = "Event Registration Cancelled";
+                html = "Your registration for the event " + eventTitle + " has been cancelled.<br><br>"
+                        + "If you did not perform this action, please contact us at support@example.com.";
+                message = "Your registration for the event " + eventTitle + " has been cancelled.\n\n"
+                        + "If you did not perform this action, please contact us at support@example.com.";
+                break;
+
             default:
                 subject = "";
                 html = "";
@@ -40,7 +47,5 @@ public class Notifications {
         } else {
             EmailServicer.sendEmail(user.getEmail(), subject, html);
         }
-
-
     }
 }

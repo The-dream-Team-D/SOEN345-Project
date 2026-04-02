@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.activityUnitTests;
 
 //import android.widget.EditText;
 //

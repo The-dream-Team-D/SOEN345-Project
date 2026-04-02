@@ -1,5 +1,7 @@
 package com.example.popin.logic;
 
+import static com.example.popin.logic.Notifications.sendNotification;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -76,11 +78,21 @@ public class User {
     }
 
     public void setEmail(String email) {
+        if(email != null){
         this.email = email.toLowerCase().trim();
+        }
+        else{
+            this.email = email;
+        }
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber.toLowerCase().trim();
+        if(phoneNumber != null){
+            this.phoneNumber = phoneNumber.toLowerCase().trim();
+        }
+        else{
+            this.phoneNumber = phoneNumber;
+        }
     }
     public void setBio(String bio) { this.bio = bio; }
 
@@ -154,19 +166,7 @@ public class User {
         void onError(String message);
     }
 
-    public interface SignUpCallback {
-        void onSuccess(String message);
-        void onError(String message);
-    }
-
-    public interface UpdateCallback {
-        void onSuccess();
-        void onError(String message);
-    }
-
-
-
-    public static void SignUp(String name, String email_or_phoneNumber, String password, SignUpCallback callback){
+    public static void SignUp(String name, String email_or_phoneNumber, String password, GenericCallback callback){
         if (name == null || name.trim().isEmpty()) {
             callback.onError("Name input is empty");
             return;
@@ -226,6 +226,7 @@ public class User {
 
                 usersRef.push().setValue(userData)
                         .addOnSuccessListener(aVoid -> {
+                            sendNotification(finaluser, "", NotificationType.RegisterAccount);
                             callback.onSuccess("Success");
                         })
                         .addOnFailureListener(e -> {
@@ -260,16 +261,15 @@ public class User {
         UserInputType type = identify(email_or_phoneNumber);
         String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
 
-        if (type == UserInputType.EMAIL) {
-            user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("email").equalTo(user.email);
 
-        } else if (type == UserInputType.PHONE) {
+
+        // NO Need for input validation in login, either login or you cant. This just defines type to search
+        if (type == UserInputType.PHONE) {
             user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
             query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
         } else {
-            callback.onError("Must be a valid email or phone number");
-            return;
+            user = createUserWithEmail(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("email").equalTo(user.email);
         }
 
         final User finalUser = user;
@@ -296,6 +296,8 @@ public class User {
                         finalUser.setAddress(userSnapshot.child("address").getValue(String.class));
                         finalUser.setIsAdmin(Boolean.TRUE.equals(userSnapshot.child("isAdmin").getValue(boolean.class)));
                         finalUser.setPhoneNumber(userSnapshot.child("phoneNumber").getValue(String.class));
+                        finalUser.setBio(userSnapshot.child("bio").getValue(String.class));
+
                         String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
 
                         if (prefString != null) {
@@ -376,9 +378,11 @@ public class User {
         return false;
     }
 
-    public void updateProfile(UpdateCallback callback) {
+    public void updateProfile(GenericCallback callback) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
         Query query = usersRef.orderByChild("email").equalTo(this.email);
+
+        final User Finaluser = this;
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -391,16 +395,22 @@ public class User {
 
                 boolean updated = false;
 
+
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    userSnapshot.getRef().child("name").setValue(name);
-                    userSnapshot.getRef().child("address").setValue(address);
-                    userSnapshot.getRef().child("phoneNumber").setValue(phoneNumber);
-                    userSnapshot.getRef().child("bio").setValue(bio);
+
+                    userSnapshot.getRef().child("name").setValue(Finaluser.getName());
+
+                    userSnapshot.getRef().child("address").setValue(Finaluser.getAddress());
+
+                    userSnapshot.getRef().child("phoneNumber").setValue(Finaluser.getPhoneNumber());
+
+                    userSnapshot.getRef().child("bio").setValue(Finaluser.getBio());
+
+                    userSnapshot.getRef().child("NotificationPreference").setValue(Finaluser.getUserNotificationPreference().toString());
                     updated = true;
                 }
-
                 if (updated) {
-                    callback.onSuccess();
+                    callback.onSuccess("User Profile Updated");
                 } else {
                     callback.onError("User not found");
                 }
@@ -411,6 +421,47 @@ public class User {
                 callback.onError(error.getMessage());
             }
         });
+    }
+
+    public void delete(GenericCallback callBack){
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        Query query = null;
+        if(this.getEmail() != null && !this.getEmail().trim().isEmpty()) {
+            query = usersRef.orderByChild("email").equalTo(this.getEmail());
+        }else{
+            query = usersRef.orderByChild("phoneNumber").equalTo(this.getPhoneNumber());
+        }
+
+        final User finaluser = this;
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    callBack.onError("Error encountered locating user in DB");
+                    return;
+                }
+
+                DataSnapshot userSnapshot = snapshot.getChildren().iterator().next();
+
+                userSnapshot.getRef().removeValue()
+                        .addOnSuccessListener(unused -> {
+                            callBack.onSuccess("Deleted Account Successfully!");
+                            sendNotification(finaluser, "", NotificationType.DeleteAccount);
+                        })
+                        .addOnFailureListener(e -> {
+                            callBack.onError("Failed to Delete DB Account");
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callBack.onError(error.getMessage());
+            }
+        });
+
     }
 
 

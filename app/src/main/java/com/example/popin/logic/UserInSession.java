@@ -1,10 +1,8 @@
 package com.example.popin.logic;
 
 public class UserInSession {
-    private static User currentUser;
-
+    private User currentUser;
     private static UserInSession instance;
-
 
     private UserInSession(User user) {
         this.currentUser = user;
@@ -21,9 +19,13 @@ public class UserInSession {
     }
 
     public static void clear() {
-
         instance = null;
-        currentUser = null;
+    }
+
+    public static void updateUser(User user) {
+        if (instance != null) {
+            instance.currentUser = user;
+        }
     }
 
 

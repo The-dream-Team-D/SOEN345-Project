@@ -1,5 +1,7 @@
 package com.example.popin.UIpages;
 
+import static com.example.popin.logic.Notifications.sendNotification;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.popin.R;
 import com.example.popin.logic.EventItem;
+import com.example.popin.logic.GenericCallback;
+import com.example.popin.logic.NotificationType;
 import com.example.popin.logic.TicketAdapter;
 import com.example.popin.logic.TicketItem;
 import com.example.popin.logic.UserInSession;
@@ -151,7 +155,14 @@ public class MyTicketsActivity extends AppCompatActivity {
                     if (event != null) {
                         ticket.setDateTime(event.getDateTime());
                         ticket.setLocation(event.getLocation());
+                        ticket.setDetails(event.getDetails());
+
                         ticket.setImgURL(event.getImgURL());
+
+                        ticket.setCategory(event.getCategory());
+                        ticket.setCapacity(event.getCapacity());
+                        ticket.setAttendeeCount(event.getAttendeeCount());
+
                     }
                 }
 
@@ -173,12 +184,20 @@ public class MyTicketsActivity extends AppCompatActivity {
             return;
         }
 
-        userTicketsRef.child(ticket.getTicketId())
-                .removeValue()
-                .addOnSuccessListener(unused ->
-                        Toast.makeText(MyTicketsActivity.this, "Ticket cancelled", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(unused ->
-                        Toast.makeText(MyTicketsActivity.this, "Cancellation failed", Toast.LENGTH_SHORT).show());
+        String userKey = sanitizeKey(UserInSession.getInstance().getUser().getEmail());
+
+        TicketItem.cancelTicket(userKey, ticket.getTitle(), ticket.getTicketId(), new GenericCallback() {
+            @Override
+            public void onSuccess(String message) {
+                Toast.makeText(MyTicketsActivity.this, message, Toast.LENGTH_SHORT).show();
+                sendNotification(UserInSession.getInstance().getUser(), ticket.getTitle(), NotificationType.CancelTicket);
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(MyTicketsActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void openTicketDetails(TicketItem ticket) {
@@ -192,6 +211,10 @@ public class MyTicketsActivity extends AppCompatActivity {
         intent.putExtra("location", ticket.getLocation());
         intent.putExtra("details", ticket.getDetails());
         intent.putExtra("imgURL", ticket.getImgURL());
+        intent.putExtra("eventCategory", ticket.getCategory().toString());
+        intent.putExtra("capacity", ticket.getCapacity());
+        intent.putExtra("attendees", ticket.getAttendeeCount());
+
         startActivity(intent);
     }
 
