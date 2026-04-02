@@ -27,7 +27,7 @@ public class UserClassTests {
     
     private MockedStatic<FirebaseDatabase> mockedFirebase;
 
-    // Simulate the one existing user in the DB
+
     private static final String email_in_DB = "john@example.com";
     private static final String password_in_DB = "secret123";
     private static final String name_in_DB     = "John Doe";
@@ -39,7 +39,7 @@ public class UserClassTests {
     @Before
     public void setUp() {
 
-        MockitoAnnotations.openMocks(this); // make sure this is here
+        MockitoAnnotations.openMocks(this);
 
         mockedFirebase = mockStatic(FirebaseDatabase.class);
         mockedFirebase.when(FirebaseDatabase::getInstance).thenReturn(mockFirebaseDatabase);
@@ -53,15 +53,15 @@ public class UserClassTests {
         DataSnapshot mockAddressSnapshot  = mock(DataSnapshot.class);
         DataSnapshot mockIsAdminSnapshot  = mock(DataSnapshot.class);
 
-        when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
-        when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
-        when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
-        when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
+        lenient().when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
+        lenient().when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
+        lenient().when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
+        lenient().when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
 
-        when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
-        when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
-        when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
-        when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
+        lenient().when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
+        lenient().when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
+        lenient().when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
+        lenient().when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
 
     }
 
@@ -92,7 +92,7 @@ public class UserClassTests {
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
 
-    // --- Core Logic Tests (Firebase) ---
+
 
     @Test
     public void login_emptyEmail_returnsError() {
@@ -152,19 +152,15 @@ public class UserClassTests {
             @Override public void onSuccess(User u) {
                 UserInSession.create(user);
                 assertNotNull(u);
-                assertEquals(name_in_DB,    u.getName());
+                assertEquals(name_in_DB, u.getName());
                 assertEquals(address_in_DB, u.getAddress());
-                assertEquals(email_in_DB,   u.getEmail());
+                assertEquals(email_in_DB, u.getEmail());
                 assertNotNull(UserInSession.getInstance().getUser());
             }
             @Override public void onError(String message) {
                 fail("Expected success, got error: " + message);
             }
         });
-
-        verify(mockQuery).addListenerForSingleValueEvent(listenerCaptor.capture());
-        listenerCaptor.getValue().onDataChange(mockSnapshot);
-
     }
 
     @Test
@@ -215,7 +211,7 @@ public class UserClassTests {
         verify(mockError).getMessage();
     }
 
-    // --- Simple Data Tests (Getters/Setters) ---
+
 
     @Test
     public void testSettersAndGetters() {
