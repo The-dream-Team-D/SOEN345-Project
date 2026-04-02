@@ -1,11 +1,6 @@
 package com.example.popin;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 
 public class User {
 
@@ -15,12 +10,10 @@ public class User {
     private String name;
     private boolean isAdmin = false;
 
-
-    // apparently required by firebase
+    // Required by Firebase
     public User() {}
 
     public User(String email, String password) {
-
         this.email = email;
         this.password = password;
         this.address = "";
@@ -28,56 +21,44 @@ public class User {
         this.isAdmin = false;
     }
 
+    // SETTERS
+    public void setAddress(String address) { this.address = address; }
+    public void setPassword(String password) { this.password = password; }
+    public void setName(String name) { this.name = name; }
+    public void setIsAdmin(boolean isAdmin) { this.isAdmin = isAdmin; }
 
-    //setters
-    public void setAddress(String address) {
-        this.address = address;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    // GETTERS
+    public String getAddress() { return this.address; }
+    public String getPassword() { return this.password; }
+    public String getEmail() { return this.email; }
+    public String getName() { return this.name; }
+    public boolean getIsAdmin() { return this.isAdmin; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-    //getters
-
-    public String getAddress() {
-        return this.address;
-    }
-    public String getPassword() {
-        return this.password;
-    }
-    public String getEmail() {
-        return this.email;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public boolean getIsAdmin() {
-        return this.isAdmin;
-    }
+    // LOGIN CALLBACK
     public interface LoginCallback {
         void onSuccess(User user);
         void onError(String message);
     }
 
+    // UPDATE CALLBACK
+    public interface UpdateCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
+    // LOGIN METHOD
     public void login(LoginCallback callback){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
         Query query = usersRef.orderByChild("email").equalTo(this.email);
 
         if(this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email/Phone input is Empty");
+            callback.onError("Email is empty");
             return;
         }
 
         if(this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is Empty");
+            callback.onError("Password is empty");
             return;
         }
 
@@ -87,7 +68,7 @@ public class User {
             public void onDataChange(DataSnapshot snapshot) {
 
                 if (!snapshot.exists()) {
-                    callback.onError("No user with that email/phone number");
+                    callback.onError("No user found");
                     return;
                 }
 
@@ -96,11 +77,10 @@ public class User {
                     String dbPassword = userSnapshot.child("password").getValue(String.class);
 
                     if (password.equals(dbPassword)) {
-                        System.out.println("Login successful");
 
                         User.this.setName(userSnapshot.child("name").getValue(String.class));
                         User.this.setAddress(userSnapshot.child("address").getValue(String.class));
-                        User.this.setIsAdmin(Boolean.TRUE.equals(userSnapshot.child("isAdmin").getValue(boolean.class)));
+                        User.this.setIsAdmin(Boolean.TRUE.equals(userSnapshot.child("isAdmin").getValue(Boolean.class)));
 
                         callback.onSuccess(User.this);
                         return;
@@ -113,7 +93,39 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                System.out.println("Database error: " + error.getMessage());
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+
+    public void updateProfile(UpdateCallback callback) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        Query query = usersRef.orderByChild("email").equalTo(this.email);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    callback.onError("User not found");
+                    return;
+                }
+
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+
+                    userSnapshot.getRef().child("name").setValue(name);
+                    userSnapshot.getRef().child("address").setValue(address);
+
+                    callback.onSuccess();
+                    return;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError(error.getMessage());
             }
         });
     }
