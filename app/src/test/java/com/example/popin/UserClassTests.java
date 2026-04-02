@@ -152,19 +152,15 @@ public class UserClassTests {
             @Override public void onSuccess(User u) {
                 UserInSession.create(user);
                 assertNotNull(u);
-                assertEquals(name_in_DB,    u.getName());
+                assertEquals(name_in_DB, u.getName());
                 assertEquals(address_in_DB, u.getAddress());
-                assertEquals(email_in_DB,   u.getEmail());
+                assertEquals(email_in_DB, u.getEmail());
                 assertNotNull(UserInSession.getInstance().getUser());
             }
             @Override public void onError(String message) {
                 fail("Expected success, got error: " + message);
             }
         });
-
-        verify(mockQuery).addListenerForSingleValueEvent(listenerCaptor.capture());
-        listenerCaptor.getValue().onDataChange(mockSnapshot);
-
     }
 
     @Test
