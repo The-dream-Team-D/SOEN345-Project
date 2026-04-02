@@ -2,16 +2,21 @@ package com.example.popin;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView tvName, tvEmail;
-    private EditText etName, etEmail;
+    private TextView tvName, tvEmail, tvAddress, tvPhone, tvBio, tvRole;
+    private EditText etName, etAddress, etPhone, etBio;
     private Button btnEdit, btnSave;
+    private LinearLayout displayContainer, editContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,18 +24,27 @@ public class ProfileActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
-        // Navbar setup
         View navBar = findViewById(R.id.bottomNav);
         boolean isAdmin = UserInSession.getInstance().getUser().getIsAdmin();
         NavBarComponentView.setup(navBar, isAdmin);
 
-        // UI references
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
+        tvAddress = findViewById(R.id.tvAddress);
+        tvPhone = findViewById(R.id.tvPhone);
+        tvBio = findViewById(R.id.tvBio);
+        tvRole = findViewById(R.id.tvRole);
+
         etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail);
+        etAddress = findViewById(R.id.etAddress);
+        etPhone = findViewById(R.id.etPhone);
+        etBio = findViewById(R.id.etBio);
+
         btnEdit = findViewById(R.id.btnEdit);
         btnSave = findViewById(R.id.btnSave);
+
+        displayContainer = findViewById(R.id.displayContainer);
+        editContainer = findViewById(R.id.editContainer);
 
         loadUserData();
 
@@ -41,52 +55,71 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadUserData() {
         User user = UserInSession.getInstance().getUser();
 
-        tvName.setText("Name: " + user.getName());
-        tvEmail.setText("Email: " + user.getEmail());
+        String name = safeValue(user.getName());
+        String email = safeValue(user.getEmail());
+        String address = safeValue(user.getAddress());
+        String phone = safeValue(user.getPhone());
+        String bio = safeValue(user.getBio());
+        String role = user.getIsAdmin() ? "Admin" : "User";
 
-        etName.setText(user.getName());
-        etEmail.setText(user.getEmail());
+        tvName.setText("Name: " + name);
+        tvEmail.setText("Email: " + email);
+        tvAddress.setText("Address: " + address);
+        tvPhone.setText("Phone: " + phone);
+        tvBio.setText("Bio: " + bio);
+        tvRole.setText("Account Type: " + role);
+
+        etName.setText(name.equals("Not provided") ? "" : name);
+        etAddress.setText(address.equals("Not provided") ? "" : address);
+        etPhone.setText(phone.equals("Not provided") ? "" : phone);
+        etBio.setText(bio.equals("Not provided") ? "" : bio);
+    }
+
+    private String safeValue(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return "Not provided";
+        }
+        return value;
     }
 
     private void enableEditMode() {
-        tvName.setVisibility(View.GONE);
-        tvEmail.setVisibility(View.GONE);
-
-        etName.setVisibility(View.VISIBLE);
-        etEmail.setVisibility(View.VISIBLE);
+        displayContainer.setVisibility(View.GONE);
+        editContainer.setVisibility(View.VISIBLE);
 
         btnEdit.setVisibility(View.GONE);
         btnSave.setVisibility(View.VISIBLE);
     }
 
-    private void saveUserData() {
-        String newName = etName.getText().toString();
-        String newEmail = etEmail.getText().toString();
+    private void disableEditMode() {
+        displayContainer.setVisibility(View.VISIBLE);
+        editContainer.setVisibility(View.GONE);
 
-        if (newName.isEmpty() || newEmail.isEmpty()) {
-            Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+        btnEdit.setVisibility(View.VISIBLE);
+        btnSave.setVisibility(View.GONE);
+    }
+
+    private void saveUserData() {
+        String newName = etName.getText().toString().trim();
+        String newAddress = etAddress.getText().toString().trim();
+        String newPhone = etPhone.getText().toString().trim();
+        String newBio = etBio.getText().toString().trim();
+
+        if (newName.isEmpty()) {
+            Toast.makeText(this, "Name cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
         User user = UserInSession.getInstance().getUser();
-
         user.setName(newName);
-        // ⚠️ Email NOT updated (safer for Firebase query)
+        user.setAddress(newAddress);
+        user.setPhone(newPhone);
+        user.setBio(newBio);
 
         user.updateProfile(new User.UpdateCallback() {
             @Override
             public void onSuccess() {
                 loadUserData();
-
-                tvName.setVisibility(View.VISIBLE);
-                tvEmail.setVisibility(View.VISIBLE);
-
-                etName.setVisibility(View.GONE);
-                etEmail.setVisibility(View.GONE);
-
-                btnEdit.setVisibility(View.VISIBLE);
-                btnSave.setVisibility(View.GONE);
-
+                disableEditMode();
                 Toast.makeText(ProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
             }
 
