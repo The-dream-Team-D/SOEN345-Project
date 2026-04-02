@@ -7,6 +7,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
 
     private String email;
@@ -31,7 +34,7 @@ public class User {
         this.name = "";
         this.isAdmin = false;
         this.phoneNumber = "";
-        this.userNotificationPreference = NotificationPreferenceOptions.Email;
+        this.userNotificationPreference = null;
     }
 
     private User(String email, String phoneNumber, String password, NotificationPreferenceOptions pref) {
@@ -45,11 +48,11 @@ public class User {
     }
 
     public static User createUserWithEmail(String email, String password){
-        return new User(email, "", password, NotificationPreferenceOptions.Email);
+        return new User(email, "", password.trim(), NotificationPreferenceOptions.Email);
     }
 
     public static User createUserWithPhoneNumber(String phoneNumber, String password){
-        return new User("", phoneNumber, password, NotificationPreferenceOptions.SMS);
+        return new User("", phoneNumber, password.trim(), NotificationPreferenceOptions.SMS);
     }
 
     //setters
@@ -57,7 +60,7 @@ public class User {
         this.address = address;
     }
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password.trim();
     }
 
     public void setName(String name) {
@@ -69,15 +72,33 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase().trim();
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber.toLowerCase().trim();
     }
 
-    public void setUserNotificationPreference(NotificationPreferenceOptions pref) {
+    public String setUserNotificationPreference(NotificationPreferenceOptions pref) {
+        if (pref == null) {
+            return "Invalid preference selected";
+        }
+
+        switch(pref) {
+            case Email:
+                if (this.email == null || this.email.trim().isEmpty()) {
+                    return "No email address found, please add an email to use this preference";
+                }
+                break;
+            case SMS:
+                if (this.phoneNumber == null || this.phoneNumber.trim().isEmpty()) {
+                    return "No phone number found, please add a phone number to use this preference";
+                }
+                break;
+        }
+
         this.userNotificationPreference = pref;
+        return "Preference updated successfully";
     }
 
 
@@ -126,6 +147,87 @@ public class User {
         void onError(String message);
     }
 
+    public interface SignUpCallback {
+        void onSuccess(String message);
+        void onError(String message);
+    }
+
+
+    public static void SignUp(String name, String email_or_phoneNumber, String password, SignUpCallback callback){
+        if (name == null || name.trim().isEmpty()) {
+            callback.onError("Name input is empty");
+            return;
+        }
+
+        if (email_or_phoneNumber == null || email_or_phoneNumber.trim().isEmpty()) {
+            callback.onError("Email/Phone input is Empty");
+            return;
+        }
+
+        if (password == null || password.trim().isEmpty()) {
+            callback.onError("Password input is Empty");
+            return;
+        }
+
+        User user = null;
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query query = null;
+        UserInputType type = identify(email_or_phoneNumber);
+        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+
+        if (type == UserInputType.EMAIL){
+            user = createUserWithEmail(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("email").equalTo(user.email);
+
+        } else if (type == UserInputType.PHONE) {
+            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+        } else {
+            callback.onError("Must be a valid email or phone number");
+            return;
+        }
+
+        user.setName(name);
+
+        final User finaluser = user;
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    callback.onError("An account with this Email/Phone Number already exists");
+                    return;
+                }
+
+
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("email", finaluser.getEmail());
+                userData.put("phoneNumber", finaluser.getPhoneNumber());
+
+                userData.put("password", finaluser.getPassword());
+                userData.put("address", finaluser.getAddress());
+                userData.put("name", finaluser.getName());
+
+                userData.put("isAdmin", finaluser.getIsAdmin());
+                userData.put("NotificationPreference", finaluser.getUserNotificationPreference());
+
+                usersRef.push().setValue(userData)
+                        .addOnSuccessListener(aVoid -> {
+                            callback.onSuccess("Success");
+                        })
+                        .addOnFailureListener(e -> {
+                            callback.onError("Couldn't Push Values");
+                        });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
+            }
+        });
+    }
+
     public static void login(String email_or_phoneNumber, String password, LoginCallback callback){
 
         User user = null;
@@ -143,13 +245,14 @@ public class User {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
         Query query = null;
         UserInputType type = identify(email_or_phoneNumber);
+        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
 
         if (type == UserInputType.EMAIL) {
-            user = createUserWithEmail(email_or_phoneNumber, password);
+            user = createUserWithEmail(normalizedEmailOrPhone, password);
             query = usersRef.orderByChild("email").equalTo(user.email);
 
         } else if (type == UserInputType.PHONE) {
-            user = createUserWithPhoneNumber(email_or_phoneNumber, password);
+            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
             query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
         } else {
             callback.onError("Must be a valid email or phone number");
@@ -180,7 +283,8 @@ public class User {
                         finalUser.setAddress(userSnapshot.child("address").getValue(String.class));
                         finalUser.setIsAdmin(Boolean.TRUE.equals(userSnapshot.child("isAdmin").getValue(boolean.class)));
                         finalUser.setPhoneNumber(userSnapshot.child("phoneNumber").getValue(String.class));
-                        String prefString = snapshot.child("userNotificationPreference").getValue(String.class);
+                        String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
+
                         if (prefString != null) {
                             finalUser.setUserNotificationPreference(
                                     NotificationPreferenceOptions.valueOf(prefString)

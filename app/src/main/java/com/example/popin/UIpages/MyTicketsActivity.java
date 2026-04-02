@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,48 +47,67 @@ public class MyTicketsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tickets);
 
-        UserInSession session = UserInSession.getInstance();
-        if (session == null || session.getUser() == null) {
-            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        View navBar = findViewById(R.id.bottomNav);
-        boolean userInSessionAdminCheck = session.getUser().getIsAdmin();
-        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
 
         RecyclerView recyclerView = findViewById(R.id.rvTickets);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        emptyStateText = findViewById(R.id.tvTicketsEmptyState);
-        ticketAdapter = new TicketAdapter(ticketList, this::cancelReservation, this::openTicketDetails);
-        recyclerView.setAdapter(ticketAdapter);
-
-        String userKey = sanitizeKey(session.getUser().getEmail());
-        userTicketsRef = FirebaseDatabase.getInstance()
-                .getReference("User tickets")
-                .child(userKey);
-        eventsRef = FirebaseDatabase.getInstance().getReference("Event database");
-
-        fetchTickets();
-
         EditText searchInput = findViewById(R.id.etSearchEvents);
-        searchInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ticketAdapter.filter(s.toString());
-                updateEmptyState();
-            }
+        ImageView questionMarks = findViewById(R.id.question_marks);
+        Button loginButton = findViewById(R.id.LoginToGetTickets);
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        View navBar = findViewById(R.id.bottomNav);
+        NavBarComponentView.setup(navBar);
+
+        UserInSession session = UserInSession.getInstance();
+        if (session == null || session.getUser() == null) {
+            recyclerView.setVisibility(View.GONE);
+            searchInput.setVisibility(View.GONE);
+
+            questionMarks.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.VISIBLE);
+
+            loginButton.setOnClickListener(v ->
+                    startActivity(new Intent(this, LogInActivity.class)));
+
+
+        } else {
+
+            recyclerView.setVisibility(View.VISIBLE);
+            searchInput.setVisibility(View.VISIBLE);
+
+            questionMarks.setVisibility(View.GONE);
+            loginButton.setVisibility(View.GONE);
+
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            emptyStateText = findViewById(R.id.tvTicketsEmptyState);
+            ticketAdapter = new TicketAdapter(ticketList, this::cancelReservation, this::openTicketDetails);
+            recyclerView.setAdapter(ticketAdapter);
+
+            String userKey = sanitizeKey(session.getUser().getEmail());
+            userTicketsRef = FirebaseDatabase.getInstance()
+                    .getReference("User tickets")
+                    .child(userKey);
+            eventsRef = FirebaseDatabase.getInstance().getReference("Event database");
+
+            fetchTickets();
+
+            searchInput.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    ticketAdapter.filter(s.toString());
+                    updateEmptyState();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }
     }
 
     private void fetchTickets() {
@@ -130,6 +151,7 @@ public class MyTicketsActivity extends AppCompatActivity {
                     if (event != null) {
                         ticket.setDateTime(event.getDateTime());
                         ticket.setLocation(event.getLocation());
+                        ticket.setImgURL(event.getImgURL());
                     }
                 }
 
@@ -169,6 +191,7 @@ public class MyTicketsActivity extends AppCompatActivity {
         intent.putExtra("dateTime", ticket.getDateTime());
         intent.putExtra("location", ticket.getLocation());
         intent.putExtra("details", ticket.getDetails());
+        intent.putExtra("imgURL", ticket.getImgURL());
         startActivity(intent);
     }
 

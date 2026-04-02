@@ -19,16 +19,14 @@
             android:gravity="center"
             android:padding="24dp">
 
-            <TextView
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+            <ImageView
+                android:id="@+id/EventImage"
+                android:layout_width="352dp"
+                android:layout_height="190dp"
                 android:background="@drawable/bg_event_image_placeholder"
-                android:gravity="center"
-                android:text="Event\nImage"
-                android:textAlignment="center"
-                android:textColor="#0A7FA8"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:clipToOutline="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_placeholder" />
 
         </LinearLayout>
 
@@ -47,58 +45,58 @@
                 android:id="@+id/tvPageTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Event Details"
                 android:textColor="#7A8793"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:textStyle="bold" />
 
             <!-- Event title -->
             <TextView
                 android:id="@+id/tvDetailTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:text="Event Title"
                 android:textColor="#082238"
                 android:textSize="30sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="20dp" />
+                android:textStyle="bold" />
 
             <!-- Info card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginBottom="18dp"
                 android:background="#FFFFFF"
-                android:padding="18dp"
-                android:layout_marginBottom="18dp">
+                android:orientation="vertical"
+                android:padding="18dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
                     android:text="DATE &amp; TIME"
                     android:textColor="#0A7FA8"
                     android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDetailDateTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="March 20, 2026 - 6:00 PM"
                     android:textColor="#082238"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
                     android:text="LOCATION"
                     android:textColor="#0A7FA8"
                     android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDetailLocation"
@@ -113,28 +111,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginBottom="22dp"
                 android:background="#EAF9FD"
-                android:padding="18dp"
-                android:layout_marginBottom="22dp">
+                android:orientation="vertical"
+                android:padding="18dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="ABOUT THIS EVENT"
                     android:textColor="#0A7FA8"
                     android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDetailDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:lineSpacingExtra="7dp"
                     android:text="Event description goes here"
                     android:textColor="#082238"
-                    android:textSize="15sp"
-                    android:lineSpacingExtra="7dp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <Button
@@ -156,13 +154,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:backgroundTint="#CCCCCC"
+                android:enabled="false"
                 android:paddingVertical="14dp"
                 android:text="@string/ticketPurchasedButton"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:enabled="false"
                 android:visibility="gone" />
 
             <Button
@@ -184,13 +182,13 @@
                 android:id="@+id/btnBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#082238"
+                android:paddingVertical="14dp"
                 android:text="@string/backToEventsButton"
                 android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textSize="16sp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#082238"
-                android:paddingVertical="14dp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

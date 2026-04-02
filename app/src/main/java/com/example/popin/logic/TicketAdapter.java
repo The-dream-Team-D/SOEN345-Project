@@ -1,14 +1,17 @@
 package com.example.popin.logic;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.popin.R;
 
 import java.util.ArrayList;
@@ -30,7 +33,6 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     private final OnCancelClickListener cancelClickListener;
     private final OnTicketClickListener ticketClickListener;
     private String currentQuery = "";
-
     public TicketAdapter(
             List<TicketItem> tickets,
             OnCancelClickListener cancelClickListener,
@@ -55,6 +57,16 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         holder.title.setText(ticket.getTitle());
         holder.dateTime.setText(ticket.getDateTime());
         holder.location.setText(ticket.getLocation());
+
+        if (holder.eventImage != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(ticket.getImgURL())
+                    .override(200, 200)
+                    .dontAnimate()
+                    .placeholder(R.drawable.img_placeholder)
+                    .error(R.drawable.img_placeholder)
+                    .into(holder.eventImage);
+        }
 
         holder.cancelButton.setOnClickListener(v -> cancelClickListener.onCancelClick(ticket));
         holder.itemView.setOnClickListener(v -> ticketClickListener.onTicketClick(ticket));
@@ -95,13 +107,14 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         private final TextView dateTime;
         private final TextView location;
         private final Button cancelButton;
-
+        private final ImageView eventImage;
         TicketViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.tvTicketTitle);
             dateTime = itemView.findViewById(R.id.tvTicketDateTime);
             location = itemView.findViewById(R.id.tvTicketLocation);
             cancelButton = itemView.findViewById(R.id.btnCancelTicket);
+            eventImage = itemView.findViewById(R.id.tvEventImage);
         }
     }
 }

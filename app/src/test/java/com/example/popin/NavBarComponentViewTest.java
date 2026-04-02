@@ -63,8 +63,7 @@ public class NavBarComponentViewTest {
         mockHostActivity = Robolectric.buildActivity(AppCompatActivity.class).create().get();
         mockShadowActivity = shadowOf(mockHostActivity);
         navBar = new NavBarComponentView(mockHostActivity, null);
-        NavBarComponentView.setup(navBar, isAdmin);
-
+        NavBarComponentView.setup(navBar);
     }
 
 // ── Explore tab ──────────────────────────────────────────────────────────

@@ -19,4 +19,6 @@ public class TicketItem extends EventItem {
     public void setTicketId(String ticketId) {
         this.ticketId = ticketId;
     }
+
+
 }

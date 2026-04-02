@@ -11,9 +11,24 @@
     tools:theme="@style/Base.Theme.PopIn"
     >
 
+    <ImageView
+        android:id="@+id/wave_image"
+        android:layout_width="419dp"
+        android:layout_height="199dp"
+        android:contentDescription="@string/waveDesignDescription"
+        android:scaleType="centerCrop"
+        android:scaleX="1"
+        android:scaleY="-1"
+
+        android:src="@drawable/wave"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/EventsTitle"
+        android:id="@+id/TicketsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/MyTicketsTitle"
@@ -22,10 +37,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.019" />
+        app:layout_constraintVertical_bias="0.178" />
 
     <EditText
         android:id="@+id/etSearchEvents"
@@ -45,7 +60,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@+id/EventsTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/TicketsTitle" />
+
+
+
+    <ImageView
+        android:id="@+id/question_marks"
+        android:layout_width="419dp"
+        android:layout_height="199dp"
+        android:layout_marginTop="364dp"
+
+        android:alpha="0.3"
+        android:contentDescription="@string/questionMarkImageDesc"
+
+        android:src="@drawable/question_mark"
+        app:layout_constraintBottom_toTopOf="@+id/LoginToGetTickets"
+        app:layout_constraintEnd_toEndOf="@+id/LoginToGetTickets"
+        app:layout_constraintStart_toStartOf="@+id/LoginToGetTickets"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/LoginToGetTickets"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="552dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/guestUserTicketViewButton"
+
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        app:backgroundTint="@color/action"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTickets"
@@ -55,14 +109,13 @@
         android:layout_marginTop="20dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.007"
-
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etSearchEvents"
-        />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/tvTicketsEmptyState"

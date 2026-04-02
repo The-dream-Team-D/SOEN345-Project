@@ -8,8 +8,24 @@
 
     android:id="@+id/profileMain"
     tools:context=".UIpages.ProfileActivity"
-    tools:theme="@style/Base.Theme.PopIn"
-    >
+    tools:theme="@style/Base.Theme.PopIn">
+
+
+    <ImageView
+        android:id="@+id/wave_image"
+        android:layout_width="530dp"
+        android:layout_height="175dp"
+        android:contentDescription="@string/waveDesignDescription"
+        android:scaleType="centerCrop"
+        android:scaleX="1"
+
+        android:scaleY="-1"
+
+        android:src="@drawable/wave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/EventsTitle"
@@ -21,10 +37,46 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.019" />
+        app:layout_constraintVertical_bias="0.178" />
+
+    <ImageView
+        android:id="@+id/question_marks"
+        android:layout_width="419dp"
+        android:layout_height="199dp"
+        android:layout_marginTop="364dp"
+
+        android:alpha="0.3"
+        android:contentDescription="@string/questionMarkImageDesc"
+
+        android:src="@drawable/question_mark"
+        app:layout_constraintBottom_toTopOf="@+id/LoginToViewProfileOptions"
+        app:layout_constraintEnd_toEndOf="@+id/LoginToViewProfileOptions"
+        app:layout_constraintStart_toStartOf="@+id/LoginToViewProfileOptions"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/LoginToViewProfileOptions"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="552dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/guestUserProfileViewButton"
+
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        app:backgroundTint="@color/action"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.example.popin.reusableUI.NavBarComponentView
         android:layout_width="match_parent"

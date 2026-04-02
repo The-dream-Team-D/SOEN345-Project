@@ -1,15 +1,37 @@
 <resources>
     <string name="app_name">PopIn</string>
     <string name="logoDescription">logo</string>
+    <string name="waveDesignDescription">Page wave design</string>
+    <string name="designImageDescription">small image to add style</string>
+    <string name="questionMarkImageDesc">small indicator to user that they are guest</string>
 
-    <string name="loginTitle">Login</string>
+
+    <string name="Welcome">Welcome</string>
+    <string name="joinText">or, Join as a guest</string>
+
+    <string name="ReturningUser">Login</string>
+    <string name="NewUser">Register</string>
+
+
+
+
+    <string name="loginTitle">Log In</string>
     <string name="loginCatchyPhrase">PopIn, and Join our Events!</string>
     <string name="loginButton">Let\'s Go! =&gt;</string>
 
-    <string name="emailInputHint">Email or Phone Number</string>
+    <string name="emailInputHint">demo123@gmail.com or +123456789</string>
     <string name="passwordInputHint">Password</string>
 
-    <string name="signUpButton">Don\'t have an account? Sign Up</string>
+    <string name="signupTitle">Sign Up</string>
+    <string name="EmailOrPhoneNumber">Email/Phone Number</string>
+
+    <string name="passwordText">Password</string>
+
+    <string name="userNameText">Username</string>
+    <string name="usernameHint">ex: JohnSmith123</string>
+
+    <string name="signUpButton">Create Account!</string>
+
 
     <string name="EventsTitle">Events</string>
     <string name="MyTicketsTitle">My Tickets</string>
@@ -32,6 +54,10 @@
     <string name="buyTicketButton">Buy Ticket</string>
     <string name="ticketPurchasedButton">Already registered to event</string>
     <string name="guestUserTicketPurchaseButton">Login To Buy Tickets</string>
+
+    <string name="guestUserTicketViewButton">Login To View Your Tickets</string>
+    <string name="guestUserProfileViewButton">Login To View Profile Details</string>
+
 
 
 

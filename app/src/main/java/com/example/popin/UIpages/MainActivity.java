@@ -1,9 +1,13 @@
 package com.example.popin.UIpages;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -12,9 +16,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.popin.R;
-import com.example.popin.logic.User;
-import com.example.popin.logic.UserInSession;
-import com.google.android.material.textfield.TextInputEditText;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,60 +26,42 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FF8559"));
+
+        pageSetUp();
+
+    }
+
+
+    private void pageSetUp(){
+        Button btnLogin = findViewById(R.id.btnReturningUser);
+
+        btnLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LogInActivity.class);
+            startActivity(intent);
+        });
+
+        Button btnSignUp = findViewById(R.id.btnNewUser);
+
+        btnSignUp.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SignUpActivity.class);
+            startActivity(intent);
+        });
+
+        TextView guest = findViewById(R.id.guestContinue);
+
+        guest.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EventsPageActivity.class);
+            startActivity(intent);
         });
     }
     
-    public void Login(View view) {
 
-        TextInputEditText emailInputField = findViewById(R.id.EmailInput);
-        TextInputEditText passwordInputField = findViewById(R.id.passwordInput);
-
-        String email_or_phoneNumber = emailInputField.getText().toString();
-        String password = passwordInputField.getText().toString();
-
-
-
-
-
-        User.login(email_or_phoneNumber, password, new User.LoginCallback() {
-            @Override
-            public void onSuccess(User user) {
-                Toast.makeText(getApplicationContext(), "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
-                UserInSession.create(user);
-
-                Intent intent = new Intent(MainActivity.this, EventsPageActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onError(String message) {
-                switch (message) {
-                    case "Email/Phone input is Empty":
-                        emailInputField.setError("Input is Empty");
-                        break;
-                    case "Password input is Empty":
-                        passwordInputField.setError("Input is Empty");
-                        break;
-                    case "Must be a valid email or phone number":
-                        emailInputField.setError("Not valid Email/Phone Number");
-                        break;
-                    case "No user with that email/phone number":
-                        emailInputField.setError("No registered account with this email/phone number");
-                        break;
-                    case "Incorrect password":
-                        passwordInputField.setError("Incorrect password");
-                        break;
-                    default:
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
 
 }

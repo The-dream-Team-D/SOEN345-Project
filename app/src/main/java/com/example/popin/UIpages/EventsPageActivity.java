@@ -42,14 +42,8 @@ public class EventsPageActivity extends AppCompatActivity {
 
         View navBar = findViewById(R.id.bottomNav);
 
-        UserInSession session = UserInSession.getInstance();
-        if (session == null || session.getUser() == null) {
-            NavBarComponentView.setup(navBar, false);
+        NavBarComponentView.setup(navBar);
 
-        }else{
-            boolean userInSessionAdminCheck = session.getUser().getIsAdmin();
-            NavBarComponentView.setup(navBar, userInSessionAdminCheck);
-        }
 
         eventList = new ArrayList<>();
         

@@ -19,8 +19,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_dashboard);
 
         View navBar = findViewById(R.id.bottomNav);
-        boolean userInSessionAdminCheck = UserInSession.getInstance().getUser().getIsAdmin();
-        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
+        NavBarComponentView.setup(navBar);
 
     }
 

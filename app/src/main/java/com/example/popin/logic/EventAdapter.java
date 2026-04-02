@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.popin.UIpages.EventDetailActivity;
 import com.example.popin.R;
 
@@ -40,12 +43,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.dateTime.setText(event.getDateTime());
         holder.location.setText(event.getLocation());
 
+        if (holder.eventImage != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(event.getImgURL())
+                    .override(200, 200)
+                    .dontAnimate()
+                    .placeholder(R.drawable.img_placeholder)
+                    .error(R.drawable.img_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.eventImage);
+
+        }
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
             intent.putExtra("title", event.getTitle());
             intent.putExtra("dateTime", event.getDateTime());
             intent.putExtra("location", event.getLocation());
             intent.putExtra("details", event.getDetails());
+            intent.putExtra("imgURL", event.getImgURL());
             v.getContext().startActivity(intent);
         });
     }
@@ -82,12 +97,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         private final TextView title;
         private final TextView dateTime;
         private final TextView location;
-
+        private final ImageView eventImage;
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.tvEventTitle);
             dateTime = itemView.findViewById(R.id.tvEventDateTime);
             location = itemView.findViewById(R.id.tvEventLocation);
+            eventImage = itemView.findViewById(R.id.ivEventImage);
         }
     }
 }

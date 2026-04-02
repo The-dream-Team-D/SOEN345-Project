@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.popin.R;
 import com.example.popin.logic.NotificationType;
 import com.example.popin.logic.Notifications;
@@ -30,6 +33,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private TextView tvDetailDateTime;
     private TextView tvDetailLocation;
     private TextView tvDetailDetails;
+    private ImageView eventImageURL;
 
     private Button btnBuyTicket;
     private Button btnTicketPurchased;
@@ -77,11 +81,7 @@ public class EventDetailActivity extends AppCompatActivity {
                         .addOnSuccessListener(unused -> {
                             Toast.makeText(EventDetailActivity.this, "Ticket purchased.", Toast.LENGTH_SHORT).show();
                             setupTicketButton(true);
-                            Log.d("SESSION", "Before notif: " + (UserInSession.getInstance() == null ? "NULL" : "OK"));
                             Notifications.sendEmailNotification(session.getUser(), getIntent().getStringExtra("title"), NotificationType.RegisterEvent);
-                            Log.d("SESSION", "After notif: " + (UserInSession.getInstance() == null ? "NULL" : "OK"));
-
-
                         })
                         .addOnFailureListener(unused ->
                                 Toast.makeText(EventDetailActivity.this, "Purchase failed.", Toast.LENGTH_SHORT).show());
@@ -125,20 +125,32 @@ public class EventDetailActivity extends AppCompatActivity {
 
         btnBack = findViewById(R.id.btnBack);
 
+        eventImageURL = findViewById(R.id.EventImage);
+
         String title = getIntent().getStringExtra("title");
         String dateTime = getIntent().getStringExtra("dateTime");
         String location = getIntent().getStringExtra("location");
         String details = getIntent().getStringExtra("details");
-
+        String imgURL = getIntent().getStringExtra("imgURL");
 
         tvDetailTitle.setText(title);
         tvDetailDateTime.setText(dateTime);
         tvDetailLocation.setText(location);
         tvDetailDetails.setText(details);
 
+
+        Glide.with(this)
+                .load(imgURL)
+                .override(300, 200)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
+                .placeholder(R.drawable.img_placeholder)
+                .error(R.drawable.img_placeholder)
+                .into(eventImageURL);
+
         btnLoginToBuy = findViewById(R.id.btnLoginToBuy);
         btnLoginToBuy.setOnClickListener(v ->
-                startActivity(new Intent(this, MainActivity.class)));
+                startActivity(new Intent(this, LogInActivity.class)));
 
 
         checkRegistrationStatus(title);

@@ -8,6 +8,21 @@
     tools:context=".UIpages.EventsPageActivity"
     tools:theme="@style/Base.Theme.PopIn">
 
+    <ImageView
+        android:id="@+id/wave_image"
+        android:layout_width="582dp"
+        android:layout_height="203dp"
+        android:contentDescription="@string/waveDesignDescription"
+        android:scaleType="centerCrop"
+        android:scaleX="1"
+        android:scaleY="-1"
+
+        android:src="@drawable/wave"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.672"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/EventsTitle"
@@ -19,10 +34,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.019" />
+        app:layout_constraintVertical_bias="0.178" />
 
     <EditText
         android:id="@+id/etSearchEvents"

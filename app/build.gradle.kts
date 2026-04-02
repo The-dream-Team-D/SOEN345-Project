@@ -167,6 +167,9 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation(libs.firebase.database)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+
     testImplementation(libs.junit)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.11.0")

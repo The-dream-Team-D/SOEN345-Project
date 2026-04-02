@@ -5,6 +5,7 @@ public class EventItem {
     private String dateTime;
     private String location;
     private String details;
+    private String imgURL;
 
     // Required by Firebase
     public EventItem() {}
@@ -53,4 +54,12 @@ public class EventItem {
     public void setDetails(String details) {
         this.details = details;
     }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
+
 }

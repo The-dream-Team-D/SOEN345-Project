@@ -12,6 +12,7 @@ import com.example.popin.UIpages.EventsPageActivity;
 import com.example.popin.UIpages.MyTicketsActivity;
 import com.example.popin.UIpages.ProfileActivity;
 import com.example.popin.R;
+import com.example.popin.logic.UserInSession;
 
 public class NavBarComponentView extends LinearLayout {
 
@@ -67,12 +68,18 @@ public class NavBarComponentView extends LinearLayout {
         });
     }
 
-    public static void setup(View navBarView, boolean isAdmin) {
+    public static void setup(View navBarView) {
 
         View adminOnlyNav = navBarView.findViewById(R.id.nav_adminDashboard_container);
-
-        if (!isAdmin) {
+        UserInSession session = UserInSession.getInstance();
+        if(session == null || session.getUser() == null) {
             adminOnlyNav.setVisibility(View.GONE);
+        }
+        else {
+            boolean isAdmin = session.getUser().getIsAdmin();
+            if (!isAdmin) {
+                adminOnlyNav.setVisibility(View.GONE);
+            }
         }
 
     }

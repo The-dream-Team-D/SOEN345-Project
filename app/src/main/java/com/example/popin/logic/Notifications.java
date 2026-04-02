@@ -12,8 +12,6 @@ public class Notifications {
         String html;
         String message;
 
-        Log.d("NOTIF", "reached here 4");
-
         switch (n) {
             case RegisterEvent:
                 subject = "Event Registration Confirmed";
@@ -37,15 +35,11 @@ public class Notifications {
                 break;
         }
 
-        Log.d("NOTIF", "reached here 5");
-
         if (user.getUserNotificationPreference() == NotificationPreferenceOptions.SMS) {
             SMServicer.sendSMS(user.getPhoneNumber(), message);
         } else {
             EmailServicer.sendEmail(user.getEmail(), subject, html);
         }
-
-        Log.d("NOTIF", "reached here 6");
 
 
     }
