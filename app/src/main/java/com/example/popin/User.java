@@ -29,7 +29,6 @@ public class User {
         this.isAdmin = false;
     }
 
-    // SETTERS
     public void setAddress(String address) { this.address = address; }
     public void setPassword(String password) { this.password = password; }
     public void setName(String name) { this.name = name; }
@@ -37,7 +36,6 @@ public class User {
     public void setBio(String bio) { this.bio = bio; }
     public void setIsAdmin(boolean isAdmin) { this.isAdmin = isAdmin; }
 
-    // GETTERS
     public String getAddress() { return this.address; }
     public String getPassword() { return this.password; }
     public String getEmail() { return this.email; }
@@ -119,14 +117,20 @@ public class User {
                     return;
                 }
 
+                boolean updated = false;
+
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     userSnapshot.getRef().child("name").setValue(name);
                     userSnapshot.getRef().child("address").setValue(address);
                     userSnapshot.getRef().child("phone").setValue(phone);
                     userSnapshot.getRef().child("bio").setValue(bio);
+                    updated = true;
+                }
 
+                if (updated) {
                     callback.onSuccess();
-                    return;
+                } else {
+                    callback.onError("User not found");
                 }
             }
 

@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private static final String NOT_PROVIDED = "Not provided";
+
     private TextView tvName, tvEmail, tvAddress, tvPhone, tvBio, tvRole;
     private EditText etName, etAddress, etPhone, etBio;
     private Button btnEdit, btnSave;
@@ -69,15 +71,15 @@ public class ProfileActivity extends AppCompatActivity {
         tvBio.setText("Bio: " + bio);
         tvRole.setText("Account Type: " + role);
 
-        etName.setText(name.equals("Not provided") ? "" : name);
-        etAddress.setText(address.equals("Not provided") ? "" : address);
-        etPhone.setText(phone.equals("Not provided") ? "" : phone);
-        etBio.setText(bio.equals("Not provided") ? "" : bio);
+        etName.setText(name.equals(NOT_PROVIDED) ? "" : name);
+        etAddress.setText(address.equals(NOT_PROVIDED) ? "" : address);
+        etPhone.setText(phone.equals(NOT_PROVIDED) ? "" : phone);
+        etBio.setText(bio.equals(NOT_PROVIDED) ? "" : bio);
     }
 
     private String safeValue(String value) {
         if (value == null || value.trim().isEmpty()) {
-            return "Not provided";
+            return NOT_PROVIDED;
         }
         return value;
     }
