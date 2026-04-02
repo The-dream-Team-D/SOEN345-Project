@@ -54,7 +54,7 @@
                 android:padding="18dp"
                 android:src="@android:drawable/ic_menu_myplaces"
                 android:scaleType="centerInside"
-                android:tint="#FFFFFF" />
+                app:tint="#FFFFFF" />
 
             <TextView
                 android:id="@+id/tvProfileHeader"
@@ -104,7 +104,6 @@
                                 android:text="Name:"
                                 android:textColor="#333333"
                                 android:textSize="17sp"
-                                android:textStyle="bold"
                                 android:padding="16dp"
                                 android:gravity="center" />
                         </androidx.cardview.widget.CardView>
@@ -124,7 +123,6 @@
                                 android:text="Email:"
                                 android:textColor="#333333"
                                 android:textSize="17sp"
-                                android:textStyle="bold"
                                 android:padding="16dp"
                                 android:gravity="center" />
                         </androidx.cardview.widget.CardView>
@@ -144,7 +142,6 @@
                                 android:text="Address:"
                                 android:textColor="#333333"
                                 android:textSize="17sp"
-                                android:textStyle="bold"
                                 android:padding="16dp"
                                 android:gravity="center" />
                         </androidx.cardview.widget.CardView>
@@ -164,7 +161,6 @@
                                 android:text="Phone:"
                                 android:textColor="#333333"
                                 android:textSize="17sp"
-                                android:textStyle="bold"
                                 android:padding="16dp"
                                 android:gravity="center" />
                         </androidx.cardview.widget.CardView>
@@ -184,7 +180,6 @@
                                 android:text="Bio:"
                                 android:textColor="#333333"
                                 android:textSize="17sp"
-                                android:textStyle="bold"
                                 android:padding="16dp"
                                 android:gravity="center" />
                         </androidx.cardview.widget.CardView>
@@ -204,7 +199,6 @@
                                 android:text="Account Type:"
                                 android:textColor="#2F7D7A"
                                 android:textSize="17sp"
-                                android:textStyle="bold"
                                 android:padding="16dp"
                                 android:gravity="center" />
                         </androidx.cardview.widget.CardView>

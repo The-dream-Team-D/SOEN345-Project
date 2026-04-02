@@ -55,60 +55,15 @@ public class User {
     }
 
     public void login(LoginCallback callback) {
+        if (!validateInputs(callback)) return;
+
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-
-        if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email/Phone input is Empty");
-            return;
-        }
-
-        if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is Empty");
-            return;
-        }
-
         Query query = usersRef.orderByChild("email").equalTo(this.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
-                if (!snapshot.exists()) {
-                    callback.onError("No user with that email/phone number");
-                    return;
-                }
-
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-
-                    String dbPassword = userSnapshot.child("password").getValue(String.class);
-
-                    if (dbPassword != null && password.equals(dbPassword)) {
-
-                        String dbName = userSnapshot.child("name").getValue(String.class);
-                        String dbAddress = userSnapshot.child("address").getValue(String.class);
-
-                        DataSnapshot phoneSnap = userSnapshot.child("phone");
-                        DataSnapshot bioSnap = userSnapshot.child("bio");
-
-                        String dbPhone = phoneSnap != null ? phoneSnap.getValue(String.class) : null;
-                        String dbBio = bioSnap != null ? bioSnap.getValue(String.class) : null;
-
-                        Boolean isAdminValue = userSnapshot.child("isAdmin").getValue(Boolean.class);
-
-                        User.this.setName(dbName != null ? dbName : "");
-                        User.this.setAddress(dbAddress != null ? dbAddress : "");
-                        User.this.setPhone(dbPhone != null ? dbPhone : "");
-                        User.this.setBio(dbBio != null ? dbBio : "");
-                        User.this.setIsAdmin(Boolean.TRUE.equals(isAdminValue));
-
-                        callback.onSuccess(User.this);
-                        return;
-
-                    } else {
-                        callback.onError("Incorrect password");
-                    }
-                }
+                handleSnapshot(snapshot, callback);
             }
 
             @Override
@@ -116,6 +71,61 @@ public class User {
                 System.out.println("Database error: " + error.getMessage());
             }
         });
+    }
+
+    private boolean validateInputs(LoginCallback callback) {
+        if (this.email == null || this.email.trim().isEmpty()) {
+            callback.onError("Email/Phone input is Empty");
+            return false;
+        }
+
+        if (this.password == null || this.password.trim().isEmpty()) {
+            callback.onError("Password input is Empty");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void handleSnapshot(DataSnapshot snapshot, LoginCallback callback) {
+        if (!snapshot.exists()) {
+            callback.onError("No user with that email/phone number");
+            return;
+        }
+
+        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+            if (processUser(userSnapshot, callback)) return;
+        }
+    }
+
+    private boolean processUser(DataSnapshot userSnapshot, LoginCallback callback) {
+        String dbPassword = userSnapshot.child("password").getValue(String.class);
+
+        if (dbPassword != null && password.equals(dbPassword)) {
+
+            String dbName = userSnapshot.child("name").getValue(String.class);
+            String dbAddress = userSnapshot.child("address").getValue(String.class);
+
+            DataSnapshot phoneSnap = userSnapshot.child("phone");
+            DataSnapshot bioSnap = userSnapshot.child("bio");
+
+            String dbPhone = phoneSnap != null ? phoneSnap.getValue(String.class) : null;
+            String dbBio = bioSnap != null ? bioSnap.getValue(String.class) : null;
+
+            Boolean isAdminValue = userSnapshot.child("isAdmin").getValue(Boolean.class);
+
+            this.setName(dbName != null ? dbName : "");
+            this.setAddress(dbAddress != null ? dbAddress : "");
+            this.setPhone(dbPhone != null ? dbPhone : "");
+            this.setBio(dbBio != null ? dbBio : "");
+            this.setIsAdmin(Boolean.TRUE.equals(isAdminValue));
+
+            callback.onSuccess(this);
+            return true;
+        }
+
+        callback.onError("Incorrect password");
+        return false;
     }
 
     public void updateProfile(UpdateCallback callback) {
