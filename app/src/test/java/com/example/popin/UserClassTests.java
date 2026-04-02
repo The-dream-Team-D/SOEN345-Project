@@ -27,7 +27,7 @@ public class UserClassTests {
     
     private MockedStatic<FirebaseDatabase> mockedFirebase;
 
-    // Simulate the one existing user in the DB
+
     private static final String email_in_DB = "john@example.com";
     private static final String password_in_DB = "secret123";
     private static final String name_in_DB     = "John Doe";
@@ -39,7 +39,7 @@ public class UserClassTests {
     @Before
     public void setUp() {
 
-        MockitoAnnotations.openMocks(this); // make sure this is here
+        MockitoAnnotations.openMocks(this);
 
         mockedFirebase = mockStatic(FirebaseDatabase.class);
         mockedFirebase.when(FirebaseDatabase::getInstance).thenReturn(mockFirebaseDatabase);
@@ -92,7 +92,7 @@ public class UserClassTests {
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
 
-    // --- Core Logic Tests (Firebase) ---
+
 
     @Test
     public void login_emptyEmail_returnsError() {
@@ -211,7 +211,7 @@ public class UserClassTests {
         verify(mockError).getMessage();
     }
 
-    // --- Simple Data Tests (Getters/Setters) ---
+
 
     @Test
     public void testSettersAndGetters() {
