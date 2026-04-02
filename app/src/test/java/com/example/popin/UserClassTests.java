@@ -53,15 +53,15 @@ public class UserClassTests {
         DataSnapshot mockAddressSnapshot  = mock(DataSnapshot.class);
         DataSnapshot mockIsAdminSnapshot  = mock(DataSnapshot.class);
 
-        when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
-        when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
-        when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
-        when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
+        lenient().when(mockUserSnapshot.child("password")).thenReturn(mockPasswordSnapshot);
+        lenient().when(mockUserSnapshot.child("name")).thenReturn(mockNameSnapshot);
+        lenient().when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
+        lenient().when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
 
-        when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
-        when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
-        when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
-        when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
+        lenient().when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
+        lenient().when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
+        lenient().when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
+        lenient().when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
 
     }
 

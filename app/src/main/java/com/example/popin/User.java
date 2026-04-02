@@ -87,8 +87,12 @@ public class User {
 
                         String dbName = userSnapshot.child("name").getValue(String.class);
                         String dbAddress = userSnapshot.child("address").getValue(String.class);
-                        String dbPhone = userSnapshot.child("phone").getValue(String.class);
-                        String dbBio = userSnapshot.child("bio").getValue(String.class);
+
+                        DataSnapshot phoneSnap = userSnapshot.child("phone");
+                        DataSnapshot bioSnap = userSnapshot.child("bio");
+
+                        String dbPhone = phoneSnap != null ? phoneSnap.getValue(String.class) : null;
+                        String dbBio = bioSnap != null ? bioSnap.getValue(String.class) : null;
 
                         Boolean isAdminValue = userSnapshot.child("isAdmin").getValue(Boolean.class);
 
