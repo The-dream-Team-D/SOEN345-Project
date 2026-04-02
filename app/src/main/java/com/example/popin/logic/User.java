@@ -21,6 +21,8 @@ public class User {
     private String phoneNumber;
 
     private NotificationPreferenceOptions userNotificationPreference;
+    private String bio;
+
 
 
     // apparently required by firebase
@@ -35,6 +37,7 @@ public class User {
         this.isAdmin = false;
         this.phoneNumber = "";
         this.userNotificationPreference = null;
+        this.bio = "";
     }
 
     private User(String email, String phoneNumber, String password, NotificationPreferenceOptions pref) {
@@ -45,6 +48,7 @@ public class User {
         this.isAdmin = false;
         this.phoneNumber = phoneNumber;
         this.userNotificationPreference = pref;
+        this.bio = "";
     }
 
     public static User createUserWithEmail(String email, String password){
@@ -78,6 +82,9 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber.toLowerCase().trim();
     }
+    public void setBio(String bio) { this.bio = bio; }
+
+    public String getBio() { return this.bio; }
 
     public String setUserNotificationPreference(NotificationPreferenceOptions pref) {
         if (pref == null) {
@@ -151,6 +158,12 @@ public class User {
         void onSuccess(String message);
         void onError(String message);
     }
+
+    public interface UpdateCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
 
 
     public static void SignUp(String name, String email_or_phoneNumber, String password, SignUpCallback callback){
@@ -307,4 +320,98 @@ public class User {
             }
         });
     }
+
+    private boolean validateInputs(LoginCallback callback) {
+        if (this.email == null || this.email.trim().isEmpty()) {
+            callback.onError("Email/Phone input is Empty");
+            return false;
+        }
+
+        if (this.password == null || this.password.trim().isEmpty()) {
+            callback.onError("Password input is Empty");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void handleSnapshot(DataSnapshot snapshot, LoginCallback callback) {
+        if (!snapshot.exists()) {
+            callback.onError("No user with that email/phone number");
+            return;
+        }
+
+        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+            if (processUser(userSnapshot, callback)) return;
+        }
+    }
+
+    private boolean processUser(DataSnapshot userSnapshot, LoginCallback callback) {
+        String dbPassword = userSnapshot.child("password").getValue(String.class);
+
+        if (dbPassword != null && password.equals(dbPassword)) {
+
+            String dbName = userSnapshot.child("name").getValue(String.class);
+            String dbAddress = userSnapshot.child("address").getValue(String.class);
+
+            DataSnapshot phoneSnap = userSnapshot.child("phone");
+            DataSnapshot bioSnap = userSnapshot.child("bio");
+
+            String dbPhone = phoneSnap != null ? phoneSnap.getValue(String.class) : null;
+            String dbBio = bioSnap != null ? bioSnap.getValue(String.class) : null;
+
+            Boolean isAdminValue = userSnapshot.child("isAdmin").getValue(Boolean.class);
+
+            this.setName(dbName != null ? dbName : "");
+            this.setAddress(dbAddress != null ? dbAddress : "");
+            this.setPhoneNumber(dbPhone != null ? dbPhone : "");
+            this.setBio(dbBio != null ? dbBio : "");
+            this.setIsAdmin(Boolean.TRUE.equals(isAdminValue));
+
+            callback.onSuccess(this);
+            return true;
+        }
+
+        callback.onError("Incorrect password");
+        return false;
+    }
+
+    public void updateProfile(UpdateCallback callback) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query query = usersRef.orderByChild("email").equalTo(this.email);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    callback.onError("User not found");
+                    return;
+                }
+
+                boolean updated = false;
+
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    userSnapshot.getRef().child("name").setValue(name);
+                    userSnapshot.getRef().child("address").setValue(address);
+                    userSnapshot.getRef().child("phoneNumber").setValue(phoneNumber);
+                    userSnapshot.getRef().child("bio").setValue(bio);
+                    updated = true;
+                }
+
+                if (updated) {
+                    callback.onSuccess();
+                } else {
+                    callback.onError("User not found");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+
 }

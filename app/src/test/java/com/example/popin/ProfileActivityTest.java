@@ -28,7 +28,7 @@ public class ProfileActivityTest {
         testUser = new User("hos@email.com", "123456");
         testUser.setName("HOSSAM THE GOAT");
         testUser.setAddress("123 concordia");
-        testUser.setPhone("123456789");
+        testUser.setPhoneNumber("123456789");
         testUser.setBio("bio 123");
         testUser.setIsAdmin(true);
 
