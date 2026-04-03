@@ -5,4 +5,6 @@ public enum NotificationType {
     RegisterAccount,
     DeleteAccount,
     CancelTicket,
+    ChangePassword,
+
 }

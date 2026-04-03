@@ -167,6 +167,20 @@
         app:layout_constraintTop_toTopOf="@id/password_input"
         app:layout_constraintVertical_bias="0.035" />
 
+
+    <TextView
+        android:id="@+id/forgotPassword"
+        android:layout_width="149dp"
+        android:layout_height="25dp"
+        android:text="@string/forgotPassword"
+        android:textColor="@color/action"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/password_input"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/password_input"
+        app:layout_constraintTop_toBottomOf="@id/password_input" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/LoginButton"
         android:layout_width="147dp"

@@ -25,6 +25,7 @@
         </activity>
 
         <activity android:name=".UIpages.EventsPageActivity" />
+        <activity android:name=".UIpages.ForgotPasswordActivity" />
         <activity android:name=".UIpages.LogInActivity" />
         <activity android:name=".UIpages.SignUpActivity" />
         <activity android:name=".UIpages.MyTicketsActivity" />

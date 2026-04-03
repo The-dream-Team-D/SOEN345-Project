@@ -1,11 +1,15 @@
 package com.example.popin.logic;
 
+import android.util.Log;
+
 import com.example.popin.logic.service.EmailServicer;
 import com.example.popin.logic.service.SMServicer;
 
+import java.security.SecureRandom;
+
 public class Notifications {
 
-    public static void sendNotification(User user, String eventTitle, NotificationType n){
+    public static void sendNotification(User user, String eventTitle, NotificationType n, String code){
         String subject;
         String html;
         String message;
@@ -35,6 +39,19 @@ public class Notifications {
                         + "If you did not perform this action, please contact us at support@example.com.";
                 break;
 
+            case ChangePassword:
+
+                subject = "Password Reset Code";
+                html = "You requested a password reset for your account.<br><br>"
+                        + "Your verification code is: <strong>" + code + "</strong><br><br>"
+                        + "This code will expire in 10 minutes.<br><br>"
+                        + "If you did not request this, please contact us at support@example.com.";
+                message = "You requested a password reset for your account.\n\n"
+                        + "Your verification code is: " + code + "\n\n"
+                        + "This code will expire in 10 minutes.\n\n"
+                        + "If you did not request this, please contact us at support@example.com.";
+                break;
+
             default:
                 subject = "";
                 html = "";
@@ -47,5 +64,19 @@ public class Notifications {
         } else {
             EmailServicer.sendEmail(user.getEmail(), subject, html);
         }
+    }
+
+
+    public static String buildCode(){
+
+        final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        final SecureRandom RANDOM = new SecureRandom();
+
+        StringBuilder sb = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            sb.append(CHARS.charAt(RANDOM.nextInt(CHARS.length())));
+        }
+        return sb.toString();
+
     }
 }

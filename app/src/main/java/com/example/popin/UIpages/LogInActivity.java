@@ -9,11 +9,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.splashscreen.SplashScreen;
 
 import com.example.popin.R;
 import com.example.popin.logic.User;
@@ -24,7 +24,6 @@ public class LogInActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
@@ -36,6 +35,7 @@ public class LogInActivity extends AppCompatActivity {
 
         EditText passwordInputField = findViewById(R.id.password_input);
         ImageView passwordToggle = findViewById(R.id.eye_password_icon);
+        TextView forgotPassword = findViewById(R.id.forgotPassword);
 
         passwordToggle.setOnClickListener(v -> {
             if (passwordInputField.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
@@ -47,6 +47,13 @@ public class LogInActivity extends AppCompatActivity {
             }
 
             passwordInputField.setSelection(passwordInputField.getText().length());
+        });
+
+
+        forgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LogInActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 

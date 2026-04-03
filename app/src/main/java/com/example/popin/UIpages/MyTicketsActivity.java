@@ -190,7 +190,7 @@ public class MyTicketsActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String message) {
                 Toast.makeText(MyTicketsActivity.this, message, Toast.LENGTH_SHORT).show();
-                sendNotification(UserInSession.getInstance().getUser(), ticket.getTitle(), NotificationType.CancelTicket);
+                sendNotification(UserInSession.getInstance().getUser(), ticket.getTitle(), NotificationType.CancelTicket, "");
             }
 
             @Override

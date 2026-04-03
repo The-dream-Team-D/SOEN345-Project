@@ -55,6 +55,17 @@
     <string name="ticketPurchasedButton">Already registered to event</string>
     <string name="CapacityFullButton">Event Capacity Reached!</string>
 
+    <string name="passwordResetTitle">Reset Password</string>
+    <string name="forgotPassword">Forgot your password?</string>
+    <string name="newPasswordText">New Password</string>
+    <string name="newPasswordInputHint">New Password</string>
+
+    <string name="sendResetCode">Send Reset Code Notification</string>
+    <string name="resetCodeText">Reset Code in Notification</string>
+    <string name="changePasswordButton">Change Password</string>
+    <string name="resetCodeHint">ex: H36y4</string>
+
+
     <string name="guestUserTicketPurchaseButton">Login To Buy Tickets</string>
 
     <string name="guestUserTicketViewButton">Login To View Your Tickets</string>

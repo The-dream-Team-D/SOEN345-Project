@@ -1,9 +1,12 @@
 package com.example.popin.UIpages;
 
+import static com.example.popin.logic.Notifications.sendNotification;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,23 +16,33 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.popin.R;
 import com.example.popin.logic.GenericCallback;
+import com.example.popin.logic.NotificationType;
+import com.example.popin.logic.Notifications;
 import com.example.popin.logic.User;
 
-public class SignUpActivity extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
+
+    User finaluser;
+    String code;
+
+    ConstraintLayout AfterEmailCheck, BeforeEmailCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_forgot_pass);
 
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#FF8559"));
+
+
 
         EditText passwordInputField = findViewById(R.id.password_input);
         ImageView passwordToggle = findViewById(R.id.eye_password_icon);
@@ -45,52 +58,88 @@ public class SignUpActivity extends AppCompatActivity {
 
             passwordInputField.setSelection(passwordInputField.getText().length());
         });
+
     }
 
-    public void SignUp(View view) {
 
-        EditText nameInputField = findViewById(R.id.NameInput);
+    public void sendResetCode(View view) {
+
         EditText emailInputField = findViewById(R.id.emailInput);
         EditText passwordInputField = findViewById(R.id.password_input);
 
-        String name = nameInputField.getText().toString();
         String email_or_phoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User.SignUp(name, email_or_phoneNumber, password, new GenericCallback() {
-            @Override
-            public void onSuccess(String message) {
-                Toast.makeText(getApplicationContext(), "Account Created!", Toast.LENGTH_SHORT).show();
+        finaluser = new User(email_or_phoneNumber, password);
 
-                Intent intent = new Intent(SignUpActivity.this, LogInActivity.class);
-                startActivity(intent);
-                finish();
+        User.forgotPassword(email_or_phoneNumber, password, new User.LoginCallback() {
+            @Override
+            public void onSuccess(User user) {
+                Toast.makeText(getApplicationContext(), "Reset Code Notification Sent", Toast.LENGTH_SHORT).show();
+
+                code = Notifications.buildCode();
+
+                sendNotification(user, "", NotificationType.ChangePassword, code);
+
+                BeforeEmailCheck = findViewById(R.id.BeforeEmailCheck);
+                AfterEmailCheck = findViewById(R.id.AfterEmailCheck);
+
+                BeforeEmailCheck.setVisibility(View.GONE);
+                AfterEmailCheck.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError(String message) {
                 switch (message) {
-
-                    case "Name input is empty":
-                        nameInputField.setError("Input is Empty");
-                        break;
                     case "Email/Phone input is Empty":
                         emailInputField.setError("Input is Empty");
                         break;
-                    case "Password input is Empty":
+                    case "New Password input is Empty":
                         passwordInputField.setError("Input is Empty");
                         break;
-                    case "Must be a valid email or phone number":
-                        emailInputField.setError("Not valid Email/Phone Number");
+                    case "No user with that email/phone number":
+                        emailInputField.setError("No registered account with this email/phone number");
                         break;
-                    case "An account with this Email/Phone Number already exists":
-                        emailInputField.setError("This Email/Phone number is already in use");
+                    case "New password can't be the same as old password":
+                        passwordInputField.setError("Password can't be the same as old password");
                         break;
                     default:
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public void changePassword(View view) {
+
+        EditText resetCodeInputField = findViewById(R.id.resetCodeInput);
+
+        String resetCode = resetCodeInputField.getText().toString();
+
+        if(!resetCode.equals(code)){
+            resetCodeInputField.setError("Wrong Reset Code");
+        }else{
+
+            finaluser.changePassword(new GenericCallback(){
+                @Override
+                public void onSuccess(String message) {
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                    BeforeEmailCheck.setVisibility(View.VISIBLE);
+                    AfterEmailCheck.setVisibility(View.GONE);
+
+                    Intent intent = new Intent(ForgotPasswordActivity.this, LogInActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onError(String message) {
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
 
     }
 

@@ -2,6 +2,8 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -226,7 +228,7 @@ public class User {
 
                 usersRef.push().setValue(userData)
                         .addOnSuccessListener(aVoid -> {
-                            sendNotification(finaluser, "", NotificationType.RegisterAccount);
+                            sendNotification(finaluser, "", NotificationType.RegisterAccount,"");
                             callback.onSuccess("Success");
                         })
                         .addOnFailureListener(e -> {
@@ -449,7 +451,7 @@ public class User {
                 userSnapshot.getRef().removeValue()
                         .addOnSuccessListener(unused -> {
                             callBack.onSuccess("Deleted Account Successfully!");
-                            sendNotification(finaluser, "", NotificationType.DeleteAccount);
+                            sendNotification(finaluser, "", NotificationType.DeleteAccount, "");
                         })
                         .addOnFailureListener(e -> {
                             callBack.onError("Failed to Delete DB Account");
@@ -462,6 +464,133 @@ public class User {
             }
         });
 
+    }
+
+
+    public static void forgotPassword(String email_or_phoneNumber, String password, LoginCallback callback){
+
+        User user = null;
+
+        if(email_or_phoneNumber == null || email_or_phoneNumber.trim().isEmpty()) {
+            callback.onError("Email/Phone input is Empty");
+            return;
+        }
+
+        if(password == null || password.trim().isEmpty()) {
+            callback.onError("New Password input is Empty");
+            return;
+        }
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query query = null;
+        UserInputType type = identify(email_or_phoneNumber);
+        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+
+
+
+        // NO Need for input validation in login, either login or you cant. This just defines type to search
+        if (type == UserInputType.PHONE) {
+            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+        } else {
+            user = createUserWithEmail(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("email").equalTo(user.email);
+        }
+
+        final User finalUser = user;
+
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    callback.onError("No user with that email/phone number");
+                    return;
+                }
+
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+
+                    String dbPassword = userSnapshot.child("password").getValue(String.class);
+
+                    if (password.equals(dbPassword)) {
+                        callback.onError("New password can't be the same as old password");
+                        return;
+
+                    } else {
+
+                        String phoneNumString = userSnapshot.child("phoneNumber").getValue(String.class);
+                        String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
+
+                        if (prefString != null) {
+
+                            finalUser.setPhoneNumber(phoneNumString);
+                            finalUser.setUserNotificationPreference(
+                                    NotificationPreferenceOptions.valueOf(prefString)
+                            );
+                        }
+
+                        callback.onSuccess(finalUser);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
+            }
+        });
+    }
+
+
+
+    public void changePassword(GenericCallback callback){
+
+        String email_or_phoneNumber = this.getEmail();
+        User user = null;
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        Query query = null;
+        UserInputType type = identify(email_or_phoneNumber);
+        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+
+        if (type == UserInputType.PHONE) {
+            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+        } else {
+            user = createUserWithEmail(normalizedEmailOrPhone, password);
+            query = usersRef.orderByChild("email").equalTo(user.email);
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    callback.onError("No user with that email/phone number");
+                    return;
+                }
+
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    userSnapshot.getRef().child("password").setValue(password)
+                            .addOnSuccessListener(unused -> {
+                                callback.onSuccess("Password Changed Successfully!");
+                            })
+                            .addOnFailureListener(e -> {
+                                callback.onError("Failed to update password: " + e.getMessage());
+                            });
+
+                    return;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                callback.onError("Database error: " + error.getMessage());
+            }
+        });
     }
 
 
