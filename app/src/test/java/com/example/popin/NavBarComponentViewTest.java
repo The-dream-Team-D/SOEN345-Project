@@ -29,7 +29,6 @@ public class NavBarComponentViewTest {
     private ShadowActivity mockShadowActivity;
     private NavBarComponentView navBar;
     private AppCompatActivity mockHostActivity;
-    private static MockedStatic<FirebaseDatabase> mockedFirebaseDatabase;
 
     @Before
     public void setUp() {
@@ -40,7 +39,6 @@ public class NavBarComponentViewTest {
     @BeforeClass
     public static void setUpClass() {
         FirebaseTestAssistant.setupMockFirebase();
-        mockedFirebaseDatabase = FirebaseTestAssistant.getMockedDatabase();
     }
 
     @AfterClass
