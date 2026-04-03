@@ -6,6 +6,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,6 +35,8 @@ public class EventsPageActivity extends AppCompatActivity {
     private EventAdapter eventAdapter;
     private List<EventItem> eventList;
     private DatabaseReference databaseReference;
+    private TextView emptyStateText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,9 @@ public class EventsPageActivity extends AppCompatActivity {
         eventAdapter = new EventAdapter(eventList);
         recyclerView.setAdapter(eventAdapter);
 
+        emptyStateText = findViewById(R.id.tvEventsEmptyState);
+
+
         // Initialize Firebase
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Event database");
@@ -72,6 +78,7 @@ public class EventsPageActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 eventAdapter.filter(s.toString());
+                updateEmptyState();
             }
 
             @Override
@@ -168,13 +175,26 @@ public class EventsPageActivity extends AppCompatActivity {
                     }
                 }
                 eventAdapter.updateList(eventList);
+                updateEmptyState();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("EventsPageActivity", "Database error: " + error.getMessage());
                 Toast.makeText(EventsPageActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+                updateEmptyState();
             }
         });
     }
+
+
+
+    private void updateEmptyState() {
+        if (eventAdapter.getItemCount() == 0) {
+            emptyStateText.setVisibility(View.VISIBLE);
+        } else {
+            emptyStateText.setVisibility(View.GONE);
+        }
+    }
+
 }
