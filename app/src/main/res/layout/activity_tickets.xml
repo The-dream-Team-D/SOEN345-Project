@@ -31,105 +31,155 @@
         android:id="@+id/TicketsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="152dp"
         android:text="@string/MyTicketsTitle"
         android:textColor="?attr/colorSecondary"
         android:textSize="42sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.178" />
-
-    <EditText
-        android:id="@+id/etSearchEvents"
-        android:layout_width="386dp"
-        android:layout_height="67dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="20dp"
-
-        android:background="@drawable/bg_search_bar"
-        android:drawableStart="@android:drawable/ic_menu_search"
-        android:drawablePadding="10dp"
-        android:hint="@string/MyTicketsPageSearchBarHint"
-        android:inputType="text"
-        android:padding="14dp"
-        android:textColor="#082238"
-        android:textColorHint="#5F6C7B"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/TicketsTitle" />
-
-
-
-    <ImageView
-        android:id="@+id/question_marks"
-        android:layout_width="419dp"
-        android:layout_height="199dp"
-        android:layout_marginTop="364dp"
-
-        android:alpha="0.3"
-        android:contentDescription="@string/questionMarkImageDesc"
-
-        android:src="@drawable/question_mark"
-        app:layout_constraintBottom_toTopOf="@+id/LoginToGetTickets"
-        app:layout_constraintEnd_toEndOf="@+id/LoginToGetTickets"
-        app:layout_constraintStart_toStartOf="@+id/LoginToGetTickets"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/LoginToGetTickets"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="552dp"
-        android:layout_marginEnd="40dp"
-        android:background="@drawable/rounded_button"
-        android:text="@string/guestUserTicketViewButton"
-
-        android:textAllCaps="false"
-        android:textColor="@color/primary"
-        android:textSize="16sp"
-        app:backgroundTint="@color/action"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTickets"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="20dp"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSearchEvents"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/tvTicketsEmptyState"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/LoggedOutUser"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/ticketsEmptyState"
-        android:textColor="#082238"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:layout_marginTop="108dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSearchEvents" />
+        app:layout_constraintTop_toBottomOf="@id/TicketsTitle">
+
+        <ImageView
+            android:id="@+id/question_marks"
+            android:layout_width="419dp"
+            android:layout_height="199dp"
+            android:layout_marginTop="40dp"
+            android:alpha="0.3"
+            android:contentDescription="@string/questionMarkImageDesc"
+
+            android:src="@drawable/question_mark"
+            app:layout_constraintBottom_toTopOf="@+id/LoginToGetTickets"
+            app:layout_constraintEnd_toEndOf="@+id/LoginToGetTickets"
+            app:layout_constraintStart_toStartOf="@+id/LoginToGetTickets"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/LoginToGetTickets"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="220dp"
+            android:layout_marginEnd="40dp"
+
+            android:background="@drawable/rounded_button"
+            android:text="@string/guestUserTicketViewButton"
+
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            android:textSize="16sp"
+            app:backgroundTint="@color/action"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/LoggedInUser"
+        android:layout_width="410dp"
+        android:layout_height="560dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TicketsTitle">
+
+        <EditText
+            android:id="@+id/etSearchEvents"
+            android:layout_width="386dp"
+            android:layout_height="67dp"
+            android:layout_marginHorizontal="10dp"
+
+            android:background="@drawable/bg_search_bar"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawablePadding="10dp"
+            android:hint="@string/MyTicketsPageSearchBarHint"
+            android:inputType="text"
+            android:padding="14dp"
+            android:textColor="#082238"
+            android:textColorHint="#5F6C7B"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="@id/LoggedInUser" />
+
+
+        <Button
+            android:id="@+id/PastReservations"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="@string/pastEventTickets"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@drawable/rounded_button_outline"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/UpcomingReservations"
+            app:layout_constraintTop_toBottomOf="@id/etSearchEvents"  />
+
+        <Button
+            android:id="@+id/UpcomingReservations"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="@string/upcomingEventReservations"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@drawable/rounded_button_outline"
+
+            android:backgroundTint="@color/action"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/PastReservations"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etSearchEvents"  />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTickets"
+            android:layout_width="396dp"
+            android:layout_height="428dp"
+            android:layout_marginHorizontal="10dp"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/PastReservations"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/tvTicketsEmptyState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ticketsEmptyState"
+            android:textColor="#082238"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/rvTickets" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.example.popin.reusableUI.NavBarComponentView
         android:layout_width="match_parent"

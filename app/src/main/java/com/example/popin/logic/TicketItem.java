@@ -21,7 +21,7 @@ public class TicketItem extends EventItem {
         super();
     }
 
-    public TicketItem(String ticketId, String title, String dateTime, String location) {
+    public TicketItem(String ticketId, String title, long dateTime, String location) {
         super(title, dateTime, location);
         this.ticketId = ticketId;
     }

@@ -1,5 +1,7 @@
 package com.example.popin.logic;
 
+import static com.example.popin.logic.EventItem.FormatTime;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -44,7 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         EventItem event = visibleEvents.get(position);
         holder.title.setText(event.getTitle());
-        holder.dateTime.setText(event.getDateTime());
+        holder.dateTime.setText(FormatTime(event.getDateTime()));
         holder.location.setText(event.getLocation());
         holder.eventCategory.setText(event.getCategory().toString());
 
@@ -64,7 +66,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
             intent.putExtra("title", event.getTitle());
-            intent.putExtra("dateTime", event.getDateTime());
+            intent.putExtra("dateTime", FormatTime(event.getDateTime()));
             intent.putExtra("location", event.getLocation());
             intent.putExtra("details", event.getDetails());
             intent.putExtra("imgURL", event.getImgURL());
@@ -90,17 +92,26 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void filter(String query) {
         currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
         visibleEvents.clear();
-        if (currentQuery.isEmpty()) {
-            visibleEvents.addAll(allEvents);
-        } else {
-            for (EventItem event : allEvents) {
-                String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
-                        .toLowerCase(Locale.ROOT);
-                if (haystack.contains(currentQuery)) {
+
+        long now = System.currentTimeMillis();
+
+
+        for (EventItem event : allEvents) {
+
+            if(event.getDateTime() > now){
+
+                if (currentQuery.isEmpty()) {
                     visibleEvents.add(event);
+                }else{
+                    String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
+                            .toLowerCase(Locale.ROOT);
+                    if (haystack.contains(currentQuery)) {
+                        visibleEvents.add(event);
+                    }
                 }
             }
         }
+
         notifyDataSetChanged();
     }
 

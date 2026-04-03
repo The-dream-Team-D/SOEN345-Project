@@ -33,7 +33,7 @@ public class TicketItemTest {
 
         item.setTicketId("2");
         item.setTitle("New Title");
-        item.setDateTime("2024-01-01");
+        item.setDateTime(2024, 0, 1, 6, 0);
         item.setLocation("Montreal");
 
         assertEquals("2", item.getTicketId());

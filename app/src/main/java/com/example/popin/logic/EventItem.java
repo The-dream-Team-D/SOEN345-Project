@@ -1,8 +1,13 @@
 package com.example.popin.logic;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class EventItem {
     private String title;
-    private String dateTime;
+    private long dateTime;
     private String location;
     private String details;
     private String imgURL;
@@ -15,7 +20,7 @@ public class EventItem {
     // Required by Firebase
     public EventItem() {}
 
-    public EventItem(String title, String dateTime, String location) {
+    public EventItem(String title, long dateTime, String location) {
         this.title = title;
         this.dateTime = dateTime;
         this.location = location;
@@ -26,7 +31,7 @@ public class EventItem {
         this.category = EventCategory.Entertainment;
     }
 
-    public EventItem(String title, String dateTime, String location, String details, String imgURL, int capacity, EventCategory category) {
+    public EventItem(String title, long dateTime, String location, String details, String imgURL, int capacity, EventCategory category) {
         this.title = title;
         this.dateTime = dateTime;
         this.location = location;
@@ -44,12 +49,26 @@ public class EventItem {
         this.title = title;
     }
 
-    public String getDateTime() {
+    public long getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(long dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public boolean setDateTime(int year, int month, int day, int hour, int minute) {
+
+
+        Long result = convertTimeToLong(year, month, day, hour, minute);
+
+        if(result == -1){
+            return false;
+        }
+        else{
+            this.dateTime = result;
+            return true;
+        }
     }
 
     public String getLocation() {
@@ -94,6 +113,36 @@ public class EventItem {
     }
     public void setCategory(EventCategory category) {
         this.category = category;
+    }
+
+
+    public static long convertTimeToLong(int year, int month, int day, int hour, int minute){
+        if (year < 1970) return -1;
+        if (month < 0 || month > 11) return -1;
+        if (day < 1 || day > 31) return -1;
+        if (hour < 0 || hour > 23) return -1;
+        if (minute < 0 || minute > 59) return -1;
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setLenient(false);
+
+        try {
+            calendar.set(year, month, day, hour, minute);
+
+            return calendar.getTimeInMillis();
+
+        } catch (Exception e) {
+            return -1;
+        }
+
+    }
+
+    public static String FormatTime(long dateTime) {
+
+        Date date = new Date(dateTime);
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy - h:mm a", Locale.US);
+        return sdf.format(date);
     }
 
 }

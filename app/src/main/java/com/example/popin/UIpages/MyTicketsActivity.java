@@ -1,8 +1,10 @@
 package com.example.popin.UIpages;
 
+import static com.example.popin.logic.EventItem.FormatTime;
 import static com.example.popin.logic.Notifications.sendNotification;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,10 +17,13 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.popin.R;
+import com.example.popin.logic.EventFilterDateType;
 import com.example.popin.logic.EventItem;
 import com.example.popin.logic.GenericCallback;
 import com.example.popin.logic.NotificationType;
@@ -51,35 +56,32 @@ public class MyTicketsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tickets);
 
-
         RecyclerView recyclerView = findViewById(R.id.rvTickets);
         EditText searchInput = findViewById(R.id.etSearchEvents);
 
-        ImageView questionMarks = findViewById(R.id.question_marks);
         Button loginButton = findViewById(R.id.LoginToGetTickets);
 
         View navBar = findViewById(R.id.bottomNav);
         NavBarComponentView.setup(navBar);
 
+        ConstraintLayout loggedInUser = findViewById(R.id.LoggedInUser);
+        ConstraintLayout loggedOutUser = findViewById(R.id.LoggedOutUser);
+
+        Button pastTickets = findViewById(R.id.PastReservations);
+        Button upcomingTickets = findViewById(R.id.UpcomingReservations);
+
         UserInSession session = UserInSession.getInstance();
         if (session == null || session.getUser() == null) {
-            recyclerView.setVisibility(View.GONE);
-            searchInput.setVisibility(View.GONE);
+            loggedInUser.setVisibility(View.GONE);
 
-            questionMarks.setVisibility(View.VISIBLE);
-            loginButton.setVisibility(View.VISIBLE);
+            loggedOutUser.setVisibility(View.VISIBLE);
 
             loginButton.setOnClickListener(v ->
                     startActivity(new Intent(this, LogInActivity.class)));
-
-
         } else {
 
-            recyclerView.setVisibility(View.VISIBLE);
-            searchInput.setVisibility(View.VISIBLE);
-
-            questionMarks.setVisibility(View.GONE);
-            loginButton.setVisibility(View.GONE);
+            loggedInUser.setVisibility(View.VISIBLE);
+            loggedOutUser.setVisibility(View.GONE);
 
 
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -111,6 +113,42 @@ public class MyTicketsActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {
                 }
             });
+
+            pastTickets.setOnClickListener(v -> {
+
+                ticketAdapter.setFilter(EventFilterDateType.PAST);
+                pastTickets.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                ContextCompat.getColor(this, R.color.action)
+                        )
+                );
+
+                upcomingTickets.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                ContextCompat.getColor(this, R.color.black)
+                        )
+                );
+
+                updateEmptyState();
+            });
+
+            upcomingTickets.setOnClickListener(v -> {
+
+                ticketAdapter.setFilter(EventFilterDateType.UPCOMING);
+                pastTickets.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                ContextCompat.getColor(this, R.color.black)
+                        )
+                );
+
+                upcomingTickets.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                ContextCompat.getColor(this, R.color.action)
+                        )
+                );
+
+                updateEmptyState();
+            });
         }
     }
 
@@ -123,7 +161,7 @@ public class MyTicketsActivity extends AppCompatActivity {
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
                     String title = ticketSnapshot.child("title").getValue(String.class);
                     if (title != null && !title.trim().isEmpty()) {
-                        TicketItem ticket = new TicketItem(ticketSnapshot.getKey(), title, "", "");
+                        TicketItem ticket = new TicketItem(ticketSnapshot.getKey(), title, 0, "");
                         ticketList.add(ticket);
                     }
                 }
@@ -207,7 +245,7 @@ public class MyTicketsActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MyTicketsActivity.this, EventDetailActivity.class);
         intent.putExtra("title", ticket.getTitle());
-        intent.putExtra("dateTime", ticket.getDateTime());
+        intent.putExtra("dateTime", FormatTime(ticket.getDateTime()));
         intent.putExtra("location", ticket.getLocation());
         intent.putExtra("details", ticket.getDetails());
         intent.putExtra("imgURL", ticket.getImgURL());

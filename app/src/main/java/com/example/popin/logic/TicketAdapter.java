@@ -1,5 +1,7 @@
 package com.example.popin.logic;
 
+import static com.example.popin.logic.EventItem.FormatTime;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,8 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     private final OnCancelClickListener cancelClickListener;
     private final OnTicketClickListener ticketClickListener;
     private String currentQuery = "";
+
+    private EventFilterDateType currentFilter = EventFilterDateType.ALL;
     public TicketAdapter(
             List<TicketItem> tickets,
             OnCancelClickListener cancelClickListener,
@@ -54,9 +58,17 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     @Override
     public void onBindViewHolder(@NonNull TicketViewHolder holder, int position) {
         TicketItem ticket = visibleTickets.get(position);
+        long now = System.currentTimeMillis();  // only once per bind
+
         holder.title.setText(ticket.getTitle());
-        holder.dateTime.setText(ticket.getDateTime());
+        holder.dateTime.setText(FormatTime(ticket.getDateTime()));
         holder.location.setText(ticket.getLocation());
+
+        if (ticket.getDateTime() > now) {
+            holder.cancelButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.cancelButton.setVisibility(View.GONE);
+        }
 
         if (holder.eventImage != null) {
             Glide.with(holder.itemView.getContext())
@@ -87,15 +99,25 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
         visibleTickets.clear();
 
-        if (currentQuery.isEmpty()) {
-            visibleTickets.addAll(allTickets);
-        } else {
-            for (TicketItem ticket : allTickets) {
-                String text = (ticket.getTitle() + " " + ticket.getDateTime() + " " + ticket.getLocation())
-                        .toLowerCase(Locale.ROOT);
-                if (text.contains(currentQuery)) {
-                    visibleTickets.add(ticket);
-                }
+        long now = System.currentTimeMillis();
+
+        for (TicketItem ticket : allTickets) {
+
+            boolean matchesDate = true;
+            long eventTime = ticket.getDateTime();
+
+            if (currentFilter == EventFilterDateType.PAST) {
+                matchesDate = eventTime < now;
+            } else if (currentFilter == EventFilterDateType.UPCOMING) {
+                matchesDate = eventTime >= now;
+            }
+
+            String text = (ticket.getTitle() + " " + ticket.getDateTime() + " " + ticket.getLocation())
+                    .toLowerCase(Locale.ROOT);
+            boolean matchesSearch = currentQuery.isEmpty() || text.contains(currentQuery);
+
+            if (matchesDate && matchesSearch) {
+                visibleTickets.add(ticket);
             }
         }
 
@@ -117,4 +139,11 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
             eventImage = itemView.findViewById(R.id.tvEventImage);
         }
     }
+
+
+    public void setFilter(EventFilterDateType filter) {
+        this.currentFilter = filter;
+        filter(currentQuery);
+    }
+
 }
