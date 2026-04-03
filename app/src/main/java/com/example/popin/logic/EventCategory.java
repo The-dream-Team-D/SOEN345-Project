@@ -6,5 +6,4 @@ public enum EventCategory {
     Professional,
     Sports,
     Entertainment,
-    Community
 }

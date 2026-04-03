@@ -5,13 +5,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,13 +32,20 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class EventsPageActivity extends AppCompatActivity {
     private EventAdapter eventAdapter;
     private List<EventItem> eventList;
     private DatabaseReference databaseReference;
     private TextView emptyStateText;
+
+    private final Set<EventCategory> selectedCategories = new HashSet<>();
+    private final boolean[] inNextThirtyDaysFilter = {false};
 
 
     @Override
@@ -77,13 +87,15 @@ public class EventsPageActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                eventAdapter.filter(s.toString());
+                applyFilters();
                 updateEmptyState();
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        setupFilterButtons();
     }
 
     private void checkAndUploadSampleData() {
@@ -95,7 +107,7 @@ public class EventsPageActivity extends AppCompatActivity {
                     List<EventItem> sampleEvents = Arrays.asList(
                             new EventItem(
                                     "SOEN Mixer",
-                                    EventItem.convertTimeToLong(2026, 2, 20, 18, 0),
+                                    EventItem.convertTimeToLong(2026, 5, 20, 18, 0),
                                     "EV Building Lobby",
                                     "Meet other SOEN students, network, and enjoy snacks in a casual social setting.",
                                     "https://images.stockcake.com/public/9/6/d/96d4100c-ca71-4e09-b84e-d7e90c294a87_large/joyful-party-celebration-stockcake.jpg",
@@ -104,7 +116,7 @@ public class EventsPageActivity extends AppCompatActivity {
                             ),
                             new EventItem(
                                     "Study Time and Project Submission",
-                                    EventItem.convertTimeToLong(2026, 3, 20, 18, 0),
+                                    EventItem.convertTimeToLong(2026, 5, 20, 18, 0),
                                     "H Building 805",
                                     "Submit and finish all your work.",
                                     "https://images.stockcake.com/public/9/6/d/96d4100c-ca71-4e09-b84e-d7e90c294a87_large/joyful-party-celebration-stockcake.jpg",
@@ -113,7 +125,7 @@ public class EventsPageActivity extends AppCompatActivity {
                             ),
                             new EventItem(
                                     "Board Games Night",
-                                    EventItem.convertTimeToLong(2026, 2, 22, 19, 30),
+                                    EventItem.convertTimeToLong(2026, 5, 22, 19, 30),
                                     "Hall A",
                                     "Join us for an evening of board games, team challenges, and friendly competition.",
                                     "https://cdn.apartmenttherapy.info/image/upload/v1667575155/stock/custom%20stock/2022-11-custom-stock/games-0228-edit.jpg",
@@ -122,7 +134,7 @@ public class EventsPageActivity extends AppCompatActivity {
                             ),
                             new EventItem(
                                     "Hackathon Kickoff",
-                                    EventItem.convertTimeToLong(2026, 2, 24, 17, 0),
+                                    EventItem.convertTimeToLong(2026, 5, 24, 17, 0),
                                     "Room H-937",
                                     "Kick off the semester hackathon with team formation, project ideas, and event rules.",
                                     "https://ezassi.com/wp-content/uploads/2024/10/hackathon.png",
@@ -131,7 +143,7 @@ public class EventsPageActivity extends AppCompatActivity {
                             ),
                             new EventItem(
                                     "Coffee and Code",
-                                    EventItem.convertTimeToLong(2026, 2, 26, 14, 0),
+                                    EventItem.convertTimeToLong(2026, 3, 26, 14, 0),
                                     "Library Cafe",
                                     "Bring your laptop, grab a coffee, and code with classmates in a relaxed environment.",
                                     "https://localist-images.azureedge.net/photos/52499165824998/card/2d55307e23bf99b05af70bcb92b61f94607cdb85.jpg",
@@ -140,7 +152,7 @@ public class EventsPageActivity extends AppCompatActivity {
                             ),
                             new EventItem(
                                     "AI Study Jam",
-                                    EventItem.convertTimeToLong(2026, 2, 28, 16, 30),
+                                    EventItem.convertTimeToLong(2026, 5, 28, 16, 30),
                                     "Engineering Lounge",
                                     "Review AI concepts, solve practice problems, and prepare together for upcoming exams.",
                                     "https://res.cloudinary.com/startup-grind/image/upload/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/On%20Campus%20%283%29_026JzWM.png",
@@ -196,5 +208,80 @@ public class EventsPageActivity extends AppCompatActivity {
             emptyStateText.setVisibility(View.GONE);
         }
     }
+
+
+    private void setupFilterButtons() {
+        Map<LinearLayout, EventCategory> buttonMap = new HashMap<>();
+        buttonMap.put(findViewById(R.id.social_category), EventCategory.Social);
+        buttonMap.put(findViewById(R.id.educational_category), EventCategory.Educational);
+        buttonMap.put(findViewById(R.id.professional_category), EventCategory.Professional);
+        buttonMap.put(findViewById(R.id.sports_category), EventCategory.Sports);
+        buttonMap.put(findViewById(R.id.entertainment_category), EventCategory.Entertainment);
+
+        for (Map.Entry<LinearLayout, EventCategory> entry : buttonMap.entrySet()) {
+            LinearLayout button = entry.getKey();
+            EventCategory category = entry.getValue();
+
+            button.setOnClickListener(v -> {
+                if (selectedCategories.contains(category)) {
+                    selectedCategories.remove(category);
+                    v.setBackgroundTintList(
+                            ContextCompat.getColorStateList(v.getContext(), R.color.black)
+                    );
+                } else {
+                    selectedCategories.add(category);
+                    v.setBackgroundTintList(
+                            ContextCompat.getColorStateList(v.getContext(), R.color.action)
+                    );
+                }
+                applyFilters();
+            });
+        }
+
+        Button dateFilter = findViewById(R.id.next_month_filter);
+
+        dateFilter.setOnClickListener(v -> {
+
+            inNextThirtyDaysFilter[0] = !inNextThirtyDaysFilter[0];
+            if(inNextThirtyDaysFilter[0]){
+                v.setBackgroundTintList(
+                        ContextCompat.getColorStateList(v.getContext(), R.color.action)
+                );
+            }else{
+                v.setBackgroundTintList(
+                        ContextCompat.getColorStateList(v.getContext(), R.color.black)
+                );
+            }
+            applyFilters();
+        });
+
+
+        LinearLayout clearFilters = findViewById(R.id.clearFilters);
+        clearFilters.setOnClickListener(v -> {
+            selectedCategories.clear();
+            inNextThirtyDaysFilter[0] = false;
+            for (LinearLayout button : buttonMap.keySet()) {
+                button.setBackgroundResource(R.drawable.category_filter_outline);
+                button.setBackgroundTintList(
+                        ContextCompat.getColorStateList(v.getContext(), R.color.black)
+                );
+            }
+            dateFilter.setBackgroundTintList(
+                    ContextCompat.getColorStateList(v.getContext(), R.color.black)
+            );
+            applyFilters();
+        });
+
+
+    }
+
+
+    private void applyFilters() {
+        String query = ((EditText) findViewById(R.id.etSearchEvents))
+                .getText().toString().trim().toLowerCase();
+        eventAdapter.filter(query, selectedCategories, inNextThirtyDaysFilter[0]);
+        updateEmptyState();
+    }
+
 
 }

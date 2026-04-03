@@ -71,6 +71,7 @@
     <string name="guestUserTicketViewButton">Login To View Your Tickets</string>
     <string name="guestUserProfileViewButton">Login To View Profile Details</string>
 
+    <string name="EventTimeFilter">Within next 30 days</string>
 
 
 

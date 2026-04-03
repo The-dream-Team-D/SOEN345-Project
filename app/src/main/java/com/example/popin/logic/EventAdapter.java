@@ -5,6 +5,7 @@ import static com.example.popin.logic.EventItem.FormatTime;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +22,19 @@ import com.example.popin.UIpages.EventDetailActivity;
 import com.example.popin.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private final List<EventItem> allEvents;
     private final List<EventItem> visibleEvents;
     private String currentQuery = "";
+    private final Set<EventCategory> selectedCategories = new HashSet<>();
     public EventAdapter(List<EventItem> events) {
         this.allEvents = new ArrayList<>(events);
         this.visibleEvents = new ArrayList<>(events);
@@ -86,31 +91,50 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void updateList(List<EventItem> newList) {
         allEvents.clear();
         allEvents.addAll(newList);
-        filter(currentQuery);
+        filter(currentQuery, null, false);
     }
 
-    public void filter(String query) {
+    public void filter(String query, Set<EventCategory> selectedCategories, boolean inNextThirtyDaysRequest) {
         currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
         visibleEvents.clear();
 
         long now = System.currentTimeMillis();
 
-
         for (EventItem event : allEvents) {
+            if (event.getDateTime() >= now){
+                boolean matchesCategory = selectedCategories == null || selectedCategories.isEmpty()
+                        || selectedCategories.contains(event.getCategory());
 
-            if(event.getDateTime() > now){
+                boolean matchesThirtyDayWindow;
+                long thirtyDaysLater = now + (30L * 24 * 60 * 60 * 1000);
 
-                if (currentQuery.isEmpty()) {
-                    visibleEvents.add(event);
+                Log.d("FILTER", "Now: " + new Date(now));
+                Log.d("FILTER", "Event: " + new Date(event.getDateTime()));
+                Log.d("FILTER", "30 days later: " + new Date(thirtyDaysLater));
+
+                if(inNextThirtyDaysRequest){
+                    matchesThirtyDayWindow = event.getDateTime() <= thirtyDaysLater;
                 }else{
+                    matchesThirtyDayWindow = true;
+                }
+
+
+                // Check search query match
+                boolean matchesQuery;
+                if (currentQuery.isEmpty()) {
+                    matchesQuery = true;
+                } else {
                     String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
                             .toLowerCase(Locale.ROOT);
-                    if (haystack.contains(currentQuery)) {
-                        visibleEvents.add(event);
-                    }
+                    matchesQuery = haystack.contains(currentQuery);
+                }
+
+                if (matchesCategory && matchesQuery && matchesThirtyDayWindow) {
+                    visibleEvents.add(event);
                 }
             }
         }
+
 
         notifyDataSetChanged();
     }
@@ -155,4 +179,5 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         tag.setText(category);
         tag.setBackground(bg);
     }
+
 }
