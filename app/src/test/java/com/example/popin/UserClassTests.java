@@ -58,10 +58,10 @@ public class UserClassTests {
         lenient().when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
         lenient().when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
 
-        lenient().when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
-        lenient().when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
-        lenient().when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
-        lenient().when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
+        when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
+        when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
+        when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
+        when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
 
     }
 

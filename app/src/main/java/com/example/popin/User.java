@@ -17,9 +17,12 @@ public class User {
     private String bio;
     private boolean isAdmin = false;
 
+
+    // apparently required by firebase
     public User() {}
 
     public User(String email, String password) {
+
         this.email = email;
         this.password = password;
         this.address = "";

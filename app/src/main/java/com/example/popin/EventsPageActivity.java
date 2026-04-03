@@ -35,32 +35,55 @@ public class EventsPageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_events);
 
-        View navBar = findViewById(R.id.bottomNav);
-        boolean userInSessionAdminCheck = UserInSession.getInstance().getUser().getIsAdmin();
-        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
+        setupNavBar();
+        setupRecyclerView();
+        setupFirebase();
+        setupSearch();
+    }
 
+    String eventsLogTag = "EventsPageActivity";
+    private void setupNavBar() {
+        View navBar = findViewById(R.id.bottomNav);
+
+        if (navBar == null) {
+            Log.e(eventsLogTag, "bottomNav view not found");
+            return;
+        }
+
+        User currentUser = UserInSession.getInstance().getUser();
+        boolean userInSessionAdminCheck = currentUser != null && currentUser.getIsAdmin();
+
+        Log.d(eventsLogTag, "Current user: "
+                + (currentUser != null ? currentUser.getEmail() : "null"));
+        Log.d(eventsLogTag, "Is admin: " + userInSessionAdminCheck);
+
+        NavBarComponentView.setup(navBar, userInSessionAdminCheck);
+    }
+
+    private void setupRecyclerView() {
         eventList = new ArrayList<>();
-        
+
         RecyclerView recyclerView = findViewById(R.id.rvEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventAdapter = new EventAdapter(eventList);
         recyclerView.setAdapter(eventAdapter);
+    }
 
-        // Initialize Firebase
-        databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Event database");
+    private void setupFirebase() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("Event database");
 
-        // Check if DB is empty and upload sample data if needed
         checkAndUploadSampleData();
-
-        // Fetch events from Firebase
         fetchEvents();
+    }
 
+    private void setupSearch() {
         EditText searchInput = findViewById(R.id.etSearchEvents);
+
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -68,7 +91,8 @@ public class EventsPageActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
@@ -77,7 +101,6 @@ public class EventsPageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    // Database is empty, upload the "shit" you wanted
                     List<EventItem> sampleEvents = Arrays.asList(
                             new EventItem(
                                     "SOEN Mixer",
@@ -114,13 +137,18 @@ public class EventsPageActivity extends AppCompatActivity {
                     for (EventItem event : sampleEvents) {
                         databaseReference.push().setValue(event);
                     }
-                    Toast.makeText(EventsPageActivity.this, "Sample events uploaded!", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(
+                            EventsPageActivity.this,
+                            "Sample events uploaded!",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("EventsPageActivity", "Error checking DB: " + error.getMessage());
+                Log.e(eventsLogTag, "Error checking DB: " + error.getMessage());
             }
         });
     }
@@ -130,19 +158,25 @@ public class EventsPageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 eventList.clear();
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     EventItem event = dataSnapshot.getValue(EventItem.class);
                     if (event != null) {
                         eventList.add(event);
                     }
                 }
+
                 eventAdapter.updateList(eventList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("EventsPageActivity", "Database error: " + error.getMessage());
-                Toast.makeText(EventsPageActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+                Log.e(eventsLogTag, "Database error: " + error.getMessage());
+                Toast.makeText(
+                        EventsPageActivity.this,
+                        "Failed to load events",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }

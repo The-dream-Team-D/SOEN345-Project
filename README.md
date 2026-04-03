@@ -11,7 +11,7 @@
 | Kevin Kerr | 40281044  |
 | Nicolas Landry | 40263725 |
 | Rania Maoukout | 40249281 |
-| Malak Sefrioui |  |
+| Malak Sefrioui | 40252907 |
 
 
 ## Project Overview
