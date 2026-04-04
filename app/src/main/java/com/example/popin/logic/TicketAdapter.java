@@ -2,7 +2,6 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.EventItem.FormatTime;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

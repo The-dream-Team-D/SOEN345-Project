@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.popin.logic.EventCategory;
@@ -25,6 +27,11 @@ import java.util.Locale;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
+    private LinearLayout AdminDashboardTabs;
+
+    private ScrollView sectionAddEvent;
+    private ScrollView sectionUpdateEvent;
+    private ScrollView sectionDeleteEvent;
     private EditText addTitleInput;
     private EditText addDateInput;
     private EditText addTimeInput;
@@ -42,6 +49,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private Button addEventButton;
     private Button updateEventButton;
     private Button deleteEventButton;
+    private Button goToAddEventButton;
+    private Button goToUpdateEventButton;
+    private Button goToDeleteEventButton;
+    private Button backButton;
 
     private Admin adminUser;
 
@@ -80,6 +91,18 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
+
+        AdminDashboardTabs = findViewById(R.id.AdminDashboardTabs);
+
+        sectionAddEvent = findViewById(R.id.sectionAddEvent);
+        sectionUpdateEvent = findViewById(R.id.sectionUpdateEvent);
+        sectionDeleteEvent = findViewById(R.id.sectionDeleteEvent);
+
+        goToAddEventButton = findViewById(R.id.btnCreateEvent);
+        goToUpdateEventButton = findViewById(R.id.btnUpdateEvent);
+        goToDeleteEventButton = findViewById(R.id.btnDeleteEvent);
+        backButton = findViewById(R.id.btnBack);
+
         addTitleInput = findViewById(R.id.editText4);
         addDateInput = findViewById(R.id.editTextDate);
         addTimeInput = findViewById(R.id.editTextTime);
@@ -97,12 +120,46 @@ public class AdminDashboardActivity extends AppCompatActivity {
         addEventButton = findViewById(R.id.addEvent);
         updateEventButton = findViewById(R.id.button3);
         deleteEventButton = findViewById(R.id.button2);
+
     }
 
     private void setupListeners() {
+
+
+        goToAddEventButton.setOnClickListener(v -> {
+            AdminDashboardTabs.setVisibility(View.GONE);
+            sectionAddEvent.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+        });
+        goToUpdateEventButton.setOnClickListener(v -> {
+            AdminDashboardTabs.setVisibility(View.GONE);
+            sectionUpdateEvent.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+        });
+        goToDeleteEventButton.setOnClickListener(v -> {
+            AdminDashboardTabs.setVisibility(View.GONE);
+            sectionDeleteEvent.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+        });
+
+
+        backButton.setOnClickListener(v -> {
+
+            sectionDeleteEvent.setVisibility(View.GONE);
+            sectionUpdateEvent.setVisibility(View.GONE);
+            sectionAddEvent.setVisibility(View.GONE);
+            backButton.setVisibility(View.GONE);
+
+            AdminDashboardTabs.setVisibility(View.VISIBLE);
+        });
+
         addEventButton.setOnClickListener(v -> addEvent());
         updateEventButton.setOnClickListener(v -> updateEvent());
         deleteEventButton.setOnClickListener(v -> deleteEvent());
+    }
+
+    private void extracted() {
+        addEvent();
     }
 
     private void addEvent() {

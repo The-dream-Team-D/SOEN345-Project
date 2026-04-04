@@ -87,4 +87,12 @@
 
     <string name="warningText">Are you sure?</string>
 
+    <string name="addEvent">Create Event</string>
+    <string name="updateEvent">Update Event Details</string>
+    <string name="deleteEvent">Delete Event</string>
+
+    <string name="backButton">Go Back</string>
+
+
+
 </resources>
