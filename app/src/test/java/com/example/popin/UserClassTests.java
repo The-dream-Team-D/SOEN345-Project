@@ -32,6 +32,7 @@ public class UserClassTests {
     private static final String password_in_DB = "secret123";
     private static final String name_in_DB     = "John Doe";
     private static final String address_in_DB = "123 Main St";
+    private static final boolean isAdmin_in_DB = false;
 
     @Captor
     ArgumentCaptor<ValueEventListener> listenerCaptor;
@@ -58,10 +59,10 @@ public class UserClassTests {
         lenient().when(mockUserSnapshot.child("address")).thenReturn(mockAddressSnapshot);
         lenient().when(mockUserSnapshot.child("isAdmin")).thenReturn(mockIsAdminSnapshot);
 
-        when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
-        when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
-        when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
-        when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(false);
+        lenient().when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
+        lenient().when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
+        lenient().when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
+        lenient().when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(isAdmin_in_DB);
 
     }
 
@@ -155,6 +156,7 @@ public class UserClassTests {
                 assertEquals(name_in_DB, u.getName());
                 assertEquals(address_in_DB, u.getAddress());
                 assertEquals(email_in_DB, u.getEmail());
+                assertEquals(isAdmin_in_DB, u.getIsAdmin());
                 assertNotNull(UserInSession.getInstance().getUser());
             }
             @Override public void onError(String message) {
