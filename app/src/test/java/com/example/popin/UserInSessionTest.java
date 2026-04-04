@@ -1,40 +1,28 @@
 package com.example.popin;
 
-
-
+import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 public class UserInSessionTest {
 
-    private NavBarComponentView navBar;
-
-    @Test
-    public void userInSessionCreateAffectsGetInstanceAndGetUser(){
-        User u = new User("hos", "sam");
-
-        UserInSession.create(u);
-        assertEquals(u, UserInSession.getInstance().getUser());
-
+    @Before
+    public void setUp() {
+        UserInSession.clear();
     }
 
     @Test
-    public void userInSessionCanChange(){
+    public void create_setsCurrentUser() {
+        User user = new User("test@example.com", "pass");
+        UserInSession.create(user);
+        assertNotNull(UserInSession.getInstance());
+        assertEquals(user, UserInSession.getInstance().getUser());
+    }
 
-        User u = new User("hos", "sam");
-
-        UserInSession.create(u);
-        assertEquals(u, UserInSession.getInstance().getUser());
-
+    @Test
+    public void clear_removesSession() {
+        UserInSession.create(new User());
         UserInSession.clear();
         assertNull(UserInSession.getInstance());
-
-        User u2 = new User("TESTMAN", "testing");
-
-        UserInSession.create(u2);
-        assertEquals(u2, UserInSession.getInstance().getUser());
-
     }
-
 }

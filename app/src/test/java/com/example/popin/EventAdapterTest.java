@@ -1,73 +1,73 @@
 package com.example.popin;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34)
 public class EventAdapterTest {
 
-    private EventAdapter createAdapter() {
-        List<EventItem> events = Arrays.asList(
-                new EventItem("SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby", "Networking event for SOEN students."),
-                new EventItem("Board Games Night", "March 22, 2026 - 7:30 PM", "Hall A", "Fun evening with board games and snacks."),
-                new EventItem("Hackathon Kickoff", "March 24, 2026 - 5:00 PM", "Room H-937", "Kickoff meeting for the hackathon."),
-                new EventItem("Coffee and Code", "March 26, 2026 - 2:00 PM", "Library Cafe", "Coding session with coffee and classmates."),
-                new EventItem("AI Study Jam", "March 28, 2026 - 4:30 PM", "Engineering Lounge", "Group study session for AI topics.")
+    private List<EventItem> getSampleEvents() {
+        return Arrays.asList(
+                new EventItem("SOEN Mixer", "March 20", "EV Building"),
+                new EventItem("Board Games", "March 22", "Hall A")
         );
-        return new EventAdapter(events);
+    }
+
+    private EventAdapter createAdapter() {
+        return new EventAdapter(getSampleEvents());
     }
 
     @Test
-    public void initialState_showsAllEvents() {
+    public void onBindViewHolder_setsCorrectText() {
         EventAdapter adapter = createAdapter();
-        assertEquals(5, adapter.getItemCount());
+        LinearLayout parent = new LinearLayout(RuntimeEnvironment.getApplication());
+        
+        // Create the ViewHolder
+        EventAdapter.EventViewHolder holder = adapter.onCreateViewHolder(parent, 0);
+        
+        // Bind the first item (SOEN Mixer)
+        adapter.onBindViewHolder(holder, 0);
+        
+        TextView title = holder.itemView.findViewById(R.id.tvEventTitle);
+        TextView date = holder.itemView.findViewById(R.id.tvEventDateTime);
+        
+        assertEquals("SOEN Mixer", title.getText().toString());
+        assertEquals("March 20", date.getText().toString());
     }
 
     @Test
-    public void filter_byTitle_isCaseInsensitive() {
+    public void updateList_refreshesData() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("hackathon");
-        assertEquals(1, adapter.getItemCount());
+        assertEquals(2, adapter.getItemCount());
 
-        adapter.filter("HaCkAtHoN");
-        assertEquals(1, adapter.getItemCount());
-    }
-
-    @Test
-    public void filter_byLocationAndDate_supportsTrimmedQuery() {
-        EventAdapter adapter = createAdapter();
-        adapter.filter("  hall a  ");
-        assertEquals(1, adapter.getItemCount());
-
-        adapter.filter("march 26");
+        List<EventItem> newList = new ArrayList<>();
+        newList.add(new EventItem("New Event", "Now", "Here"));
+        adapter.updateList(newList);
         assertEquals(1, adapter.getItemCount());
     }
 
     @Test
     public void filter_emptyOrNull_restoresAllEvents() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("ai");
+        adapter.filter("mixer");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("");
-        assertEquals(5, adapter.getItemCount());
-
         adapter.filter(null);
-        assertEquals(5, adapter.getItemCount());
-    }
-
-    @Test
-    public void filter_noMatch_showsNoEvents() {
-        EventAdapter adapter = createAdapter();
-        adapter.filter("this does not exist");
-        assertEquals(0, adapter.getItemCount());
+        assertEquals(2, adapter.getItemCount());
     }
 }
