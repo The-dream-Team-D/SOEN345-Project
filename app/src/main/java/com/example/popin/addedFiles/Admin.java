@@ -13,6 +13,16 @@ public class Admin extends User {
         this.id = id;
     }
 
+    public Admin(User user) {
+        this.setName(user.getName());
+        this.setEmail(user.getEmail());
+        this.setPhoneNumber(user.getPhoneNumber());
+        this.setAddress(user.getAddress());
+        this.setBio(user.getBio());
+        this.setIsAdmin(true);
+        this.setUserNotificationPreference(user.getUserNotificationPreference());
+    }
+
     public String getId() {
         return id;
     }

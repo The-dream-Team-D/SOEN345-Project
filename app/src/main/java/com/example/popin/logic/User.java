@@ -4,6 +4,7 @@ import static com.example.popin.logic.Notifications.sendNotification;
 
 import android.util.Log;
 
+import com.example.popin.addedFiles.Admin;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -308,9 +309,14 @@ public class User {
                             );
                         }
 
-
-                        callback.onSuccess(finalUser);
-                        return;
+                        if (finalUser.getIsAdmin()){
+                            Admin admin = new Admin(finalUser);
+                            callback.onSuccess(admin);
+                            return;
+                        }else {
+                            callback.onSuccess(finalUser);
+                            return;
+                        }
 
                     } else {
                         callback.onError("Incorrect password");
