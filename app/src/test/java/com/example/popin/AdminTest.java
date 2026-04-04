@@ -7,6 +7,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.popin.addedFiles.Admin;
+import com.example.popin.addedFiles.Event;
+import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.logic.EventCategory;
+
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.MockedStatic;
@@ -45,7 +50,7 @@ public class AdminTest {
         mockedEventCatalog.when(EventCatalog::getInstance).thenReturn(mockCatalog);
 
         Admin admin = new Admin("admin@example.com", "secret", "admin-1");
-        admin.addEvent("SOEN Mixer", "EV Building", "Networking", date, EventCategory.CONCERT, callback);
+        admin.addEvent("SOEN Mixer", "EV Building", "Networking", date, EventCategory.Educational, callback);
 
         verify(mockCatalog, times(1)).addEvent(any(Event.class), eq(callback));
     }
@@ -80,7 +85,7 @@ public class AdminTest {
                 "Hall A",
                 "Updated details",
                 newDate,
-                EventCategory.COMEDY,
+                EventCategory.Social,
                 false,
                 callback
         );
@@ -91,7 +96,7 @@ public class AdminTest {
                 "Hall A",
                 "Updated details",
                 newDate,
-                EventCategory.COMEDY,
+                EventCategory.Social,
                 false,
                 callback
         );

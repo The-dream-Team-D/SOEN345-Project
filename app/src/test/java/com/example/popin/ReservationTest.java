@@ -3,6 +3,10 @@ package com.example.popin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import com.example.popin.addedFiles.Customer;
+import com.example.popin.addedFiles.Event;
+import com.example.popin.addedFiles.Reservation;
+
 import org.junit.Test;
 
 import java.util.Date;

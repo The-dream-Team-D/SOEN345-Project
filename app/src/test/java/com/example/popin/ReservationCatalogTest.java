@@ -7,6 +7,11 @@ import static org.mockito.Mockito.mockStatic;
 
 import android.util.Log;
 
+import com.example.popin.addedFiles.Customer;
+import com.example.popin.addedFiles.Event;
+import com.example.popin.addedFiles.Reservation;
+import com.example.popin.addedFiles.ReservationCatalog;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -3,6 +3,9 @@ package com.example.popin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.example.popin.addedFiles.Event;
+import com.example.popin.addedFiles.EventCatalog;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

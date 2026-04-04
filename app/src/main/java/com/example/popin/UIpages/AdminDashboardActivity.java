@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.UIpages;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,8 +6,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.popin.logic.EventCategory;
+import com.example.popin.reusableUI.NavBarComponentView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.popin.R;
+import com.example.popin.addedFiles.Admin;
+import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.logic.User;
+import com.example.popin.logic.UserInSession;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -120,7 +129,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 location,
                 description,
                 eventDate,
-                EventCategory.CONCERT,
+                EventCategory.Educational,
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {

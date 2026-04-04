@@ -5,6 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.example.popin.addedFiles.Customer;
+import com.example.popin.addedFiles.Event;
+import com.example.popin.addedFiles.Reservation;
+
 import org.junit.Test;
 
 import java.util.Date;
