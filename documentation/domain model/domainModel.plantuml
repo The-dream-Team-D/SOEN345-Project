@@ -1,0 +1,88 @@
+@startuml DomainModel
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 16
+skinparam DefaultFontStyle bold
+skinparam ArrowThickness 2.2
+title <u>Domain Model </u>
+hide empty members
+
+enum userType {
+    Admin
+    Customer
+}
+
+enum eventCategory {
+    Concert
+    Sports
+    Theater
+    Comedy
+    Festival
+}
+
+class "Terminal" as Terminal {
+    results: List<Event>
+}
+
+abstract class "User" as User {
+}
+
+class "UserCatalog" as UserCatalog {
+    users: List<User>
+}
+
+class "Admin" as Admin {
+    id : String
+    password : String
+    userType : userType
+}
+
+class "Customer" as Customer {
+    email: String
+    password: String
+    name: String
+    phoneNumber: String
+    userType : userType
+}
+
+class "Event" as Event {
+    id: String
+    name: String
+    date: Date
+    location: String
+    isAvailable: Boolean
+    category: eventCategory
+}
+
+class "EventCatalog" as EventCatalog {
+    events: List<Event>
+}
+
+class "Reservation" as Reservation {
+    id: String
+    event: Event
+    customer: Customer
+}
+
+class "ReservationCatalog" as ReservationCatalog {
+    reservations: List<Reservation>
+}
+
+
+
+Terminal "1" -- "1" UserCatalog : uses >
+Terminal "1" -- "1" EventCatalog : uses >
+Terminal "1" -- "1" ReservationCatalog : uses >
+
+UserCatalog "1" *- "*" User : contains >
+EventCatalog "1" *- "*" Event : contains >
+ReservationCatalog "1" *- "*" Reservation : contains >
+
+Customer "*" -- "*" Event : reserves >
+(Customer, Event) .. Reservation
+
+User <|-- Admin
+User <|-- Customer
+
+Admin "*" -left- "1" ReservationCatalog : manages >
+
+@enduml
