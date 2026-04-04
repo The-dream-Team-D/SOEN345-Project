@@ -32,6 +32,7 @@ sonar {
                     "**/*Activity*.*," +
                     "**/*Fragment*.*," +
                     "**/*Adapter*.*," +
+                    "**/*ComponentView*.*," +
                     "android/**/*.*," +
                     "**/*Test*.*"
         )
