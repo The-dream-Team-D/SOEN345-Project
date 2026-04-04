@@ -1,6 +1,7 @@
 package com.example.popin.addedFiles;
 
 import com.example.popin.logic.EventCategory;
+import com.example.popin.logic.EventItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,7 +16,7 @@ public class EventCatalog {
     private final DatabaseReference eventsRef;
 
     private EventCatalog() {
-        eventsRef = FirebaseDatabase.getInstance().getReference("Events");
+        eventsRef = FirebaseDatabase.getInstance().getReference("Event database");
     }
 
     public static EventCatalog getInstance() {
@@ -33,18 +34,18 @@ public class EventCatalog {
     String eventError = "Event name is empty";
     String noEventFoundWithNameError = "No event found with that name";
     String DBErrorTag = "Database error: ";
-    public void addEvent(Event event, EventActionCallback callback) {
+    public void addEvent(EventItem event, EventActionCallback callback) {
         if (event == null) {
             callback.onError("Event is null");
             return;
         }
 
-        if (event.getName() == null || event.getName().trim().isEmpty()) {
+        if (event.getTitle() == null || event.getTitle().trim().isEmpty()) {
             callback.onError(eventError);
             return;
         }
 
-        eventsRef.child(String.valueOf(event.getId()))
+        eventsRef.push()
                 .setValue(event)
                 .addOnSuccessListener(unused ->
                         callback.onSuccess("Event added successfully"))
@@ -58,7 +59,7 @@ public class EventCatalog {
             return;
         }
 
-        Query query = eventsRef.orderByChild("name").equalTo(eventName);
+        Query query = eventsRef.orderByChild("title").equalTo(eventName);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -94,7 +95,7 @@ public class EventCatalog {
             return;
         }
 
-        Query query = eventsRef.orderByChild("name").equalTo(eventName);
+        Query query = eventsRef.orderByChild("title").equalTo(eventName);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -138,9 +139,9 @@ public class EventCatalog {
                                   String newName,
                                   String newLocation,
                                   String newDescription,
-                                  java.util.Date newDate,
+                                  long newDate,
                                   EventCategory newCategory,
-                                  Boolean newAvailability,
+                                  int newCapacity,
                                   EventActionCallback callback) {
 
         if (currentEventName == null || currentEventName.trim().isEmpty()) {
@@ -148,7 +149,7 @@ public class EventCatalog {
             return;
         }
 
-        Query query = eventsRef.orderByChild("name").equalTo(currentEventName);
+        Query query = eventsRef.orderByChild("title").equalTo(currentEventName);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -162,7 +163,7 @@ public class EventCatalog {
                     Map<String, Object> updates = new HashMap<>();
 
                     if (newName != null && !newName.trim().isEmpty()) {
-                        updates.put("name", newName);
+                        updates.put("title", newName);
                     }
 
                     if (newLocation != null && !newLocation.trim().isEmpty()) {
@@ -170,19 +171,19 @@ public class EventCatalog {
                     }
 
                     if (newDescription != null && !newDescription.trim().isEmpty()) {
-                        updates.put("description", newDescription);
+                        updates.put("details", newDescription);
                     }
 
-                    if (newDate != null) {
-                        updates.put("date", newDate);
+                    if (newDate != -1 ) {
+                        updates.put("dateTime", newDate);
                     }
 
-                    if (newCategory != null) {
-                        updates.put("eventCategory", newCategory);
+                    if (newCategory != null)  {
+                        updates.put("category", newCategory);
                     }
 
-                    if (newAvailability != null) {
-                        updates.put("isAvailable", newAvailability);
+                    if (newCapacity != -1) {
+                        updates.put("capacity", newCapacity);
                     }
 
                     if (updates.isEmpty()) {

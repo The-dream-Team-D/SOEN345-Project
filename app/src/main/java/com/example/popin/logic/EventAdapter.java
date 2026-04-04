@@ -88,20 +88,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return visibleEvents.size();
     }
 
-    public void updateList(List<EventItem> newList) {
+    public void updateList(List<EventItem> newList, boolean futureOnly) {
         allEvents.clear();
         allEvents.addAll(newList);
-        filter(currentQuery, null, false);
+        filter(currentQuery, null, false, futureOnly);
     }
 
-    public void filter(String query, Set<EventCategory> selectedCategories, boolean inNextThirtyDaysRequest) {
+    public void filter(
+            String query,
+            Set<EventCategory> selectedCategories,
+            boolean inNextThirtyDaysRequest,
+            boolean futureOnly
+    ) {
         currentQuery = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
         visibleEvents.clear();
 
         long now = System.currentTimeMillis();
 
         for (EventItem event : allEvents) {
-            if (event.getDateTime() >= now){
+            if (event.getDateTime() >= now || !futureOnly){
                 boolean matchesCategory = selectedCategories == null || selectedCategories.isEmpty()
                         || selectedCategories.contains(event.getCategory());
 

@@ -14,19 +14,20 @@
 
     <ImageView
         android:id="@+id/wave_image"
-        android:layout_width="582dp"
-        android:layout_height="203dp"
+        android:layout_width="535dp"
+        android:layout_height="141dp"
         android:contentDescription="@string/waveDesignDescription"
         android:scaleType="centerCrop"
+
         android:scaleX="1"
 
         android:scaleY="-1"
-
         android:src="@drawable/wave"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.846"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/AdminDashboardTitle"
@@ -38,32 +39,37 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.178" />
-
-    <com.example.popin.reusableUI.NavBarComponentView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottomNav"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintVertical_bias="0.126" />
 
     <LinearLayout
         android:id="@+id/AdminDashboardTabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="380dp"
+        android:layout_height="619dp"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="96dp"
         android:orientation="vertical"
         android:visibility="visible"
 
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/AdminDashboardTitle">
+
+        <com.example.popin.reusableUI.EventsFilterComponentView
+            android:id="@+id/commonEventsFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEvents"
+            android:layout_width="match_parent"
+            android:layout_height="222dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:paddingBottom="16dp" />
+
 
         <Button
             android:id="@+id/btnCreateEvent"
@@ -103,14 +109,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        android:visibility="gone"
         android:paddingHorizontal="24dp"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/AdminDashboardTabs"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/AdminDashboardTitle"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,22 +133,12 @@
                 android:hint="Enter the Title" />
 
             <EditText
-                android:id="@+id/editTextDate"
+                android:id="@+id/addDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:ems="10"
-                android:hint="Enter the date (yyyy-MM-dd)"
-                android:inputType="date" />
-
-            <EditText
-                android:id="@+id/editTextTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:ems="10"
-                android:hint="Enter the Time (HH:mm)"
-                android:inputType="time" />
+                android:hint="YYYY-MM-DD-HH-mm"
+                />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText2"
@@ -179,7 +177,7 @@
         android:paddingHorizontal="24dp"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/AdminDashboardTabs"
+        app:layout_constraintTop_toBottomOf="@id/AdminDashboardTitle"
         app:layout_constraintBottom_toTopOf="@id/btnBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -204,22 +202,12 @@
                 android:hint="Enter the new title (optional)" />
 
             <EditText
-                android:id="@+id/editTextDate3"
+                android:id="@+id/editDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:ems="10"
-                android:hint="Enter the new date (optional)"
-                android:inputType="date" />
-
-            <EditText
-                android:id="@+id/editTextTime3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:ems="10"
-                android:hint="Enter the new time (optional)"
-                android:inputType="time" />
+                android:hint="YYYY-MM-DD-HH-mm (optional)"
+                />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText10"
@@ -234,6 +222,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="Enter the new description (optional)" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newCapacityInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:inputType="number"
+                android:hint="Enter the new Event Capacity (optional)" />
 
             <Button
                 android:id="@+id/button3"
@@ -258,7 +254,7 @@
         android:paddingHorizontal="24dp"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/AdminDashboardTabs"
+        app:layout_constraintTop_toBottomOf="@id/AdminDashboardTitle"
         app:layout_constraintBottom_toTopOf="@id/btnBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -305,5 +301,14 @@
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.example.popin.reusableUI.NavBarComponentView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottomNav"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

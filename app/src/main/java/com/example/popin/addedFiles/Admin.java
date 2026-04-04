@@ -2,7 +2,7 @@ package com.example.popin.addedFiles;
 
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.User;
-
+import com.example.popin.logic.EventItem;
 import java.util.Date;
 
 public class Admin extends User {
@@ -31,10 +31,9 @@ public class Admin extends User {
         this.id = id;
     }
 
-    public void addEvent(String name, String location, String description, Date date,
-                         EventCategory eventCategory,
+    public void addEvent(String name, String location, String description, long date,
                          EventCatalog.EventActionCallback callback) {
-        Event event = new Event(name, location, description, date, eventCategory);
+        EventItem event = new EventItem(name, date, location, description);
         EventCatalog.getInstance().addEvent(event, callback);
     }
 
@@ -46,9 +45,9 @@ public class Admin extends User {
                             String newName,
                             String newLocation,
                             String newDescription,
-                            Date newDate,
+                            long newDate,
                             EventCategory newCategory,
-                            Boolean newAvailability,
+                            int newCapacity,
                             EventCatalog.EventActionCallback callback) {
         EventCatalog.getInstance().updateEventByName(
                 currentEventName,
@@ -57,7 +56,7 @@ public class Admin extends User {
                 newDescription,
                 newDate,
                 newCategory,
-                newAvailability,
+                newCapacity,
                 callback
         );
     }

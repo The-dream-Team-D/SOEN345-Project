@@ -1,20 +1,14 @@
 package com.example.popin.UIpages;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +16,7 @@ import com.example.popin.R;
 import com.example.popin.logic.EventAdapter;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
-import com.example.popin.logic.UserInSession;
+import com.example.popin.reusableUI.EventsFilterComponentView;
 import com.example.popin.reusableUI.NavBarComponentView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,20 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class EventsPageActivity extends AppCompatActivity {
     private EventAdapter eventAdapter;
     private List<EventItem> eventList;
     private DatabaseReference databaseReference;
     private TextView emptyStateText;
-
-    private final Set<EventCategory> selectedCategories = new HashSet<>();
-    private final boolean[] inNextThirtyDaysFilter = {false};
 
 
     @Override
@@ -80,22 +67,15 @@ public class EventsPageActivity extends AppCompatActivity {
         // Fetch events from Firebase
         fetchEvents();
 
-        EditText searchInput = findViewById(R.id.etSearchEvents);
-        searchInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        EventsFilterComponentView filterView = findViewById(R.id.commonEventsFilter);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                applyFilters();
-                updateEmptyState();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+        filterView.setOnFilterChangeListener((
+                query,
+                categories,
+                next30Days) -> {
+            eventAdapter.filter(query, categories, next30Days, true);
+            updateEmptyState();
         });
-
-        setupFilterButtons();
     }
 
     private void checkAndUploadSampleData() {
@@ -186,7 +166,7 @@ public class EventsPageActivity extends AppCompatActivity {
                         eventList.add(event);
                     }
                 }
-                eventAdapter.updateList(eventList);
+                eventAdapter.updateList(eventList, true);
                 updateEmptyState();
             }
 
@@ -207,80 +187,6 @@ public class EventsPageActivity extends AppCompatActivity {
         } else {
             emptyStateText.setVisibility(View.GONE);
         }
-    }
-
-
-    private void setupFilterButtons() {
-        Map<LinearLayout, EventCategory> buttonMap = new HashMap<>();
-        buttonMap.put(findViewById(R.id.social_category), EventCategory.Social);
-        buttonMap.put(findViewById(R.id.educational_category), EventCategory.Educational);
-        buttonMap.put(findViewById(R.id.professional_category), EventCategory.Professional);
-        buttonMap.put(findViewById(R.id.sports_category), EventCategory.Sports);
-        buttonMap.put(findViewById(R.id.entertainment_category), EventCategory.Entertainment);
-
-        for (Map.Entry<LinearLayout, EventCategory> entry : buttonMap.entrySet()) {
-            LinearLayout button = entry.getKey();
-            EventCategory category = entry.getValue();
-
-            button.setOnClickListener(v -> {
-                if (selectedCategories.contains(category)) {
-                    selectedCategories.remove(category);
-                    v.setBackgroundTintList(
-                            ContextCompat.getColorStateList(v.getContext(), R.color.black)
-                    );
-                } else {
-                    selectedCategories.add(category);
-                    v.setBackgroundTintList(
-                            ContextCompat.getColorStateList(v.getContext(), R.color.action)
-                    );
-                }
-                applyFilters();
-            });
-        }
-
-        Button dateFilter = findViewById(R.id.next_month_filter);
-
-        dateFilter.setOnClickListener(v -> {
-
-            inNextThirtyDaysFilter[0] = !inNextThirtyDaysFilter[0];
-            if(inNextThirtyDaysFilter[0]){
-                v.setBackgroundTintList(
-                        ContextCompat.getColorStateList(v.getContext(), R.color.action)
-                );
-            }else{
-                v.setBackgroundTintList(
-                        ContextCompat.getColorStateList(v.getContext(), R.color.black)
-                );
-            }
-            applyFilters();
-        });
-
-
-        LinearLayout clearFilters = findViewById(R.id.clearFilters);
-        clearFilters.setOnClickListener(v -> {
-            selectedCategories.clear();
-            inNextThirtyDaysFilter[0] = false;
-            for (LinearLayout button : buttonMap.keySet()) {
-                button.setBackgroundResource(R.drawable.category_filter_outline);
-                button.setBackgroundTintList(
-                        ContextCompat.getColorStateList(v.getContext(), R.color.black)
-                );
-            }
-            dateFilter.setBackgroundTintList(
-                    ContextCompat.getColorStateList(v.getContext(), R.color.black)
-            );
-            applyFilters();
-        });
-
-
-    }
-
-
-    private void applyFilters() {
-        String query = ((EditText) findViewById(R.id.etSearchEvents))
-                .getText().toString().trim().toLowerCase();
-        eventAdapter.filter(query, selectedCategories, inNextThirtyDaysFilter[0]);
-        updateEmptyState();
     }
 
 

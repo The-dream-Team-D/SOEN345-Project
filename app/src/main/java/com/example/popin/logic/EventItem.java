@@ -31,6 +31,15 @@ public class EventItem {
         this.category = EventCategory.Entertainment;
     }
 
+    public EventItem(String title, long dateTime, String location, String details) {
+        this.title = title;
+        this.dateTime = dateTime;
+        this.location = location;
+        this.details = details;
+        this.capacity = 100;
+        this.attendeeCount = 0;
+        this.category = EventCategory.Educational;
+    }
     public EventItem(String title, long dateTime, String location, String details, String imgURL, int capacity, EventCategory category) {
         this.title = title;
         this.dateTime = dateTime;

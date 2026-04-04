@@ -1,6 +1,10 @@
 package com.example.popin.UIpages;
 
+import static com.example.popin.logic.EventItem.convertTimeToLong;
+import static java.lang.Integer.parseInt;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,22 +12,30 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.example.popin.logic.EventCategory;
+import com.example.popin.logic.EventAdapter;
+import com.example.popin.logic.EventItem;
+import com.example.popin.reusableUI.EventsFilterComponentView;
 import com.example.popin.reusableUI.NavBarComponentView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.popin.R;
 import com.example.popin.addedFiles.Admin;
 import com.example.popin.addedFiles.EventCatalog;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -33,16 +45,19 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private ScrollView sectionUpdateEvent;
     private ScrollView sectionDeleteEvent;
     private EditText addTitleInput;
-    private EditText addDateInput;
-    private EditText addTimeInput;
+    private EditText addDateTimeInput;
     private EditText addLocationInput;
     private EditText addDescriptionInput;
 
+    private EditText currentUpdateTitleInput;
+
     private EditText updateTitleInput;
     private EditText updateDateInput;
-    private EditText updateTimeInput;
     private EditText updateLocationInput;
     private EditText updateDescriptionInput;
+    private EditText updateCapacityInput;
+
+
 
     private EditText deleteEventNameInput;
 
@@ -55,6 +70,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private Button backButton;
 
     private Admin adminUser;
+
+    private EventAdapter eventAdapter;
+    private List<EventItem> eventList;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +103,30 @@ public class AdminDashboardActivity extends AppCompatActivity {
             return;
         }
 
+        eventList = new ArrayList<>();
+
+        RecyclerView recyclerView = findViewById(R.id.rvEvents);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        eventAdapter = new EventAdapter(eventList);
+        recyclerView.setAdapter(eventAdapter);
+
+
         adminUser = (Admin) currentUser;
 
         bindViews();
         setupListeners();
+
+        // Initialize Firebase
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Event database");
+
+        // Fetch events from Firebase
+        fetchEvents();
+
+
+
     }
 
     private void bindViews() {
@@ -104,16 +143,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
         backButton = findViewById(R.id.btnBack);
 
         addTitleInput = findViewById(R.id.editText4);
-        addDateInput = findViewById(R.id.editTextDate);
-        addTimeInput = findViewById(R.id.editTextTime);
+        addDateTimeInput = findViewById(R.id.addDateTime);
         addLocationInput = findViewById(R.id.editText2);
         addDescriptionInput = findViewById(R.id.editText3);
 
+        currentUpdateTitleInput = findViewById(R.id.editTextCurrentEventName);
         updateTitleInput = findViewById(R.id.editText9);
-        updateDateInput = findViewById(R.id.editTextDate3);
-        updateTimeInput = findViewById(R.id.editTextTime3);
+        updateDateInput = findViewById(R.id.editDateTime);
         updateLocationInput = findViewById(R.id.editText10);
         updateDescriptionInput = findViewById(R.id.editText11);
+        updateCapacityInput = findViewById(R.id.newCapacityInput);
 
         deleteEventNameInput = findViewById(R.id.textInputEditText);
 
@@ -156,42 +195,49 @@ public class AdminDashboardActivity extends AppCompatActivity {
         addEventButton.setOnClickListener(v -> addEvent());
         updateEventButton.setOnClickListener(v -> updateEvent());
         deleteEventButton.setOnClickListener(v -> deleteEvent());
-    }
 
-    private void extracted() {
-        addEvent();
+
+        EventsFilterComponentView filterView = findViewById(R.id.commonEventsFilter);
+
+        filterView.setOnFilterChangeListener((
+                query,
+                categories,
+                next30Days) -> {
+            eventAdapter.filter(query, categories, next30Days, false);
+        });
+
     }
 
     private void addEvent() {
         String title = getText(addTitleInput);
-        String dateText = getText(addDateInput);
-        String timeText = getText(addTimeInput);
+        String dateText = getText(addDateTimeInput);
         String location = getText(addLocationInput);
         String description = getText(addDescriptionInput);
 
-        if (title.isEmpty() || dateText.isEmpty() || timeText.isEmpty()
+        if (title.isEmpty() || dateText.isEmpty()
                 || location.isEmpty() || description.isEmpty()) {
             showToast("Please fill all Add Event fields");
             return;
         }
 
-        Date eventDate = parseDateTime(dateText, timeText);
-        if (eventDate == null) {
-            showToast("Invalid date/time format. Use yyyy-MM-dd and HH:mm");
-            return;
-        }
+        long eventDate = processDateTime(dateText);
+        if(eventDate == -1){return;}
+
 
         adminUser.addEvent(
                 title,
                 location,
                 description,
                 eventDate,
-                EventCategory.Educational,
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {
                         showToast(message);
                         clearAddFields();
+
+                        sectionAddEvent.setVisibility(View.GONE);
+                        backButton.setVisibility(View.GONE);
+                        AdminDashboardTabs.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -203,30 +249,38 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void updateEvent() {
-        String currentEventName = getText(updateTitleInput);
+        String currentEventName = getText(currentUpdateTitleInput);
+        String newName = getText(updateTitleInput);
         String dateText = getText(updateDateInput);
-        String timeText = getText(updateTimeInput);
         String location = getText(updateLocationInput);
         String description = getText(updateDescriptionInput);
+        String capacity = getText(updateCapacityInput);
 
         if (currentEventName.isEmpty()) {
             showToast("Enter the event name to update");
             return;
         }
 
-        Date newDate = null;
-        if (!dateText.isEmpty() && !timeText.isEmpty()) {
-            newDate = parseDateTime(dateText, timeText);
-            if (newDate == null) {
-                showToast("Invalid date/time format. Use yyyy-MM-dd and HH:mm");
-                return;
-            }
+        long newDate = -1;
+        if (!dateText.isEmpty()) {
+            newDate = processDateTime(dateText);
+            if(newDate == -1){return;}
         }
 
-        String newName = currentEventName;
         String newLocation = location.isEmpty() ? null : location;
         String newDescription = description.isEmpty() ? null : description;
+        int newCapacity;
 
+        try {
+            newCapacity = parseInt(capacity);
+
+            if(newCapacity <= 0){
+                showToast("New Event Capacity can not be 0 or less");
+                return;
+            }
+        } catch (Exception e) {
+            newCapacity = -1;
+        }
         adminUser.updateEvent(
                 currentEventName,
                 newName,
@@ -234,12 +288,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 newDescription,
                 newDate,
                 null,
-                null,
+                newCapacity,
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {
                         showToast(message);
                         clearUpdateFields();
+
+
+                        sectionUpdateEvent.setVisibility(View.GONE);
+                        backButton.setVisibility(View.GONE);
+                        AdminDashboardTabs.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -263,6 +322,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
             public void onSuccess(String message) {
                 showToast(message);
                 deleteEventNameInput.setText("");
+
+                sectionDeleteEvent.setVisibility(View.GONE);
+                backButton.setVisibility(View.GONE);
+                AdminDashboardTabs.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -276,34 +339,83 @@ public class AdminDashboardActivity extends AppCompatActivity {
         return editText.getText() == null ? "" : editText.getText().toString().trim();
     }
 
-    private Date parseDateTime(String dateText, String timeText) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        formatter.setLenient(false);
-
-        try {
-            return formatter.parse(dateText + " " + timeText);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
     private void clearAddFields() {
         addTitleInput.setText("");
-        addDateInput.setText("");
-        addTimeInput.setText("");
+        addDateTimeInput.setText("");
         addLocationInput.setText("");
         addDescriptionInput.setText("");
+
     }
 
     private void clearUpdateFields() {
         updateTitleInput.setText("");
         updateDateInput.setText("");
-        updateTimeInput.setText("");
         updateLocationInput.setText("");
         updateDescriptionInput.setText("");
+        updateCapacityInput.setText("");
+
     }
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void fetchEvents() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                eventList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    EventItem event = dataSnapshot.getValue(EventItem.class);
+                    if (event != null) {
+                        eventList.add(event);
+                    }
+                }
+                eventAdapter.updateList(eventList, false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("EventsPageActivity", "Database error: " + error.getMessage());
+                Toast.makeText(AdminDashboardActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public long processDateTime(String dateText){
+        String[] parts = dateText.split("-");
+
+        if (parts.length < 5) {
+            showToast("Incomplete date format. Please use YYYY-MM-DD-HH-mm");
+            return -1 ;
+        }
+
+        try {
+            int year   = Integer.parseInt(parts[0]);
+            int month  = Integer.parseInt(parts[1]) - 1;
+            int day    = Integer.parseInt(parts[2]);
+            int hour   = Integer.parseInt(parts[3]);
+            int minute = Integer.parseInt(parts[4]);
+
+            if (month < 0 || month > 11) { showToast("Invalid Month (1-12)"); return -1; }
+            if (day < 1 || day > 31) { showToast("Invalid Day"); return -1; }
+            if (hour < 0 || hour > 23) { showToast("Invalid Hour (0-23)"); return -1; }
+            if (minute < 0 || minute > 59) { showToast("Invalid Minute (0-59)"); return -1; }
+
+            long newDate = convertTimeToLong(year, month, day, hour, minute);
+            long now = System.currentTimeMillis();
+
+            if(now > newDate){
+                showToast("Cannot Create Event in the past");
+                return -1 ;
+            }
+
+            return newDate;
+        } catch (NumberFormatException e) {
+            showToast("Invalid characters. Use numbers and hyphens only.");
+            return -1;
+        }
     }
 }
