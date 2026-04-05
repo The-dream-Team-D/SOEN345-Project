@@ -19,10 +19,10 @@ public class User {
     private static final String PHONE_FIELD = "phoneNumber";
     private static final String PASSWORD_FIELD = "password";
     private static final String ADDRESS_FIELD = "address";
-    private static final String NOTIF_PREF_FIELD = NOTIF_PREF_FIELD;
+    private static final String NOTIF_PREF_FIELD = "NotificationPreference";
     private static final String PASSWORD_EMPTY_ERROR = "Password input is Empty";
     private static final String NO_USER_ERROR = "No user with that email/phone number";
-    private static final String EMAIL_PHONE_EMPTY_ERROR = EMAIL_PHONE_EMPTY_ERROR;
+    private static final String EMAIL_PHONE_EMPTY_ERROR = "Email/Phone input is Empty";
 
     private String email;
     private String password;
