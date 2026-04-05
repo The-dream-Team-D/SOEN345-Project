@@ -7,9 +7,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.popin.addedFiles.Event;
 import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +29,7 @@ import org.mockito.MockedStatic;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class EventCatalogFlowTest {
@@ -220,5 +224,227 @@ public class EventCatalogFlowTest {
         );
 
         assertEquals("No fields provided to update", error.get());
+    }
+
+    @Test
+    public void editEventByName_existingEventNull_returnsError() {
+        Event updatedEvent = new Event("New", "Hall", "Details", new Date(), EventCategory.Educational);
+
+        when(snapshot.exists()).thenReturn(true);
+        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
+        when(eventSnapshot.getValue(Event.class)).thenReturn(null);
+        callbackSnapshot(query, snapshot);
+
+        EventCatalog catalog = EventCatalog.getInstance();
+        AtomicReference<String> error = new AtomicReference<>();
+
+        catalog.editEventByName("SOEN Mixer", updatedEvent, new EventCatalog.EventActionCallback() {
+            @Override
+            public void onSuccess(String message) {
+                fail("Expected read error");
+            }
+
+            @Override
+            public void onError(String message) {
+                error.set(message);
+            }
+        });
+
+        assertEquals("Failed to read event data", error.get());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void editEventByName_success_updatesEvent() {
+        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.Social);
+        existingEvent.setId(42);
+        existingEvent.setAvailable(true);
+
+        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.Professional);
+        updatedEvent.setAvailable(false);
+
+        Task<Void> updateTask = mock(Task.class);
+
+        when(snapshot.exists()).thenReturn(true);
+        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
+        when(eventSnapshot.getValue(Event.class)).thenReturn(existingEvent);
+        when(eventRef.setValue(any())).thenReturn(updateTask);
+        when(updateTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
+            com.google.android.gms.tasks.OnSuccessListener<Void> listener = invocation.getArgument(0);
+            listener.onSuccess(null);
+            return updateTask;
+        });
+        when(updateTask.addOnFailureListener(any())).thenReturn(updateTask);
+        callbackSnapshot(query, snapshot);
+
+        EventCatalog catalog = EventCatalog.getInstance();
+        AtomicReference<String> success = new AtomicReference<>();
+
+        catalog.editEventByName("SOEN Mixer", updatedEvent, new EventCatalog.EventActionCallback() {
+            @Override
+            public void onSuccess(String message) {
+                success.set(message);
+            }
+
+            @Override
+            public void onError(String message) {
+                fail("Expected edit success");
+            }
+        });
+
+        assertEquals("Event updated successfully", success.get());
+        assertEquals(42, updatedEvent.getId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void editEventByName_failure_returnsError() {
+        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.Social);
+        existingEvent.setId(42);
+        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.Professional);
+        Task<Void> updateTask = mock(Task.class);
+
+        when(snapshot.exists()).thenReturn(true);
+        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
+        when(eventSnapshot.getValue(Event.class)).thenReturn(existingEvent);
+        when(eventRef.setValue(any())).thenReturn(updateTask);
+        when(updateTask.addOnSuccessListener(any())).thenReturn(updateTask);
+        when(updateTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            com.google.android.gms.tasks.OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new RuntimeException("edit-failed"));
+            return updateTask;
+        });
+        callbackSnapshot(query, snapshot);
+
+        EventCatalog catalog = EventCatalog.getInstance();
+        AtomicReference<String> error = new AtomicReference<>();
+
+        catalog.editEventByName("SOEN Mixer", updatedEvent, new EventCatalog.EventActionCallback() {
+            @Override
+            public void onSuccess(String message) {
+                fail("Expected edit failure");
+            }
+
+            @Override
+            public void onError(String message) {
+                error.set(message);
+            }
+        });
+
+        assertEquals("Failed to update event: edit-failed", error.get());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void updateEventByName_success_callsSuccessCallback() {
+        Task<Void> updateTask = mock(Task.class);
+
+        when(snapshot.exists()).thenReturn(true);
+        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
+        when(eventRef.updateChildren(any())).thenReturn(updateTask);
+        when(updateTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
+            com.google.android.gms.tasks.OnSuccessListener<Void> listener = invocation.getArgument(0);
+            listener.onSuccess(null);
+            return updateTask;
+        });
+        when(updateTask.addOnFailureListener(any())).thenReturn(updateTask);
+        callbackSnapshot(query, snapshot);
+
+        EventCatalog catalog = EventCatalog.getInstance();
+        AtomicReference<String> success = new AtomicReference<>();
+
+        catalog.updateEventByName(
+                "SOEN Mixer",
+                "New Name",
+                "Hall A",
+                "Updated details",
+                System.currentTimeMillis(),
+                EventCategory.Educational,
+                150,
+                new EventCatalog.EventActionCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        success.set(message);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        fail("Expected update success");
+                    }
+                }
+        );
+
+        assertEquals("Event updated successfully", success.get());
+        verify(eventRef).updateChildren(any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void updateEventByName_failure_returnsErrorCallback() {
+        Task<Void> updateTask = mock(Task.class);
+
+        when(snapshot.exists()).thenReturn(true);
+        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
+        when(eventRef.updateChildren(any())).thenReturn(updateTask);
+        when(updateTask.addOnSuccessListener(any())).thenReturn(updateTask);
+        when(updateTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            com.google.android.gms.tasks.OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new RuntimeException("update-failed"));
+            return updateTask;
+        });
+        callbackSnapshot(query, snapshot);
+
+        EventCatalog catalog = EventCatalog.getInstance();
+        AtomicReference<String> error = new AtomicReference<>();
+
+        catalog.updateEventByName(
+                "SOEN Mixer",
+                "New Name",
+                null,
+                null,
+                -1,
+                null,
+                -1,
+                new EventCatalog.EventActionCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        fail("Expected update failure");
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        error.set(message);
+                    }
+                }
+        );
+
+        assertEquals("Failed to update event: update-failed", error.get());
+    }
+
+    @Test
+    public void editEventByName_queryCancelled_returnsDatabaseError() {
+        DatabaseError dbError = mock(DatabaseError.class);
+        when(dbError.getMessage()).thenReturn("cancelled-edit");
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            listener.onCancelled(dbError);
+            return null;
+        }).when(query).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        EventCatalog catalog = EventCatalog.getInstance();
+        AtomicReference<String> error = new AtomicReference<>();
+        catalog.editEventByName("SOEN Mixer", new Event("N", "L", "D", new Date(), EventCategory.Social), new EventCatalog.EventActionCallback() {
+            @Override
+            public void onSuccess(String message) {
+                fail("Expected cancel error");
+            }
+
+            @Override
+            public void onError(String message) {
+                error.set(message);
+            }
+        });
+
+        assertEquals("Database error: cancelled-edit", error.get());
     }
 }
