@@ -107,6 +107,25 @@
                     android:text="EV Building Lobby"
                     android:textColor="#082238"
                     android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CATEGORY"
+                    android:textColor="#0A7FA8"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/tvDetailCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Social"
+                    android:textColor="#082238"
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
             <!-- About section -->

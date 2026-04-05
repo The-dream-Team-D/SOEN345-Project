@@ -5,8 +5,8 @@ public class EventItem {
     private String dateTime;
     private String location;
     private String details;
+    private String category;
 
-    // Required by Firebase
     public EventItem() {}
 
     public EventItem(String title, String dateTime, String location) {
@@ -14,6 +14,7 @@ public class EventItem {
         this.dateTime = dateTime;
         this.location = location;
         this.details = "";
+        this.category = "";
     }
 
     public EventItem(String title, String dateTime, String location, String details) {
@@ -21,7 +22,17 @@ public class EventItem {
         this.dateTime = dateTime;
         this.location = location;
         this.details = details;
+        this.category = "";
     }
+
+    public EventItem(String title, String dateTime, String location, String details, String category) {
+        this.title = title;
+        this.dateTime = dateTime;
+        this.location = location;
+        this.details = details;
+        this.category = category;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -52,5 +63,13 @@ public class EventItem {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -22,6 +22,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private TextView tvDetailTitle;
     private TextView tvDetailDateTime;
     private TextView tvDetailLocation;
+    private TextView tvDetailCategory;
     private TextView tvDetailDetails;
 
     private Button btnBuyTicket;
@@ -36,6 +37,7 @@ public class EventDetailActivity extends AppCompatActivity {
         tvDetailTitle = findViewById(R.id.tvDetailTitle);
         tvDetailDateTime = findViewById(R.id.tvDetailDateTime);
         tvDetailLocation = findViewById(R.id.tvDetailLocation);
+        tvDetailCategory = findViewById(R.id.tvDetailCategory);
         tvDetailDetails = findViewById(R.id.tvDetailDetails);
         btnBuyTicket = findViewById(R.id.btnBuyTicket);
         btnBack = findViewById(R.id.btnBack);
@@ -43,11 +45,13 @@ public class EventDetailActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra("title");
         String dateTime = getIntent().getStringExtra("dateTime");
         String location = getIntent().getStringExtra("location");
+        String category = getIntent().getStringExtra("category");
         String details = getIntent().getStringExtra("details");
 
         tvDetailTitle.setText(title);
         tvDetailDateTime.setText(dateTime);
         tvDetailLocation.setText(location);
+        tvDetailCategory.setText(category);
         tvDetailDetails.setText(details);
 
         btnBuyTicket.setOnClickListener(v -> buyTicket(title, dateTime, location));
