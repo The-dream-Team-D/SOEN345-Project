@@ -14,6 +14,9 @@ import java.util.Map;
 public class EventCatalog {
     private static EventCatalog instance;
     private final DatabaseReference eventsRef;
+    private static final String EVENT_NAME_EMPTY_ERROR = "Event name is empty";
+    private static final String NO_EVENT_FOUND_ERROR = "No event found with that name";
+    private static final String DB_ERROR_PREFIX = "Database error: ";
 
     private EventCatalog() {
         eventsRef = FirebaseDatabase.getInstance().getReference("Event database");
@@ -31,9 +34,14 @@ public class EventCatalog {
         void onError(String message);
     }
 
-    String eventError = "Event name is empty";
-    String noEventFoundWithNameError = "No event found with that name";
-    String DBErrorTag = "Database error: ";
+    private Query queryByEventName(String eventName, EventActionCallback callback) {
+        if (eventName == null || eventName.trim().isEmpty()) {
+            callback.onError(EVENT_NAME_EMPTY_ERROR);
+            return null;
+        }
+        return eventsRef.orderByChild("title").equalTo(eventName);
+    }
+
     public void addEvent(EventItem event, EventActionCallback callback) {
         if (event == null) {
             callback.onError("Event is null");
@@ -41,7 +49,7 @@ public class EventCatalog {
         }
 
         if (event.getTitle() == null || event.getTitle().trim().isEmpty()) {
-            callback.onError(eventError);
+            callback.onError(EVENT_NAME_EMPTY_ERROR);
             return;
         }
 
@@ -54,18 +62,16 @@ public class EventCatalog {
     }
 
     public void deleteEventByName(String eventName, EventActionCallback callback) {
-        if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onError(eventError);
+        Query query = queryByEventName(eventName, callback);
+        if (query == null) {
             return;
         }
-
-        Query query = eventsRef.orderByChild("title").equalTo(eventName);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError(noEventFoundWithNameError);
+                    callback.onError(NO_EVENT_FOUND_ERROR);
                     return;
                 }
 
@@ -79,14 +85,14 @@ public class EventCatalog {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError(DBErrorTag + error.getMessage());
+                callback.onError(DB_ERROR_PREFIX + error.getMessage());
             }
         });
     }
 
     public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
-        if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onError(eventError);
+        Query query = queryByEventName(eventName, callback);
+        if (query == null) {
             return;
         }
 
@@ -95,13 +101,11 @@ public class EventCatalog {
             return;
         }
 
-        Query query = eventsRef.orderByChild("title").equalTo(eventName);
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError(noEventFoundWithNameError);
+                    callback.onError(NO_EVENT_FOUND_ERROR);
                     return;
                 }
 
@@ -119,18 +123,18 @@ public class EventCatalog {
                         updatedEvent.setAvailable(existingEvent.isAvailable());
                     }
 
-                    DataSnapshot firstEvent = snapshot.getChildren().iterator().next();
-                    firstEvent.getRef().setValue(updatedEvent)
+                    eventSnapshot.getRef().setValue(updatedEvent)
                             .addOnSuccessListener(unused ->
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
+                    return;
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError(DBErrorTag + error.getMessage());
+                callback.onError(DB_ERROR_PREFIX + error.getMessage());
             }
         });
     }
@@ -144,18 +148,16 @@ public class EventCatalog {
                                   int newCapacity,
                                   EventActionCallback callback) {
 
-        if (currentEventName == null || currentEventName.trim().isEmpty()) {
-            callback.onError(eventError);
+        Query query = queryByEventName(currentEventName, callback);
+        if (query == null) {
             return;
         }
-
-        Query query = eventsRef.orderByChild("title").equalTo(currentEventName);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    callback.onError(noEventFoundWithNameError);
+                    callback.onError(NO_EVENT_FOUND_ERROR);
                     return;
                 }
 
@@ -191,19 +193,19 @@ public class EventCatalog {
                         return;
                     }
 
-                    DataSnapshot firstEvent = snapshot.getChildren().iterator().next();
-                    firstEvent.getRef().updateChildren(updates)
+                    eventSnapshot.getRef().updateChildren(updates)
                             .addOnSuccessListener(unused ->
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
+                    return;
 
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                callback.onError(DBErrorTag + error.getMessage());
+                callback.onError(DB_ERROR_PREFIX + error.getMessage());
             }
         });
     }

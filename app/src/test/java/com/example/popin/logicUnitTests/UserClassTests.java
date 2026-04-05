@@ -212,7 +212,7 @@ public class UserClassTests {
     }
 
     @Test
-    public void login_databaseCancelled_logsError() {
+    public void login_databaseCancelled_callsOnError() {
         DatabaseError mockError = mock(DatabaseError.class);
         when(mockError.getMessage()).thenReturn("Connection lost");
 
@@ -226,7 +226,7 @@ public class UserClassTests {
 
         User.login(user.getEmail(), user.getPassword(), new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Should not succeed on cancel"); }
-            @Override public void onError(String msg)  { fail("onError should not be called on cancel"); }
+            @Override public void onError(String msg)  { assertEquals("Database error: Connection lost", msg); }
         });
 
         verify(mockError).getMessage();

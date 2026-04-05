@@ -326,7 +326,7 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                System.out.println("Database error: " + error.getMessage());
+                callback.onError("Database error: " + error.getMessage());
             }
         });
     }
@@ -414,7 +414,9 @@ public class User {
 
                     userSnapshot.getRef().child("bio").setValue(Finaluser.getBio());
 
-                    userSnapshot.getRef().child("NotificationPreference").setValue(Finaluser.getUserNotificationPreference().toString());
+                    NotificationPreferenceOptions pref = Finaluser.getUserNotificationPreference();
+                    userSnapshot.getRef().child("NotificationPreference")
+                            .setValue(pref == null ? null : pref.toString());
                     updated = true;
                 }
                 if (updated) {
@@ -529,9 +531,8 @@ public class User {
                         String phoneNumString = userSnapshot.child("phoneNumber").getValue(String.class);
                         String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
 
+                        finalUser.setPhoneNumber(phoneNumString);
                         if (prefString != null) {
-
-                            finalUser.setPhoneNumber(phoneNumString);
                             finalUser.setUserNotificationPreference(
                                     NotificationPreferenceOptions.valueOf(prefString)
                             );
@@ -553,20 +554,25 @@ public class User {
 
     public void changePassword(GenericCallback callback){
 
-        String email_or_phoneNumber = this.getEmail();
-        User user = null;
+        String emailOrPhoneNumber;
+        if (this.getEmail() != null && !this.getEmail().trim().isEmpty()) {
+            emailOrPhoneNumber = this.getEmail();
+        } else if (this.getPhoneNumber() != null && !this.getPhoneNumber().trim().isEmpty()) {
+            emailOrPhoneNumber = this.getPhoneNumber();
+        } else {
+            callback.onError("Email/Phone input is Empty");
+            return;
+        }
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        Query query = null;
-        UserInputType type = identify(email_or_phoneNumber);
-        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+        UserInputType type = identify(emailOrPhoneNumber);
+        String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
+        Query query;
 
         if (type == UserInputType.PHONE) {
-            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+            query = usersRef.orderByChild("phoneNumber").equalTo(normalizedEmailOrPhone);
         } else {
-            user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("email").equalTo(user.email);
+            query = usersRef.orderByChild("email").equalTo(normalizedEmailOrPhone);
         }
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
