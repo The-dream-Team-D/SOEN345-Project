@@ -13,7 +13,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.popin.R;
-import com.example.popin.UIpages.MainActivity;
+import com.example.popin.uipages.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

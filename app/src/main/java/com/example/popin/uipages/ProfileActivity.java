@@ -1,4 +1,4 @@
-package com.example.popin.UIpages;
+package com.example.popin.uipages;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -170,7 +170,7 @@ public class ProfileActivity extends AppCompatActivity {
             emailOption = findViewById(R.id.boxEmail);
             smsOption = findViewById(R.id.boxSMS);
 
-            if (session.getUser().getUserNotificationPreference() == NotificationPreferenceOptions.Email) {
+            if (session.getUser().getUserNotificationPreference() == NotificationPreferenceOptions.EMAIL) {
                 notificationPreference[0] = true;
                 emailOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.action));
@@ -265,7 +265,7 @@ public class ProfileActivity extends AppCompatActivity {
         NotificationPreferenceOptions newNotificationPreference;
 
         if (notificationPreference[0]) {
-            newNotificationPreference = NotificationPreferenceOptions.Email;
+            newNotificationPreference = NotificationPreferenceOptions.EMAIL;
         } else{
             newNotificationPreference = NotificationPreferenceOptions.SMS;
         }

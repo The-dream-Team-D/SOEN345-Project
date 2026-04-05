@@ -50,12 +50,12 @@ public class Admin extends User {
                             int newCapacity,
                             EventCatalog.EventActionCallback callback) {
         EventCatalog.EventUpdateRequest request = new EventCatalog.EventUpdateRequest();
-        request.newName = newName;
-        request.newLocation = newLocation;
-        request.newDescription = newDescription;
-        request.newDate = newDate;
-        request.newCategory = newCategory;
-        request.newCapacity = newCapacity;
+        request.setNewName(newName);
+        request.setNewLocation(newLocation);
+        request.setNewDescription(newDescription);
+        request.setNewDate(newDate);
+        request.setNewCategory(newCategory);
+        request.setNewCapacity(newCapacity);
         EventCatalog.getInstance().updateEventByName(
                 currentEventName,
                 request,

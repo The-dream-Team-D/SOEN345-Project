@@ -1,4 +1,4 @@
-package com.example.popin.UIpages;
+package com.example.popin.uipages;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 
@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class EventDetailActivity extends AppCompatActivity {
+    private static final String EXTRA_CAPACITY = "capacity";
+    private static final String EXTRA_ATTENDEES = "attendees";
 
     private TextView tvDetailTitle;
     private TextView tvDetailDateTime;
@@ -63,7 +65,7 @@ public class EventDetailActivity extends AppCompatActivity {
         }
 
         String userKey = sanitizeKey(session.getUser().getEmail());
-        boolean isFull = getIntent().getIntExtra("capacity", 0) <= getIntent().getIntExtra("attendees", 0);
+        boolean isFull = getIntent().getIntExtra(EXTRA_CAPACITY, 0) <= getIntent().getIntExtra(EXTRA_ATTENDEES, 0);
 
         TicketItem.buyTicket(userKey, title, new GenericCallback() {
             @Override
@@ -105,8 +107,8 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void setup() {
 
-        eventCapacity = getIntent().getIntExtra("capacity", 100);
-        eventAttendance = getIntent().getIntExtra("attendees", 0);
+        eventCapacity = getIntent().getIntExtra(EXTRA_CAPACITY, 100);
+        eventAttendance = getIntent().getIntExtra(EXTRA_ATTENDEES, 0);
 
         tvDetailTitle = findViewById(R.id.tvDetailTitle);
         tvDetailDateTime = findViewById(R.id.tvDetailDateTime);
@@ -204,7 +206,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 .getReference("User tickets")
                 .child(userKey);
 
-        boolean isFull = getIntent().getIntExtra("capacity", 0) <= getIntent().getIntExtra("attendees", 0);
+        boolean isFull = getIntent().getIntExtra(EXTRA_CAPACITY, 0) <= getIntent().getIntExtra(EXTRA_ATTENDEES, 0);
 
         userTicketsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

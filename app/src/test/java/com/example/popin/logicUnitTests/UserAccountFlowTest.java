@@ -438,7 +438,7 @@ public class UserAccountFlowTest {
         user.setAddress("123 Main");
         user.setPhoneNumber("+15145551234");
         user.setBio("bio");
-        user.setUserNotificationPreference(NotificationPreferenceOptions.Email);
+        user.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
 
         AtomicReference<String> success = new AtomicReference<>();
         user.updateProfile(new GenericCallback() {

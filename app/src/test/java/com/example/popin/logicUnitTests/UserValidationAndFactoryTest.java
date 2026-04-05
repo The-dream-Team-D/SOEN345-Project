@@ -20,7 +20,7 @@ public class UserValidationAndFactoryTest {
         assertEquals("user@example.com", user.getEmail());
         assertEquals("", user.getPhoneNumber());
         assertEquals("pass123", user.getPassword());
-        assertEquals(NotificationPreferenceOptions.Email, user.getUserNotificationPreference());
+        assertEquals(NotificationPreferenceOptions.EMAIL, user.getUserNotificationPreference());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class UserValidationAndFactoryTest {
         assertEquals("Invalid preference selected", noContactUser.setUserNotificationPreference(null));
         assertEquals(
                 "No email address found, please add an email to use this preference",
-                noContactUser.setUserNotificationPreference(NotificationPreferenceOptions.Email)
+                noContactUser.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL)
         );
         assertEquals(
                 "No phone number found, please add a phone number to use this preference",

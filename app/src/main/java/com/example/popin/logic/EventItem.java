@@ -147,7 +147,7 @@ public class EventItem {
 
     }
 
-    public static String FormatTime(long dateTime) {
+    public static String formatTime(long dateTime) {
 
         Date date = new Date(dateTime);
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy - h:mm a", Locale.US);

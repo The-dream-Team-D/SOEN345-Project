@@ -10,6 +10,8 @@ import java.net.URL;
 import com.example.popin.BuildConfig;
 
 public class EmailServicer {
+    private EmailServicer() { /* utility class */ }
+
     public static void sendEmail(String toEmail, String subject, String message) {
 
         String apiKey = BuildConfig.SENDGRID_API_KEY;

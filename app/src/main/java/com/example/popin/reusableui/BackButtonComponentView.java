@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.popin.R;
-import com.example.popin.UIpages.MainActivity;
+import com.example.popin.uipages.MainActivity;
 
 public class BackButtonComponentView extends ConstraintLayout {
 

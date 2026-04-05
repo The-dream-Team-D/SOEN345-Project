@@ -94,12 +94,12 @@ public class EventCatalogFlowTest {
             int capacity
     ) {
         EventCatalog.EventUpdateRequest request = new EventCatalog.EventUpdateRequest();
-        request.newName = name;
-        request.newLocation = location;
-        request.newDescription = description;
-        request.newDate = date;
-        request.newCategory = category;
-        request.newCapacity = capacity;
+        request.setNewName(name);
+        request.setNewLocation(location);
+        request.setNewDescription(description);
+        request.setNewDate(date);
+        request.setNewCategory(category);
+        request.setNewCapacity(capacity);
         return request;
     }
 

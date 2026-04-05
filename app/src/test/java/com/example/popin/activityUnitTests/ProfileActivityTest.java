@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.popin.R;
-import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.uipages.ProfileActivity;
 import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
@@ -37,7 +37,7 @@ public class ProfileActivityTest {
         testUser.setPhoneNumber("123456789");
         testUser.setBio("bio 123");
         testUser.setIsAdmin(true);
-        testUser.setUserNotificationPreference(NotificationPreferenceOptions.Email);
+        testUser.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
 
         UserInSession.create(testUser);
 

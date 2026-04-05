@@ -120,12 +120,12 @@ public class EventCatalogTest {
         EventCatalog catalog = EventCatalog.getInstance();
         AtomicReference<String> error = new AtomicReference<>();
         EventCatalog.EventUpdateRequest request = new EventCatalog.EventUpdateRequest();
-        request.newName = "New name";
-        request.newLocation = "New location";
-        request.newDescription = "New description";
-        request.newDate = System.currentTimeMillis();
-        request.newCategory = EventCategory.SOCIAL;
-        request.newCapacity = 100;
+        request.setNewName("New name");
+        request.setNewLocation("New location");
+        request.setNewDescription("New description");
+        request.setNewDate(System.currentTimeMillis());
+        request.setNewCategory(EventCategory.SOCIAL);
+        request.setNewCapacity(100);
 
         catalog.updateEventByName(
                 " ",

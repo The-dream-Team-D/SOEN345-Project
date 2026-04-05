@@ -1,6 +1,6 @@
 package com.example.popin.logic;
 
-import static com.example.popin.logic.EventItem.FormatTime;
+import static com.example.popin.logic.EventItem.formatTime;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.popin.UIpages.EventDetailActivity;
+import com.example.popin.uipages.EventDetailActivity;
 import com.example.popin.R;
 
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+    private static final String FILTER_TAG = "FILTER";
     private final List<EventItem> allEvents;
     private final List<EventItem> visibleEvents;
     private String currentQuery = "";
@@ -51,7 +52,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         EventItem event = visibleEvents.get(position);
         holder.title.setText(event.getTitle());
-        holder.dateTime.setText(FormatTime(event.getDateTime()));
+        holder.dateTime.setText(formatTime(event.getDateTime()));
         holder.location.setText(event.getLocation());
         holder.eventCategory.setText(event.getCategory().toString());
 
@@ -71,7 +72,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
             intent.putExtra("title", event.getTitle());
-            intent.putExtra("dateTime", FormatTime(event.getDateTime()));
+            intent.putExtra("dateTime", formatTime(event.getDateTime()));
             intent.putExtra("location", event.getLocation());
             intent.putExtra("details", event.getDetails());
             intent.putExtra("imgURL", event.getImgURL());
@@ -145,9 +146,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             long now,
             long thirtyDaysLater
     ) {
-        Log.d("FILTER", "Now: " + new Date(now));
-        Log.d("FILTER", "Event: " + new Date(event.getDateTime()));
-        Log.d("FILTER", "30 days later: " + new Date(thirtyDaysLater));
+        Log.d(FILTER_TAG, "Now: " + new Date(now));
+        Log.d(FILTER_TAG, "Event: " + new Date(event.getDateTime()));
+        Log.d(FILTER_TAG, "30 days later: " + new Date(thirtyDaysLater));
         return !inNextThirtyDaysRequest || event.getDateTime() <= thirtyDaysLater;
     }
 

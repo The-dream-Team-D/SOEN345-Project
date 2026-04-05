@@ -1,4 +1,4 @@
-package com.example.popin.UIpages;
+package com.example.popin.uipages;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,24 +9,23 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.popin.R;
+import com.example.popin.logic.GenericCallback;
 import com.example.popin.logic.User;
-import com.example.popin.logic.UserInSession;
 
-public class LogInActivity extends AppCompatActivity {
-
+public class SignUpActivity extends AppCompatActivity {
+    private static final String INPUT_EMPTY_ERROR = "Input is Empty";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_signup);
 
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -35,7 +34,6 @@ public class LogInActivity extends AppCompatActivity {
 
         EditText passwordInputField = findViewById(R.id.password_input);
         ImageView passwordToggle = findViewById(R.id.eye_password_icon);
-        TextView forgotPassword = findViewById(R.id.forgotPassword);
 
         passwordToggle.setOnClickListener(v -> {
             if (passwordInputField.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
@@ -48,33 +46,24 @@ public class LogInActivity extends AppCompatActivity {
 
             passwordInputField.setSelection(passwordInputField.getText().length());
         });
-
-
-        forgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LogInActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-            finish();
-        });
     }
 
+    public void SignUp(View view) {
 
-
-
-    public void Login(View view) {
-
+        EditText nameInputField = findViewById(R.id.NameInput);
         EditText emailInputField = findViewById(R.id.emailInput);
         EditText passwordInputField = findViewById(R.id.password_input);
 
+        String name = nameInputField.getText().toString();
         String emailOrPhoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User.login(emailOrPhoneNumber, password, new User.LoginCallback() {
+        User.signUp(name, emailOrPhoneNumber, password, new GenericCallback() {
             @Override
-            public void onSuccess(User user) {
-                Toast.makeText(getApplicationContext(), "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
-                UserInSession.create(user);
+            public void onSuccess(String message) {
+                Toast.makeText(getApplicationContext(), "Account Created!", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(LogInActivity.this, EventsPageActivity.class);
+                Intent intent = new Intent(SignUpActivity.this, LogInActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -82,23 +71,28 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 switch (message) {
+
+                    case "Name input is empty":
+                        nameInputField.setError(INPUT_EMPTY_ERROR);
+                        break;
                     case "Email/Phone input is Empty":
-                        emailInputField.setError("Input is Empty");
+                        emailInputField.setError(INPUT_EMPTY_ERROR);
                         break;
                     case "Password input is Empty":
-                        passwordInputField.setError("Input is Empty");
+                        passwordInputField.setError(INPUT_EMPTY_ERROR);
                         break;
-                    case "No user with that email/phone number":
-                        emailInputField.setError("No registered account with this email/phone number");
+                    case "Must be a valid email or phone number":
+                        emailInputField.setError("Not valid Email/Phone Number");
                         break;
-                    case "Incorrect password":
-                        passwordInputField.setError("Incorrect password");
+                    case "An account with this Email/Phone Number already exists":
+                        emailInputField.setError("This Email/Phone number is already in use");
                         break;
                     default:
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
     }
 
 }

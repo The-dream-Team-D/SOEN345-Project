@@ -7,10 +7,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.popin.UIpages.AdminDashboardActivity;
-import com.example.popin.UIpages.EventsPageActivity;
-import com.example.popin.UIpages.MyTicketsActivity;
-import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.uipages.AdminDashboardActivity;
+import com.example.popin.uipages.EventsPageActivity;
+import com.example.popin.uipages.MyTicketsActivity;
+import com.example.popin.uipages.ProfileActivity;
 import com.example.popin.R;
 import com.example.popin.logic.UserInSession;
 

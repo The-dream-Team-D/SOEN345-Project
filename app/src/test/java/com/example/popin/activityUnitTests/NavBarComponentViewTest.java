@@ -22,10 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.popin.FirebaseTestAssistant;
 import com.example.popin.R;
-import com.example.popin.UIpages.AdminDashboardActivity;
-import com.example.popin.UIpages.EventsPageActivity;
-import com.example.popin.UIpages.MyTicketsActivity;
-import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.uipages.AdminDashboardActivity;
+import com.example.popin.uipages.EventsPageActivity;
+import com.example.popin.uipages.MyTicketsActivity;
+import com.example.popin.uipages.ProfileActivity;
 import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
@@ -59,7 +59,7 @@ public class NavBarComponentViewTest {
     private void setupWithAdmin(boolean isAdmin) {
         User u = new User("TestMan", "Test");
         u.setIsAdmin(isAdmin);
-        u.setUserNotificationPreference(NotificationPreferenceOptions.Email);
+        u.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
         UserInSession.create(u);
 
         mockHostActivity = Robolectric.buildActivity(AppCompatActivity.class).create().get();

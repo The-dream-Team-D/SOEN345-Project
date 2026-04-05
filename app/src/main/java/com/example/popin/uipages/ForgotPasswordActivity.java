@@ -1,4 +1,4 @@
-package com.example.popin.UIpages;
+package com.example.popin.uipages;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 

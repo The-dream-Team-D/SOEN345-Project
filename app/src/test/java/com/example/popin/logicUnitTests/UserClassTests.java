@@ -36,7 +36,7 @@ public class UserClassTests {
     private static final String NAME_IN_DB     = "John Doe";
     private static final String ADDRESS_IN_DB = "123 Main St";
     private static final String PHONE_NUMBER_IN_DB = "+15141234567";
-    private static final NotificationPreferenceOptions NOTIF_PREF_IN_DB = NotificationPreferenceOptions.Email;
+    private static final NotificationPreferenceOptions NOTIF_PREF_IN_DB = NotificationPreferenceOptions.EMAIL;
     private static final String BIO_IN_DB = "Hello I am a user for tests";
 
     private static final boolean IS_ADMIN_IN_DB = false;
@@ -244,7 +244,7 @@ public class UserClassTests {
         user.setPhoneNumber("5141234567");
         user.setBio("Hello I am John");
         user.setIsAdmin(true);
-        user.setUserNotificationPreference(NotificationPreferenceOptions.Email);
+        user.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
 
         assertEquals("John Smith", user.getName());
         assertEquals("456 Oak St", user.getAddress());
@@ -253,7 +253,7 @@ public class UserClassTests {
         assertEquals("5141234567", user.getPhoneNumber());
         assertEquals("Hello I am John", user.getBio());
         assertTrue(user.getIsAdmin());
-        assertEquals(NotificationPreferenceOptions.Email, user.getUserNotificationPreference());
+        assertEquals(NotificationPreferenceOptions.EMAIL, user.getUserNotificationPreference());
     }
 
     @Test

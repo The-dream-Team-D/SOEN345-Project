@@ -1,6 +1,6 @@
 package com.example.popin.logic;
 
-import static com.example.popin.logic.EventItem.FormatTime;
+import static com.example.popin.logic.EventItem.formatTime;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +60,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         long now = System.currentTimeMillis();  // only once per bind
 
         holder.title.setText(ticket.getTitle());
-        holder.dateTime.setText(FormatTime(ticket.getDateTime()));
+        holder.dateTime.setText(formatTime(ticket.getDateTime()));
         holder.location.setText(ticket.getLocation());
 
         if (ticket.getDateTime() > now) {

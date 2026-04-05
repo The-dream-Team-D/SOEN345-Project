@@ -18,8 +18,11 @@ public class User {
     private static final String EMAIL_FIELD = "email";
     private static final String PHONE_FIELD = "phoneNumber";
     private static final String PASSWORD_FIELD = "password";
+    private static final String ADDRESS_FIELD = "address";
+    private static final String NOTIF_PREF_FIELD = NOTIF_PREF_FIELD;
     private static final String PASSWORD_EMPTY_ERROR = "Password input is Empty";
     private static final String NO_USER_ERROR = "No user with that email/phone number";
+    private static final String EMAIL_PHONE_EMPTY_ERROR = EMAIL_PHONE_EMPTY_ERROR;
 
     private String email;
     private String password;
@@ -61,7 +64,7 @@ public class User {
     }
 
     public static User createUserWithEmail(String email, String password){
-        return new User(email, "", password == null ? "" : password.trim(), NotificationPreferenceOptions.Email);
+        return new User(email, "", password == null ? "" : password.trim(), NotificationPreferenceOptions.EMAIL);
     }
 
     public static User createUserWithPhoneNumber(String phoneNumber, String password){
@@ -111,7 +114,7 @@ public class User {
         }
 
         switch(pref) {
-            case Email:
+            case EMAIL:
                 if (this.email == null || this.email.trim().isEmpty()) {
                     return "No email address found, please add an email to use this preference";
                 }
@@ -191,7 +194,7 @@ public class User {
         }
 
         if (emailOrPhoneNumber == null || emailOrPhoneNumber.trim().isEmpty()) {
-            callback.onError("Email/Phone input is Empty");
+            callback.onError(EMAIL_PHONE_EMPTY_ERROR);
             return;
         }
 
@@ -236,11 +239,11 @@ public class User {
                 userData.put(PHONE_FIELD, finalUser.getPhoneNumber());
 
                 userData.put(PASSWORD_FIELD, finalUser.getPassword());
-                userData.put("address", finalUser.getAddress());
+                userData.put(ADDRESS_FIELD, finalUser.getAddress());
                 userData.put("name", finalUser.getName());
 
                 userData.put("isAdmin", finalUser.getIsAdmin());
-                userData.put("NotificationPreference", finalUser.getUserNotificationPreference());
+                userData.put(NOTIF_PREF_FIELD, finalUser.getUserNotificationPreference());
 
                 usersRef.push().setValue(userData)
                         .addOnSuccessListener(aVoid -> {
@@ -261,81 +264,35 @@ public class User {
     }
 
     public static void login(String emailOrPhoneNumber, String password, LoginCallback callback){
-
-        User user = null;
-
         if(emailOrPhoneNumber == null || emailOrPhoneNumber.trim().isEmpty()) {
-            callback.onError("Email/Phone input is Empty");
+            callback.onError(EMAIL_PHONE_EMPTY_ERROR);
             return;
         }
-
         if(password == null || password.trim().isEmpty()) {
             callback.onError(PASSWORD_EMPTY_ERROR);
             return;
         }
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
-        Query query = null;
         UserInputType type = identify(emailOrPhoneNumber);
         String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
 
-
-
-        // NO Need for input validation in login, either login or you cant. This just defines type to search
-        if (type == UserInputType.PHONE) {
-            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber);
-        } else {
-            user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
-        }
+        User user = (type == UserInputType.PHONE)
+                ? createUserWithPhoneNumber(normalizedEmailOrPhone, password)
+                : createUserWithEmail(normalizedEmailOrPhone, password);
+        Query query = (type == UserInputType.PHONE)
+                ? usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber)
+                : usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
 
         final User finalUser = user;
-
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
                 if (!snapshot.exists()) {
                     callback.onError(NO_USER_ERROR);
                     return;
                 }
-
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-
-                    String dbPassword = userSnapshot.child(PASSWORD_FIELD).getValue(String.class);
-
-                    if (password.equals(dbPassword)) {
-                        System.out.println("Login successful");
-
-                        finalUser.setName(userSnapshot.child("name").getValue(String.class));
-                        finalUser.setAddress(userSnapshot.child("address").getValue(String.class));
-                        finalUser.setIsAdmin(Boolean.TRUE.equals(userSnapshot.child("isAdmin").getValue(boolean.class)));
-                        finalUser.setPhoneNumber(userSnapshot.child("phoneNumber").getValue(String.class));
-                        finalUser.setBio(userSnapshot.child("bio").getValue(String.class));
-
-                        String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
-
-                        NotificationPreferenceOptions pref = safeParsePreference(prefString);
-                        if (pref != null) {
-                            finalUser.setUserNotificationPreference(pref);
-                        }
-
-                        if (finalUser.getIsAdmin()){
-                            Admin admin = new Admin(finalUser);
-                            callback.onSuccess(admin);
-                            return;
-                        }else {
-                            callback.onSuccess(finalUser);
-                            return;
-                        }
-
-                    } else {
-                        callback.onError("Incorrect password");
-                    }
-                }
+                processLoginSnapshot(snapshot, finalUser, password, callback);
             }
 
             @Override
@@ -345,18 +302,32 @@ public class User {
         });
     }
 
-    private boolean validateInputs(LoginCallback callback) {
-        if (this.email == null || this.email.trim().isEmpty()) {
-            callback.onError("Email/Phone input is Empty");
-            return false;
+    private static void processLoginSnapshot(DataSnapshot snapshot, User finalUser, String password, LoginCallback callback) {
+        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+            String dbPassword = userSnapshot.child(PASSWORD_FIELD).getValue(String.class);
+            if (password.equals(dbPassword)) {
+                populateUserFromSnapshot(finalUser, userSnapshot);
+                User result = finalUser.getIsAdmin() ? new Admin(finalUser) : finalUser;
+                callback.onSuccess(result);
+                return;
+            } else {
+                callback.onError("Incorrect password");
+            }
         }
+    }
 
-        if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError(PASSWORD_EMPTY_ERROR);
-            return false;
+    private static void populateUserFromSnapshot(User user, DataSnapshot snapshot) {
+        android.util.Log.d("User", "Login successful");
+        user.setName(snapshot.child("name").getValue(String.class));
+        user.setAddress(snapshot.child(ADDRESS_FIELD).getValue(String.class));
+        user.setIsAdmin(Boolean.TRUE.equals(snapshot.child("isAdmin").getValue(boolean.class)));
+        user.setPhoneNumber(snapshot.child(PHONE_FIELD).getValue(String.class));
+        user.setBio(snapshot.child("bio").getValue(String.class));
+        String prefString = snapshot.child(NOTIF_PREF_FIELD).getValue(String.class);
+        NotificationPreferenceOptions pref = safeParsePreference(prefString);
+        if (pref != null) {
+            user.setUserNotificationPreference(pref);
         }
-
-        return true;
     }
 
     public void updateProfile(GenericCallback callback) {
@@ -381,14 +352,14 @@ public class User {
 
                     userSnapshot.getRef().child("name").setValue(finalUser.getName());
 
-                    userSnapshot.getRef().child("address").setValue(finalUser.getAddress());
+                    userSnapshot.getRef().child(ADDRESS_FIELD).setValue(finalUser.getAddress());
 
                     userSnapshot.getRef().child("phoneNumber").setValue(finalUser.getPhoneNumber());
 
                     userSnapshot.getRef().child("bio").setValue(finalUser.getBio());
 
                     NotificationPreferenceOptions pref = finalUser.getUserNotificationPreference();
-                    userSnapshot.getRef().child("NotificationPreference")
+                    userSnapshot.getRef().child(NOTIF_PREF_FIELD)
                             .setValue(pref == null ? null : pref.toString());
                     updated = true;
                 }
@@ -449,70 +420,35 @@ public class User {
 
 
     public static void forgotPassword(String emailOrPhoneNumber, String password, LoginCallback callback){
-
-        User user = null;
-
         if(emailOrPhoneNumber == null || emailOrPhoneNumber.trim().isEmpty()) {
-            callback.onError("Email/Phone input is Empty");
+            callback.onError(EMAIL_PHONE_EMPTY_ERROR);
             return;
         }
-
         if(password == null || password.trim().isEmpty()) {
             callback.onError("New Password input is Empty");
             return;
         }
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
-        Query query = null;
         UserInputType type = identify(emailOrPhoneNumber);
         String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
 
-
-
-        // NO Need for input validation in login, either login or you cant. This just defines type to search
-        if (type == UserInputType.PHONE) {
-            user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber);
-        } else {
-            user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
-        }
+        User user = (type == UserInputType.PHONE)
+                ? createUserWithPhoneNumber(normalizedEmailOrPhone, password)
+                : createUserWithEmail(normalizedEmailOrPhone, password);
+        Query query = (type == UserInputType.PHONE)
+                ? usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber)
+                : usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
 
         final User finalUser = user;
-
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
                 if (!snapshot.exists()) {
                     callback.onError(NO_USER_ERROR);
                     return;
                 }
-
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-
-                    String dbPassword = userSnapshot.child(PASSWORD_FIELD).getValue(String.class);
-
-                    if (password.equals(dbPassword)) {
-                        callback.onError("New password can't be the same as old password");
-                        return;
-
-                    } else {
-
-                        String phoneNumString = userSnapshot.child("phoneNumber").getValue(String.class);
-                        String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
-
-                        finalUser.setPhoneNumber(phoneNumString);
-                        NotificationPreferenceOptions pref = safeParsePreference(prefString);
-                        if (pref != null) {
-                            finalUser.setUserNotificationPreference(pref);
-                        }
-
-                        callback.onSuccess(finalUser);
-                    }
-                }
+                processPasswordResetSnapshot(snapshot, finalUser, password, callback);
             }
 
             @Override
@@ -520,6 +456,24 @@ public class User {
                 callback.onError("Database error: " + error.getMessage());
             }
         });
+    }
+
+    private static void processPasswordResetSnapshot(DataSnapshot snapshot, User finalUser, String newPassword, LoginCallback callback) {
+        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+            String dbPassword = userSnapshot.child(PASSWORD_FIELD).getValue(String.class);
+            if (newPassword.equals(dbPassword)) {
+                callback.onError("New password can't be the same as old password");
+                return;
+            }
+            String phoneNumString = userSnapshot.child(PHONE_FIELD).getValue(String.class);
+            String prefString = userSnapshot.child(NOTIF_PREF_FIELD).getValue(String.class);
+            finalUser.setPhoneNumber(phoneNumString);
+            NotificationPreferenceOptions pref = safeParsePreference(prefString);
+            if (pref != null) {
+                finalUser.setUserNotificationPreference(pref);
+            }
+            callback.onSuccess(finalUser);
+        }
     }
 
 
@@ -532,7 +486,7 @@ public class User {
         } else if (this.getPhoneNumber() != null && !this.getPhoneNumber().trim().isEmpty()) {
             emailOrPhoneNumber = this.getPhoneNumber();
         } else {
-            callback.onError("Email/Phone input is Empty");
+            callback.onError(EMAIL_PHONE_EMPTY_ERROR);
             return;
         }
 

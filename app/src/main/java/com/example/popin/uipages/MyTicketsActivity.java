@@ -1,6 +1,6 @@
-package com.example.popin.UIpages;
+package com.example.popin.uipages;
 
-import static com.example.popin.logic.EventItem.FormatTime;
+import static com.example.popin.logic.EventItem.formatTime;
 import static com.example.popin.logic.Notifications.sendNotification;
 
 import android.content.Intent;
@@ -99,8 +99,7 @@ public class MyTicketsActivity extends AppCompatActivity {
 
             searchInput.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { /* no-op */ }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -109,8 +108,7 @@ public class MyTicketsActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
-                }
+                public void afterTextChanged(Editable s) { /* no-op */ }
             });
 
             pastTickets.setOnClickListener(v -> {
@@ -244,7 +242,7 @@ public class MyTicketsActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MyTicketsActivity.this, EventDetailActivity.class);
         intent.putExtra("title", ticket.getTitle());
-        intent.putExtra("dateTime", FormatTime(ticket.getDateTime()));
+        intent.putExtra("dateTime", formatTime(ticket.getDateTime()));
         intent.putExtra("location", ticket.getLocation());
         intent.putExtra("details", ticket.getDetails());
         intent.putExtra("imgURL", ticket.getImgURL());

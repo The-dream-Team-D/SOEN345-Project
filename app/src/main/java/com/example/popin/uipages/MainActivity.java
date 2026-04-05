@@ -1,4 +1,4 @@
-package com.example.popin.UIpages;
+package com.example.popin.uipages;
 
 import android.content.Intent;
 import android.graphics.Color;

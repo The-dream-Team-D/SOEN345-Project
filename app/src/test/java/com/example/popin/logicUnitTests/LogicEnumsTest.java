@@ -35,7 +35,7 @@ public class LogicEnumsTest {
     @Test
     public void notificationPreferenceOptions_containsExpectedValues() {
         assertEquals(2, NotificationPreferenceOptions.values().length);
-        assertTrue(Arrays.asList(NotificationPreferenceOptions.values()).contains(NotificationPreferenceOptions.Email));
+        assertTrue(Arrays.asList(NotificationPreferenceOptions.values()).contains(NotificationPreferenceOptions.EMAIL));
         assertTrue(Arrays.asList(NotificationPreferenceOptions.values()).contains(NotificationPreferenceOptions.SMS));
     }
 

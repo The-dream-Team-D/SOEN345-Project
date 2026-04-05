@@ -35,12 +35,25 @@ public class EventCatalog {
     }
 
     public static class EventUpdateRequest {
-        public String newName;
-        public String newLocation;
-        public String newDescription;
-        public long newDate = -1L;
-        public EventCategory newCategory;
-        public int newCapacity = -1;
+        private String newName;
+        private String newLocation;
+        private String newDescription;
+        private long newDate = -1L;
+        private EventCategory newCategory;
+        private int newCapacity = -1;
+
+        public String getNewName() { return newName; }
+        public void setNewName(String newName) { this.newName = newName; }
+        public String getNewLocation() { return newLocation; }
+        public void setNewLocation(String newLocation) { this.newLocation = newLocation; }
+        public String getNewDescription() { return newDescription; }
+        public void setNewDescription(String newDescription) { this.newDescription = newDescription; }
+        public long getNewDate() { return newDate; }
+        public void setNewDate(long newDate) { this.newDate = newDate; }
+        public EventCategory getNewCategory() { return newCategory; }
+        public void setNewCategory(EventCategory newCategory) { this.newCategory = newCategory; }
+        public int getNewCapacity() { return newCapacity; }
+        public void setNewCapacity(int newCapacity) { this.newCapacity = newCapacity; }
     }
 
     private Query queryByEventName(String eventName, EventActionCallback callback) {
@@ -193,23 +206,23 @@ public class EventCatalog {
 
     private Map<String, Object> buildUpdates(EventUpdateRequest request) {
         Map<String, Object> updates = new HashMap<>();
-        if (request.newName != null && !request.newName.trim().isEmpty()) {
-            updates.put("title", request.newName);
+        if (request.getNewName() != null && !request.getNewName().trim().isEmpty()) {
+            updates.put("title", request.getNewName());
         }
-        if (request.newLocation != null && !request.newLocation.trim().isEmpty()) {
-            updates.put("location", request.newLocation);
+        if (request.getNewLocation() != null && !request.getNewLocation().trim().isEmpty()) {
+            updates.put("location", request.getNewLocation());
         }
-        if (request.newDescription != null && !request.newDescription.trim().isEmpty()) {
-            updates.put("details", request.newDescription);
+        if (request.getNewDescription() != null && !request.getNewDescription().trim().isEmpty()) {
+            updates.put("details", request.getNewDescription());
         }
-        if (request.newDate != -1) {
-            updates.put("dateTime", request.newDate);
+        if (request.getNewDate() != -1) {
+            updates.put("dateTime", request.getNewDate());
         }
-        if (request.newCategory != null) {
-            updates.put("category", request.newCategory);
+        if (request.getNewCategory() != null) {
+            updates.put("category", request.getNewCategory());
         }
-        if (request.newCapacity != -1) {
-            updates.put("capacity", request.newCapacity);
+        if (request.getNewCapacity() != -1) {
+            updates.put("capacity", request.getNewCapacity());
         }
         return updates;
     }

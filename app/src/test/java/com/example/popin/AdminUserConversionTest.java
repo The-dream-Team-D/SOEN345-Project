@@ -18,7 +18,7 @@ public class AdminUserConversionTest {
         user.setPhoneNumber("+15145551234");
         user.setAddress("123 Main");
         user.setBio("about");
-        user.setUserNotificationPreference(NotificationPreferenceOptions.Email);
+        user.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
 
         Admin admin = new Admin(user);
 
@@ -27,7 +27,7 @@ public class AdminUserConversionTest {
         assertEquals("+15145551234", admin.getPhoneNumber());
         assertEquals("123 Main", admin.getAddress());
         assertEquals("about", admin.getBio());
-        assertEquals(NotificationPreferenceOptions.Email, admin.getUserNotificationPreference());
+        assertEquals(NotificationPreferenceOptions.EMAIL, admin.getUserNotificationPreference());
         assertTrue(admin.getIsAdmin());
     }
 }
