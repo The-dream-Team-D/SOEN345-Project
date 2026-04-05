@@ -15,10 +15,12 @@ public class Customer extends User {
         this.reservations = new HashMap<>();
     }
 
+    @Override
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    @Override
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }

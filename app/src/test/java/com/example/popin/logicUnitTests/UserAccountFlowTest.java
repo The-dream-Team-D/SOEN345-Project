@@ -86,7 +86,7 @@ public class UserAccountFlowTest {
     public void signUp_emptyName_returnsValidationError() {
         AtomicReference<String> error = new AtomicReference<>();
 
-        User.SignUp("", "user@example.com", "pw", new GenericCallback() {
+        User.signUp("", "user@example.com", "pw", new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 fail("Expected validation error");
@@ -107,7 +107,7 @@ public class UserAccountFlowTest {
         callbackSnapshot(emailQuery, snapshot);
         AtomicReference<String> error = new AtomicReference<>();
 
-        User.SignUp("Kevin", "user@example.com", "pw", new GenericCallback() {
+        User.signUp("Kevin", "user@example.com", "pw", new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 fail("Expected duplicate user error");
@@ -308,7 +308,7 @@ public class UserAccountFlowTest {
         }).when(emailQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
         AtomicReference<String> error = new AtomicReference<>();
-        User.SignUp("Kevin", "user@example.com", "pw", new GenericCallback() {
+        User.signUp("Kevin", "user@example.com", "pw", new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 fail("Expected database error");
@@ -341,7 +341,7 @@ public class UserAccountFlowTest {
         when(pushTask.addOnFailureListener(any())).thenReturn(pushTask);
 
         AtomicReference<String> success = new AtomicReference<>();
-        User.SignUp("Kevin", "user@example.com", "pw", new GenericCallback() {
+        User.signUp("Kevin", "user@example.com", "pw", new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 success.set(message);
@@ -355,7 +355,7 @@ public class UserAccountFlowTest {
 
         assertEquals("Success", success.get());
         mockedNotifications.verify(() ->
-                Notifications.sendNotification(any(User.class), eq(""), eq(NotificationType.RegisterAccount), eq("")));
+                Notifications.sendNotification(any(User.class), eq(""), eq(NotificationType.REGISTER_ACCOUNT), eq("")));
     }
 
     @Test
@@ -376,7 +376,7 @@ public class UserAccountFlowTest {
         });
 
         AtomicReference<String> error = new AtomicReference<>();
-        User.SignUp("Kevin", "user@example.com", "pw", new GenericCallback() {
+        User.signUp("Kevin", "user@example.com", "pw", new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 fail("Expected signup error");

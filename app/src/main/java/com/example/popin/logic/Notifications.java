@@ -17,23 +17,23 @@ public class Notifications {
         String message;
 
         switch (n) {
-            case RegisterEvent:
+            case REGISTER_EVENT:
                 subject = "Event Registration Confirmed";
                 html = "Hi " + user.getName() + "!<br><br>You have successfully registered for " + eventTitle + ".";
                 message = "Hi " + user.getName() + "!\n\nYou have successfully registered for " + eventTitle + ".";
                 break;
-            case RegisterAccount:
+            case REGISTER_ACCOUNT:
                 subject = "Welcome to PopIn!";
                 html = "Welcome " + user.getName() + "!<br><br>Your PopIn account has been successfully created.";
                 message = "Welcome " + user.getName() + "!\n\nYour PopIn account has been successfully created.";
                 break;
-            case DeleteAccount:
+            case DELETE_ACCOUNT:
                 subject = "Account Deleted";
                 html = "We are sorry to see you go " + user.getName() + "!<br><br>Your account has been successfully deleted.";
                 message = "We are sorry to see you go " + user.getName() + "!\n\nYour account has been successfully deleted.";
                 break;
 
-            case CancelTicket:
+            case CANCEL_TICKET:
                 subject = "Event Registration Cancelled";
                 html = "Your registration for the event " + eventTitle + " has been cancelled.<br><br>"
                         + "If you did not perform this action, please contact us at support@example.com.";
@@ -41,7 +41,7 @@ public class Notifications {
                         + "If you did not perform this action, please contact us at support@example.com.";
                 break;
 
-            case ChangePassword:
+            case CHANGE_PASSWORD:
 
                 subject = "Password Reset Code";
                 html = "You requested a password reset for your account.<br><br>"

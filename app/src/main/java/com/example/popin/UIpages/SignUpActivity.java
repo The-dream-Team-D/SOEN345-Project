@@ -58,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
         String emailOrPhoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User.SignUp(name, emailOrPhoneNumber, password, new GenericCallback() {
+        User.signUp(name, emailOrPhoneNumber, password, new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 Toast.makeText(getApplicationContext(), "Account Created!", Toast.LENGTH_SHORT).show();

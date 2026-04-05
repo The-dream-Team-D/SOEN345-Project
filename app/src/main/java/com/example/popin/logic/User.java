@@ -19,6 +19,7 @@ public class User {
     private static final String PHONE_FIELD = "phoneNumber";
     private static final String PASSWORD_FIELD = "password";
     private static final String PASSWORD_EMPTY_ERROR = "Password input is Empty";
+    private static final String NO_USER_ERROR = "No user with that email/phone number";
 
     private String email;
     private String password;
@@ -183,7 +184,7 @@ public class User {
         }
     }
 
-    public static void SignUp(String name, String emailOrPhoneNumber, String password, GenericCallback callback){
+    public static void signUp(String name, String emailOrPhoneNumber, String password, GenericCallback callback){
         if (name == null || name.trim().isEmpty()) {
             callback.onError("Name input is empty");
             return;
@@ -243,7 +244,7 @@ public class User {
 
                 usersRef.push().setValue(userData)
                         .addOnSuccessListener(aVoid -> {
-                            sendNotification(finalUser, "", NotificationType.RegisterAccount,"");
+                            sendNotification(finalUser, "", NotificationType.REGISTER_ACCOUNT,"");
                             callback.onSuccess("Success");
                         })
                         .addOnFailureListener(e -> {
@@ -298,7 +299,7 @@ public class User {
             public void onDataChange(DataSnapshot snapshot) {
 
                 if (!snapshot.exists()) {
-                    callback.onError("No user with that email/phone number");
+                    callback.onError(NO_USER_ERROR);
                     return;
                 }
 
@@ -431,7 +432,7 @@ public class User {
                 userSnapshot.getRef().removeValue()
                         .addOnSuccessListener(unused -> {
                             callBack.onSuccess("Deleted Account Successfully!");
-                            sendNotification(finalUser, "", NotificationType.DeleteAccount, "");
+                            sendNotification(finalUser, "", NotificationType.DELETE_ACCOUNT, "");
                         })
                         .addOnFailureListener(e -> {
                             callBack.onError("Failed to Delete DB Account");
@@ -486,7 +487,7 @@ public class User {
             public void onDataChange(DataSnapshot snapshot) {
 
                 if (!snapshot.exists()) {
-                    callback.onError("No user with that email/phone number");
+                    callback.onError(NO_USER_ERROR);
                     return;
                 }
 
@@ -552,7 +553,7 @@ public class User {
             public void onDataChange(DataSnapshot snapshot) {
 
                 if (!snapshot.exists()) {
-                    callback.onError("No user with that email/phone number");
+                    callback.onError(NO_USER_ERROR);
                     return;
                 }
 

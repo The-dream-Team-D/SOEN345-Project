@@ -1,11 +1,11 @@
 package com.example.popin.logic;
 
 public enum NotificationType {
-    RegisterEvent,
-    RegisterAccount,
-    DeleteAccount,
-    CancelTicket,
-    ChangePassword,
+    REGISTER_EVENT,
+    REGISTER_ACCOUNT,
+    DELETE_ACCOUNT,
+    CANCEL_TICKET,
+    CHANGE_PASSWORD,
 
 }
 

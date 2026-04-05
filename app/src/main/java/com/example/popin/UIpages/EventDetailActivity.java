@@ -70,7 +70,7 @@ public class EventDetailActivity extends AppCompatActivity {
             public void onSuccess(String message) {
                 Toast.makeText(EventDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                 setupTicketButton(true, isFull);
-                sendNotification(session.getUser(), title, NotificationType.RegisterEvent, "");
+                sendNotification(session.getUser(), title, NotificationType.REGISTER_EVENT, "");
 
                 tvEventAttendance.setText("Tickets sold: " + (eventAttendance +1) + " out of " + eventCapacity + " available tickets!");
             }

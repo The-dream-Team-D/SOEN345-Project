@@ -31,15 +31,15 @@ public class UserClassTests {
     private MockedStatic<FirebaseDatabase> mockedFirebase;
 
 
-    private static final String email_in_DB = "john@example.com";
-    private static final String password_in_DB = "secret123";
-    private static final String name_in_DB     = "John Doe";
-    private static final String address_in_DB = "123 Main St";
-    private static final String phoneNumber_in_DB = "+15141234567";
-    private static final NotificationPreferenceOptions notif_pref_in_DB = NotificationPreferenceOptions.Email;
-    private static final String bio_in_DB = "Hello I am a user for tests";
+    private static final String EMAIL_IN_DB = "john@example.com";
+    private static final String PASSWORD_IN_DB = "secret123";
+    private static final String NAME_IN_DB     = "John Doe";
+    private static final String ADDRESS_IN_DB = "123 Main St";
+    private static final String PHONE_NUMBER_IN_DB = "+15141234567";
+    private static final NotificationPreferenceOptions NOTIF_PREF_IN_DB = NotificationPreferenceOptions.Email;
+    private static final String BIO_IN_DB = "Hello I am a user for tests";
 
-    private static final boolean isAdmin_in_DB = false;
+    private static final boolean IS_ADMIN_IN_DB = false;
 
     @Captor
     ArgumentCaptor<ValueEventListener> listenerCaptor;
@@ -72,16 +72,16 @@ public class UserClassTests {
         lenient().when(mockUserSnapshot.child("NotificationPreference")).thenReturn(mockPrefSnapshot);
         lenient().when(mockUserSnapshot.child("bio")).thenReturn(mockBioSnapshot);
 
-        lenient().when(mockPasswordSnapshot.getValue(String.class)).thenReturn(password_in_DB);
-        lenient().when(mockNameSnapshot.getValue(String.class)).thenReturn(name_in_DB);
-        lenient().when(mockAddressSnapshot.getValue(String.class)).thenReturn(address_in_DB);
-        lenient().when(mockPhoneSnapshot.getValue(String.class)).thenReturn(phoneNumber_in_DB);
+        lenient().when(mockPasswordSnapshot.getValue(String.class)).thenReturn(PASSWORD_IN_DB);
+        lenient().when(mockNameSnapshot.getValue(String.class)).thenReturn(NAME_IN_DB);
+        lenient().when(mockAddressSnapshot.getValue(String.class)).thenReturn(ADDRESS_IN_DB);
+        lenient().when(mockPhoneSnapshot.getValue(String.class)).thenReturn(PHONE_NUMBER_IN_DB);
 
         lenient().when(mockPrefSnapshot.getValue(String.class))
-                .thenReturn(notif_pref_in_DB.name());
+                .thenReturn(NOTIF_PREF_IN_DB.name());
 
-        lenient().when(mockBioSnapshot.getValue(String.class)).thenReturn(bio_in_DB);
-        lenient().when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(isAdmin_in_DB);
+        lenient().when(mockBioSnapshot.getValue(String.class)).thenReturn(BIO_IN_DB);
+        lenient().when(mockIsAdminSnapshot.getValue(boolean.class)).thenReturn(IS_ADMIN_IN_DB);
 
     }
 
@@ -138,7 +138,7 @@ public class UserClassTests {
 
     @Test
     public void login_emptyPassword_returnsError() {
-        User user = new User(email_in_DB, "");
+        User user = new User(EMAIL_IN_DB, "");
         User.login(user.getEmail(), user.getPassword(), new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
             @Override public void onError(String message) {
@@ -149,7 +149,7 @@ public class UserClassTests {
 
     @Test
     public void login_nullPassword_returnsError() {
-        User user = new User(email_in_DB, null);
+        User user = new User(EMAIL_IN_DB, null);
         User.login(user.getEmail(), user.getPassword(), new User.LoginCallback() {
             @Override public void onSuccess(User u) {
                 fail("Expected error, got success");
@@ -163,7 +163,7 @@ public class UserClassTests {
     @Test
     public void login_correctCredentials_callsOnSuccess() {
         setupSnapshotExists();
-        User user = new User(email_in_DB, password_in_DB);
+        User user = new User(EMAIL_IN_DB, PASSWORD_IN_DB);
 
         when(mockSnapshot.exists()).thenReturn(true);
         when(mockSnapshot.getChildren()).thenReturn(List.of(mockUserSnapshot));
@@ -172,10 +172,10 @@ public class UserClassTests {
             @Override public void onSuccess(User u) {
                 UserInSession.create(user);
                 assertNotNull(u);
-                assertEquals(name_in_DB, u.getName());
-                assertEquals(address_in_DB, u.getAddress());
-                assertEquals(email_in_DB, u.getEmail());
-                assertEquals(isAdmin_in_DB, u.getIsAdmin());
+                assertEquals(NAME_IN_DB, u.getName());
+                assertEquals(ADDRESS_IN_DB, u.getAddress());
+                assertEquals(EMAIL_IN_DB, u.getEmail());
+                assertEquals(IS_ADMIN_IN_DB, u.getIsAdmin());
                 assertNotNull(UserInSession.getInstance().getUser());
             }
             @Override public void onError(String message) {
@@ -187,7 +187,7 @@ public class UserClassTests {
     @Test
     public void login_wrongPassword_callsOnError() {
         setupSnapshotExists();
-        User user = new User(email_in_DB, "wrongPassword");
+        User user = new User(EMAIL_IN_DB, "wrongPassword");
 
         User.login(user.getEmail(), user.getPassword(), new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
@@ -201,7 +201,7 @@ public class UserClassTests {
     @Test
     public void login_emailNotFound_callsOnError() {
         setupSnapshotNotExists();
-        User user = new User("nobody@example.com", password_in_DB);
+        User user = new User("nobody@example.com", PASSWORD_IN_DB);
 
         User.login(user.getEmail(), user.getPassword(), new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Expected error, got success"); }
@@ -222,7 +222,7 @@ public class UserClassTests {
             return null;
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
-        User user = new User(email_in_DB, password_in_DB);
+        User user = new User(EMAIL_IN_DB, PASSWORD_IN_DB);
 
         User.login(user.getEmail(), user.getPassword(), new User.LoginCallback() {
             @Override public void onSuccess(User u) { fail("Should not succeed on cancel"); }

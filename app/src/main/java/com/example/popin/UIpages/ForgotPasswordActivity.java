@@ -29,7 +29,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     User finalUser;
     String code;
 
-    ConstraintLayout AfterEmailCheck, BeforeEmailCheck;
+    ConstraintLayout afterEmailCheck;
+    ConstraintLayout beforeEmailCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +80,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                 code = Notifications.buildCode();
 
-                sendNotification(user, "", NotificationType.ChangePassword, code);
+                sendNotification(user, "", NotificationType.CHANGE_PASSWORD, code);
 
-                BeforeEmailCheck = findViewById(R.id.BeforeEmailCheck);
-                AfterEmailCheck = findViewById(R.id.AfterEmailCheck);
+                beforeEmailCheck = findViewById(R.id.BeforeEmailCheck);
+                afterEmailCheck = findViewById(R.id.AfterEmailCheck);
 
-                BeforeEmailCheck.setVisibility(View.GONE);
-                AfterEmailCheck.setVisibility(View.VISIBLE);
+                beforeEmailCheck.setVisibility(View.GONE);
+                afterEmailCheck.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -125,8 +126,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 public void onSuccess(String message) {
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
-                    BeforeEmailCheck.setVisibility(View.VISIBLE);
-                    AfterEmailCheck.setVisibility(View.GONE);
+                    beforeEmailCheck.setVisibility(View.VISIBLE);
+                    afterEmailCheck.setVisibility(View.GONE);
 
                     Intent intent = new Intent(ForgotPasswordActivity.this, LogInActivity.class);
                     startActivity(intent);

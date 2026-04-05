@@ -17,11 +17,11 @@ public class LogicEnumsTest {
     @Test
     public void notificationType_containsExpectedValues() {
         assertEquals(5, NotificationType.values().length);
-        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.RegisterEvent));
-        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.RegisterAccount));
-        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.DeleteAccount));
-        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.CancelTicket));
-        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.ChangePassword));
+        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.REGISTER_EVENT));
+        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.REGISTER_ACCOUNT));
+        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.DELETE_ACCOUNT));
+        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.CANCEL_TICKET));
+        assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.CHANGE_PASSWORD));
     }
 
     @Test

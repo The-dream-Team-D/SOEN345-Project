@@ -41,7 +41,7 @@ public class NotificationDispatchTest {
         User user = User.createUserWithEmail("user@example.com", "pw");
         user.setName("Kevin");
 
-        Notifications.sendNotification(user, "SOEN Mixer", NotificationType.RegisterEvent, "");
+        Notifications.sendNotification(user, "SOEN Mixer", NotificationType.REGISTER_EVENT, "");
 
         mockedEmail.verify(() ->
                 EmailServicer.sendEmail(
@@ -56,7 +56,7 @@ public class NotificationDispatchTest {
         User user = User.createUserWithPhoneNumber("+15145551234", "pw");
         user.setName("Kevin");
 
-        Notifications.sendNotification(user, "SOEN Mixer", NotificationType.CancelTicket, "");
+        Notifications.sendNotification(user, "SOEN Mixer", NotificationType.CANCEL_TICKET, "");
 
         mockedSms.verify(() ->
                 SMServicer.sendSMS(
@@ -70,7 +70,7 @@ public class NotificationDispatchTest {
         User user = User.createUserWithEmail("user@example.com", "pw");
         user.setName("Kevin");
 
-        Notifications.sendNotification(user, "", NotificationType.ChangePassword, "ABC123");
+        Notifications.sendNotification(user, "", NotificationType.CHANGE_PASSWORD, "ABC123");
 
         mockedEmail.verify(() ->
                 EmailServicer.sendEmail(
