@@ -16,11 +16,11 @@ public class EventAdapterTest {
 
     private EventAdapter createAdapter() {
         List<EventItem> events = Arrays.asList(
-                new EventItem("SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby", "Networking event for SOEN students."),
-                new EventItem("Board Games Night", "March 22, 2026 - 7:30 PM", "Hall A", "Fun evening with board games and snacks."),
-                new EventItem("Hackathon Kickoff", "March 24, 2026 - 5:00 PM", "Room H-937", "Kickoff meeting for the hackathon."),
-                new EventItem("Coffee and Code", "March 26, 2026 - 2:00 PM", "Library Cafe", "Coding session with coffee and classmates."),
-                new EventItem("AI Study Jam", "March 28, 2026 - 4:30 PM", "Engineering Lounge", "Group study session for AI topics.")
+                new EventItem("SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby", "Networking event for SOEN students.", "Social"),
+                new EventItem("Board Games Night", "March 22, 2026 - 7:30 PM", "Hall A", "Fun evening with board games and snacks.", "Games"),
+                new EventItem("Hackathon Kickoff", "March 24, 2026 - 5:00 PM", "Room H-937", "Kickoff meeting for the hackathon.", "Hackathon"),
+                new EventItem("Coffee and Code", "March 26, 2026 - 2:00 PM", "Library Cafe", "Coding session with coffee and classmates.", "Coding"),
+                new EventItem("AI Study Jam", "March 28, 2026 - 4:30 PM", "Engineering Lounge", "Group study session for AI topics.", "Study")
         );
         return new EventAdapter(events);
     }
@@ -34,40 +34,40 @@ public class EventAdapterTest {
     @Test
     public void filter_byTitle_isCaseInsensitive() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("hackathon");
+        adapter.filter("hackathon", "Date", "Location", "Category");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("HaCkAtHoN");
+        adapter.filter("HaCkAtHoN", "Date", "Location", "Category");
         assertEquals(1, adapter.getItemCount());
     }
 
     @Test
     public void filter_byLocationAndDate_supportsTrimmedQuery() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("  hall a  ");
+        adapter.filter("  hall a  ", "Date", "Location", "Category");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("march 26");
+        adapter.filter("march 26", "Date", "Location", "Category");
         assertEquals(1, adapter.getItemCount());
     }
 
     @Test
     public void filter_emptyOrNull_restoresAllEvents() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("ai");
+        adapter.filter("ai", "Date", "Location", "Category");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("");
+        adapter.filter("", "Date", "Location", "Category");
         assertEquals(5, adapter.getItemCount());
 
-        adapter.filter(null);
+        adapter.filter(null, "Date", "Location", "Category");
         assertEquals(5, adapter.getItemCount());
     }
 
     @Test
     public void filter_noMatch_showsNoEvents() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("this does not exist");
+        adapter.filter("this does not exist", "Date", "Location", "Category");
         assertEquals(0, adapter.getItemCount());
     }
 }
