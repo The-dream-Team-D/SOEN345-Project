@@ -2,8 +2,6 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 
-import android.util.Log;
-
 import com.example.popin.addedFiles.Admin;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,11 +55,11 @@ public class User {
     }
 
     public static User createUserWithEmail(String email, String password){
-        return new User(email, "", password.trim(), NotificationPreferenceOptions.Email);
+        return new User(email, "", password == null ? "" : password.trim(), NotificationPreferenceOptions.Email);
     }
 
     public static User createUserWithPhoneNumber(String phoneNumber, String password){
-        return new User("", phoneNumber, password.trim(), NotificationPreferenceOptions.SMS);
+        return new User("", phoneNumber, password == null ? "" : password.trim(), NotificationPreferenceOptions.SMS);
     }
 
     //setters
@@ -69,7 +67,7 @@ public class User {
         this.address = address;
     }
     public void setPassword(String password) {
-        this.password = password.trim();
+        this.password = password == null ? "" : password.trim();
     }
 
     public void setName(String name) {
@@ -167,6 +165,17 @@ public class User {
     public interface LoginCallback {
         void onSuccess(User user);
         void onError(String message);
+    }
+
+    private static NotificationPreferenceOptions safeParsePreference(String prefString) {
+        if (prefString == null) {
+            return null;
+        }
+        try {
+            return NotificationPreferenceOptions.valueOf(prefString);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 
     public static void SignUp(String name, String email_or_phoneNumber, String password, GenericCallback callback){
@@ -303,10 +312,9 @@ public class User {
 
                         String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
 
-                        if (prefString != null) {
-                            finalUser.setUserNotificationPreference(
-                                    NotificationPreferenceOptions.valueOf(prefString)
-                            );
+                        NotificationPreferenceOptions pref = safeParsePreference(prefString);
+                        if (pref != null) {
+                            finalUser.setUserNotificationPreference(pref);
                         }
 
                         if (finalUser.getIsAdmin()){
@@ -532,10 +540,9 @@ public class User {
                         String prefString = userSnapshot.child("NotificationPreference").getValue(String.class);
 
                         finalUser.setPhoneNumber(phoneNumString);
-                        if (prefString != null) {
-                            finalUser.setUserNotificationPreference(
-                                    NotificationPreferenceOptions.valueOf(prefString)
-                            );
+                        NotificationPreferenceOptions pref = safeParsePreference(prefString);
+                        if (pref != null) {
+                            finalUser.setUserNotificationPreference(pref);
                         }
 
                         callback.onSuccess(finalUser);

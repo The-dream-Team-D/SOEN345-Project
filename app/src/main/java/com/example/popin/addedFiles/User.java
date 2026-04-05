@@ -71,7 +71,7 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                System.out.println("Database error: " + error.getMessage());
+                callback.onError("Database error: " + error.getMessage());
             }
         });
     }
