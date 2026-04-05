@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
 
     android:id="@+id/admin_dashboard_main"
-    tools:context=".UIpages.AdminDashboardActivity"
+    tools:context=".uipages.AdminDashboardActivity"
     tools:theme="@style/Base.Theme.PopIn"
     >
 
@@ -45,7 +45,7 @@
         app:layout_constraintVertical_bias="0.126" />
 
     <LinearLayout
-        android:id="@+id/AdminDashboardTabs"
+        android:id="@+id/adminDashboardTabs"
         android:layout_width="380dp"
         android:layout_height="619dp"
         android:layout_marginHorizontal="12dp"
