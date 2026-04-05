@@ -64,16 +64,20 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
         unitTests.all {
+            it.jvmArgs("-Dnet.bytebuddy.experimental=true")
             it.extensions.configure(org.gradle.testing.jacoco.plugins.JacocoTaskExtension::class) {
                 isIncludeNoLocationClasses = true
-                excludes = listOf("jdk.internal.*")
+                excludes = listOf(
+                    "jdk.internal.*",
+                    "sun.security.smartcardio.*"
+                )
             }
         }
     }
 }
 
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = "0.8.13"
 }
 
 val jacocoTestReport = tasks.register<JacocoReport>("jacocoTestReport") {
@@ -172,7 +176,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito:mockito-core:5.14.2")
 
     testImplementation("org.robolectric:robolectric:4.12.2")
     testImplementation("androidx.test:core:1.6.1")

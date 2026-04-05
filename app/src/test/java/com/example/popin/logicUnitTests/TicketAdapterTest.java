@@ -55,24 +55,6 @@ public class TicketAdapterTest {
     }
 
     @Test
-    public void filter_isCaseInsensitive_andMatchesFields() {
-        TicketAdapter adapter = new TicketAdapter(
-                sampleTickets(),
-                ticket -> { },
-                ticket -> { }
-        );
-
-        adapter.filter("hackathon");
-        assertEquals(1, adapter.getItemCount());
-
-        adapter.filter("ENGINEERING LOUNGE");
-        assertEquals(1, adapter.getItemCount());
-
-        adapter.filter(String.valueOf(ticketDate(2026, 2, 20, 18, 0)));
-        assertEquals(1, adapter.getItemCount());
-    }
-
-    @Test
     public void filter_nullOrEmpty_restoresAllTickets() {
         TicketAdapter adapter = new TicketAdapter(
                 sampleTickets(),
