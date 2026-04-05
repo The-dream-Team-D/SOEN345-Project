@@ -89,9 +89,9 @@ public class AdminTest {
         );
 
         verify(mockCatalog).updateEventByName(
-                "Old Event",
+                eq("Old Event"),
                 any(EventCatalog.EventUpdateRequest.class),
-                callback
+                eq(callback)
         );
     }
 }

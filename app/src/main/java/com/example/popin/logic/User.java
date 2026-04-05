@@ -317,7 +317,6 @@ public class User {
     }
 
     private static void populateUserFromSnapshot(User user, DataSnapshot snapshot) {
-        android.util.Log.d("User", "Login successful");
         user.setName(snapshot.child("name").getValue(String.class));
         user.setAddress(snapshot.child(ADDRESS_FIELD).getValue(String.class));
         user.setIsAdmin(Boolean.TRUE.equals(snapshot.child("isAdmin").getValue(boolean.class)));
