@@ -360,7 +360,7 @@ public class User {
 
                     NotificationPreferenceOptions pref = finalUser.getUserNotificationPreference();
                     userSnapshot.getRef().child(NOTIF_PREF_FIELD)
-                            .setValue(pref == null ? null : pref.toString());
+                            .setValue(pref == null ? null : pref.name());
                     updated = true;
                 }
                 if (updated) {
