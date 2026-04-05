@@ -26,6 +26,7 @@ import com.example.popin.UIpages.AdminDashboardActivity;
 import com.example.popin.UIpages.EventsPageActivity;
 import com.example.popin.UIpages.MyTicketsActivity;
 import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 import com.example.popin.reusableUI.NavBarComponentView;
@@ -58,6 +59,7 @@ public class NavBarComponentViewTest {
     private void setupWithAdmin(boolean isAdmin) {
         User u = new User("TestMan", "Test");
         u.setIsAdmin(isAdmin);
+        u.setUserNotificationPreference(NotificationPreferenceOptions.Email);
         UserInSession.create(u);
 
         mockHostActivity = Robolectric.buildActivity(AppCompatActivity.class).create().get();

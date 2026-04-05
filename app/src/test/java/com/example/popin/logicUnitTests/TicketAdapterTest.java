@@ -68,7 +68,7 @@ public class TicketAdapterTest {
         adapter.filter("ENGINEERING LOUNGE");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("March 20");
+        adapter.filter(String.valueOf(ticketDate(2026, 2, 20, 18, 0)));
         assertEquals(1, adapter.getItemCount());
     }
 
