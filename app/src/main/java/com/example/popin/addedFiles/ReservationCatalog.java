@@ -1,4 +1,4 @@
-package com.example.popin.addedFiles;
+package com.example.popin.addedfiles;
 import android.util.Log;
 
 import java.util.HashMap;

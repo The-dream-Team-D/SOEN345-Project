@@ -22,7 +22,7 @@ import com.example.popin.logic.GenericCallback;
 import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
-import com.example.popin.reusableUI.NavBarComponentView;
+import com.example.popin.reusableui.NavBarComponentView;
 import com.google.android.material.card.MaterialCardView;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -47,8 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout displayContainer;
     private LinearLayout editContainer;
 
-    private MaterialCardView SMSOption;
-    private MaterialCardView EmailOption;
+    private MaterialCardView smsOption;
+    private MaterialCardView emailOption;
 
     private final boolean[] notificationPreference = {false, false};   // (email, SMS)
 
@@ -167,38 +167,38 @@ public class ProfileActivity extends AppCompatActivity {
             });
 
 
-            EmailOption = findViewById(R.id.boxEmail);
-            SMSOption = findViewById(R.id.boxSMS);
+            emailOption = findViewById(R.id.boxEmail);
+            smsOption = findViewById(R.id.boxSMS);
 
             if (session.getUser().getUserNotificationPreference() == NotificationPreferenceOptions.Email) {
                 notificationPreference[0] = true;
-                EmailOption.setStrokeColor(ContextCompat.getColor(this,
+                emailOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.action));
             } else {
                 notificationPreference[1] = true;
-                SMSOption.setStrokeColor(ContextCompat.getColor(this,
+                smsOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.action));
             }
 
-            EmailOption.setOnClickListener(v -> {
+            emailOption.setOnClickListener(v -> {
                 notificationPreference[0] = true;
                 notificationPreference[1] = false;
 
-                EmailOption.setStrokeColor(ContextCompat.getColor(this,
+                emailOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.action));
 
-                SMSOption.setStrokeColor(ContextCompat.getColor(this,
+                smsOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.black));
             });
 
-            SMSOption.setOnClickListener(v -> {
+            smsOption.setOnClickListener(v -> {
                 notificationPreference[1] = true;
                 notificationPreference[0] = false;
 
-                SMSOption.setStrokeColor(ContextCompat.getColor(this,
+                smsOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.action));
 
-                EmailOption.setStrokeColor(ContextCompat.getColor(this,
+                emailOption.setStrokeColor(ContextCompat.getColor(this,
                         R.color.black));
             });
         }

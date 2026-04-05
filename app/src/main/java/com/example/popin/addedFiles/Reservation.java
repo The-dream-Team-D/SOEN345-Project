@@ -1,4 +1,4 @@
-package com.example.popin.addedFiles;
+package com.example.popin.addedfiles;
 
 public class Reservation{
     private static int idCounter = 0;

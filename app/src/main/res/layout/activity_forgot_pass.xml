@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.popin.reusableUI.BackButtonComponentView
+    <com.example.popin.reusableui.BackButtonComponentView
         android:id="@+id/backButtonComponent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

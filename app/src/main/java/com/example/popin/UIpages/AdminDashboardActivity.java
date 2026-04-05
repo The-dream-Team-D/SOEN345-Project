@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.example.popin.logic.EventAdapter;
 import com.example.popin.logic.EventItem;
-import com.example.popin.reusableUI.EventsFilterComponentView;
-import com.example.popin.reusableUI.NavBarComponentView;
+import com.example.popin.reusableui.EventsFilterComponentView;
+import com.example.popin.reusableui.NavBarComponentView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.popin.R;
-import com.example.popin.addedFiles.Admin;
-import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.addedfiles.Admin;
+import com.example.popin.addedfiles.EventCatalog;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 import com.google.firebase.database.DataSnapshot;

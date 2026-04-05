@@ -29,7 +29,7 @@ import com.example.popin.logic.NotificationType;
 import com.example.popin.logic.TicketAdapter;
 import com.example.popin.logic.TicketItem;
 import com.example.popin.logic.UserInSession;
-import com.example.popin.reusableUI.NavBarComponentView;
+import com.example.popin.reusableui.NavBarComponentView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

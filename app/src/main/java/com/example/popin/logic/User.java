@@ -2,7 +2,7 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 
-import com.example.popin.addedFiles.Admin;
+import com.example.popin.addedfiles.Admin;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -183,13 +183,13 @@ public class User {
         }
     }
 
-    public static void SignUp(String name, String email_or_phoneNumber, String password, GenericCallback callback){
+    public static void SignUp(String name, String emailOrPhoneNumber, String password, GenericCallback callback){
         if (name == null || name.trim().isEmpty()) {
             callback.onError("Name input is empty");
             return;
         }
 
-        if (email_or_phoneNumber == null || email_or_phoneNumber.trim().isEmpty()) {
+        if (emailOrPhoneNumber == null || emailOrPhoneNumber.trim().isEmpty()) {
             callback.onError("Email/Phone input is Empty");
             return;
         }
@@ -202,8 +202,8 @@ public class User {
         User user = null;
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         Query query = null;
-        UserInputType type = identify(email_or_phoneNumber);
-        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+        UserInputType type = identify(emailOrPhoneNumber);
+        String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
 
         if (type == UserInputType.EMAIL){
             user = createUserWithEmail(normalizedEmailOrPhone, password);
@@ -219,7 +219,7 @@ public class User {
 
         user.setName(name);
 
-        final User finaluser = user;
+        final User finalUser = user;
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -231,19 +231,19 @@ public class User {
 
 
                 Map<String, Object> userData = new HashMap<>();
-                userData.put(EMAIL_FIELD, finaluser.getEmail());
-                userData.put(PHONE_FIELD, finaluser.getPhoneNumber());
+                userData.put(EMAIL_FIELD, finalUser.getEmail());
+                userData.put(PHONE_FIELD, finalUser.getPhoneNumber());
 
-                userData.put(PASSWORD_FIELD, finaluser.getPassword());
-                userData.put("address", finaluser.getAddress());
-                userData.put("name", finaluser.getName());
+                userData.put(PASSWORD_FIELD, finalUser.getPassword());
+                userData.put("address", finalUser.getAddress());
+                userData.put("name", finalUser.getName());
 
-                userData.put("isAdmin", finaluser.getIsAdmin());
-                userData.put("NotificationPreference", finaluser.getUserNotificationPreference());
+                userData.put("isAdmin", finalUser.getIsAdmin());
+                userData.put("NotificationPreference", finalUser.getUserNotificationPreference());
 
                 usersRef.push().setValue(userData)
                         .addOnSuccessListener(aVoid -> {
-                            sendNotification(finaluser, "", NotificationType.RegisterAccount,"");
+                            sendNotification(finalUser, "", NotificationType.RegisterAccount,"");
                             callback.onSuccess("Success");
                         })
                         .addOnFailureListener(e -> {
@@ -259,11 +259,11 @@ public class User {
         });
     }
 
-    public static void login(String email_or_phoneNumber, String password, LoginCallback callback){
+    public static void login(String emailOrPhoneNumber, String password, LoginCallback callback){
 
         User user = null;
 
-        if(email_or_phoneNumber == null || email_or_phoneNumber.trim().isEmpty()) {
+        if(emailOrPhoneNumber == null || emailOrPhoneNumber.trim().isEmpty()) {
             callback.onError("Email/Phone input is Empty");
             return;
         }
@@ -275,8 +275,8 @@ public class User {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         Query query = null;
-        UserInputType type = identify(email_or_phoneNumber);
-        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+        UserInputType type = identify(emailOrPhoneNumber);
+        String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
 
 
 
@@ -416,7 +416,7 @@ public class User {
             query = usersRef.orderByChild(PHONE_FIELD).equalTo(this.getPhoneNumber());
         }
 
-        final User finaluser = this;
+        final User finalUser = this;
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -431,7 +431,7 @@ public class User {
                 userSnapshot.getRef().removeValue()
                         .addOnSuccessListener(unused -> {
                             callBack.onSuccess("Deleted Account Successfully!");
-                            sendNotification(finaluser, "", NotificationType.DeleteAccount, "");
+                            sendNotification(finalUser, "", NotificationType.DeleteAccount, "");
                         })
                         .addOnFailureListener(e -> {
                             callBack.onError("Failed to Delete DB Account");
@@ -447,11 +447,11 @@ public class User {
     }
 
 
-    public static void forgotPassword(String email_or_phoneNumber, String password, LoginCallback callback){
+    public static void forgotPassword(String emailOrPhoneNumber, String password, LoginCallback callback){
 
         User user = null;
 
-        if(email_or_phoneNumber == null || email_or_phoneNumber.trim().isEmpty()) {
+        if(emailOrPhoneNumber == null || emailOrPhoneNumber.trim().isEmpty()) {
             callback.onError("Email/Phone input is Empty");
             return;
         }
@@ -463,8 +463,8 @@ public class User {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         Query query = null;
-        UserInputType type = identify(email_or_phoneNumber);
-        String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
+        UserInputType type = identify(emailOrPhoneNumber);
+        String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
 
 
 
@@ -564,8 +564,6 @@ public class User {
                             .addOnFailureListener(e -> {
                                 callback.onError("Failed to update password: " + e.getMessage());
                             });
-
-                    return;
                 }
             }
 

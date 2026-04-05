@@ -65,10 +65,10 @@ public class LogInActivity extends AppCompatActivity {
         EditText emailInputField = findViewById(R.id.emailInput);
         EditText passwordInputField = findViewById(R.id.password_input);
 
-        String email_or_phoneNumber = emailInputField.getText().toString();
+        String emailOrPhoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User.login(email_or_phoneNumber, password, new User.LoginCallback() {
+        User.login(emailOrPhoneNumber, password, new User.LoginCallback() {
             @Override
             public void onSuccess(User user) {
                 Toast.makeText(getApplicationContext(), "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();

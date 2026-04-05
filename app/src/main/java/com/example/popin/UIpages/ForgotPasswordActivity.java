@@ -26,7 +26,7 @@ import com.example.popin.logic.User;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    User finaluser;
+    User finalUser;
     String code;
 
     ConstraintLayout AfterEmailCheck, BeforeEmailCheck;
@@ -67,12 +67,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         EditText emailInputField = findViewById(R.id.emailInput);
         EditText passwordInputField = findViewById(R.id.password_input);
 
-        String email_or_phoneNumber = emailInputField.getText().toString();
+        String emailOrPhoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        finaluser = new User(email_or_phoneNumber, password);
+        finalUser = new User(emailOrPhoneNumber, password);
 
-        User.forgotPassword(email_or_phoneNumber, password, new User.LoginCallback() {
+        User.forgotPassword(emailOrPhoneNumber, password, new User.LoginCallback() {
             @Override
             public void onSuccess(User user) {
                 Toast.makeText(getApplicationContext(), "Reset Code Notification Sent", Toast.LENGTH_SHORT).show();
@@ -120,7 +120,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             resetCodeInputField.setError("Wrong Reset Code");
         }else{
 
-            finaluser.changePassword(new GenericCallback(){
+            finalUser.changePassword(new GenericCallback(){
                 @Override
                 public void onSuccess(String message) {
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

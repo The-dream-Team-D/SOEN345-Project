@@ -57,7 +57,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/AdminDashboardTitle">
 
-        <com.example.popin.reusableUI.EventsFilterComponentView
+        <com.example.popin.reusableui.EventsFilterComponentView
             android:id="@+id/commonEventsFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -302,7 +302,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.example.popin.reusableUI.NavBarComponentView
+    <com.example.popin.reusableui.NavBarComponentView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottomNav"

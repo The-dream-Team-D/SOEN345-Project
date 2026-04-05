@@ -18,12 +18,12 @@ public class SMServicer {
 
         new Thread(() -> {
             try {
-                String ACCOUNT_SID = BuildConfig.TWILIO_ACCOUNT_SID;
-                String AUTH_TOKEN = BuildConfig.TWILIO_AUTH_TOKEN;
-                String FROM = BuildConfig.TWILIO_PHONE_NUMBER;
+                String accountSid = BuildConfig.TWILIO_ACCOUNT_SID;
+                String authToken = BuildConfig.TWILIO_AUTH_TOKEN;
+                String from = BuildConfig.TWILIO_PHONE_NUMBER;
 
                 String urlStr = "https://api.twilio.com/2010-04-01/Accounts/"
-                        + ACCOUNT_SID + "/Messages.json";
+                        + accountSid + "/Messages.json";
 
                 URL url = new URL(urlStr);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -31,7 +31,7 @@ public class SMServicer {
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
 
-                String auth = ACCOUNT_SID + ":" + AUTH_TOKEN;
+                String auth = accountSid + ":" + authToken;
                 String encodedAuth = android.util.Base64.encodeToString(
                         auth.getBytes(), android.util.Base64.NO_WRAP);
 
@@ -39,7 +39,7 @@ public class SMServicer {
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 String data = "To=" + URLEncoder.encode(toPhone, UTF_8) +
-                        "&From=" + URLEncoder.encode(FROM, UTF_8) +
+                        "&From=" + URLEncoder.encode(from, UTF_8) +
                         "&Body=" + URLEncoder.encode(messageText, UTF_8);
 
                 OutputStream os = conn.getOutputStream();

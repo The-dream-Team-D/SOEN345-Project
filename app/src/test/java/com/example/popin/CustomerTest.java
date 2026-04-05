@@ -5,9 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.example.popin.addedFiles.Customer;
-import com.example.popin.addedFiles.Event;
-import com.example.popin.addedFiles.Reservation;
+import com.example.popin.addedfiles.Customer;
+import com.example.popin.addedfiles.Event;
+import com.example.popin.addedfiles.Reservation;
 import com.example.popin.logic.EventCategory;
 
 import org.junit.Test;

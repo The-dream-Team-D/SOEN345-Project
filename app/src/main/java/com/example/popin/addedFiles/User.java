@@ -1,4 +1,4 @@
-package com.example.popin.addedFiles;
+package com.example.popin.addedfiles;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

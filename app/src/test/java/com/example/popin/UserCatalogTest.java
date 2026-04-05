@@ -3,9 +3,9 @@ package com.example.popin;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.example.popin.addedFiles.Admin;
-import com.example.popin.addedFiles.Customer;
-import com.example.popin.addedFiles.UserCatalog;
+import com.example.popin.addedfiles.Admin;
+import com.example.popin.addedfiles.Customer;
+import com.example.popin.addedfiles.UserCatalog;
 
 import org.junit.Test;
 

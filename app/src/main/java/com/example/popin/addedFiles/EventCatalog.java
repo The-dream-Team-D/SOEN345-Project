@@ -1,4 +1,4 @@
-package com.example.popin.addedFiles;
+package com.example.popin.addedfiles;
 
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
@@ -137,7 +137,6 @@ public class EventCatalog {
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
-                    break;
                 }
             }
 
@@ -182,8 +181,6 @@ public class EventCatalog {
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
-                    break;
-
                 }
             }
 

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.example.popin.addedFiles.Event;
+import com.example.popin.addedfiles.Event;
 import com.example.popin.logic.EventCategory;
 
 import org.junit.Test;

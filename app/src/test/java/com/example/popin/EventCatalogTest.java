@@ -3,7 +3,7 @@ package com.example.popin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.addedfiles.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 

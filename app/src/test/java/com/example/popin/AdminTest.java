@@ -7,8 +7,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.popin.addedFiles.Admin;
-import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.addedfiles.Admin;
+import com.example.popin.addedfiles.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 

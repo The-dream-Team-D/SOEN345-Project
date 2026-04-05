@@ -10,8 +10,8 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.popin.addedFiles.Event;
-import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.addedfiles.Event;
+import com.example.popin.addedfiles.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 import com.google.android.gms.tasks.Task;

@@ -1,4 +1,4 @@
-package com.example.popin.addedFiles;
+package com.example.popin.addedfiles;
 
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.User;

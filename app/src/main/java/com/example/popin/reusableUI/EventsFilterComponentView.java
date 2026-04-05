@@ -1,4 +1,4 @@
-package com.example.popin.reusableUI;
+package com.example.popin.reusableui;
 
 import android.content.Context;
 import android.text.Editable;

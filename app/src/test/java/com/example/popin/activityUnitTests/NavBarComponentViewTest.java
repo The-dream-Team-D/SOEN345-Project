@@ -29,7 +29,7 @@ import com.example.popin.UIpages.ProfileActivity;
 import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
-import com.example.popin.reusableUI.NavBarComponentView;
+import com.example.popin.reusableui.NavBarComponentView;
 import com.google.firebase.database.FirebaseDatabase;
 
 

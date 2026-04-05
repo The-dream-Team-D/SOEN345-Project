@@ -9,6 +9,8 @@ import java.security.SecureRandom;
 
 public class Notifications {
 
+    private static final SecureRandom RANDOM = new SecureRandom();
+
     public static void sendNotification(User user, String eventTitle, NotificationType n, String code){
         String subject;
         String html;
@@ -70,7 +72,6 @@ public class Notifications {
     public static String buildCode(){
 
         final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        final SecureRandom RANDOM = new SecureRandom();
 
         StringBuilder sb = new StringBuilder(6);
         for (int i = 0; i < 6; i++) {
