@@ -17,7 +17,7 @@ public class ReservationTest {
     @Test
     public void constructor_setsCustomerEventAndGeneratedId() {
         Customer customer = new Customer("customer@example.com", "secret", "514");
-        Event event = new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social);
+        Event event = new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.SOCIAL);
 
         Reservation reservation = new Reservation(customer, event);
 
@@ -28,8 +28,8 @@ public class ReservationTest {
     @Test
     public void reservations_receiveDifferentIds() {
         Customer customer = new Customer("customer@example.com", "secret", "514");
-        Event firstEvent = new Event("A", "L1", "D1", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social);
-        Event secondEvent = new Event("B", "L2", "D2", new Date(System.currentTimeMillis() + 120_000), EventCategory.Sports);
+        Event firstEvent = new Event("A", "L1", "D1", new Date(System.currentTimeMillis() + 60_000), EventCategory.SOCIAL);
+        Event secondEvent = new Event("B", "L2", "D2", new Date(System.currentTimeMillis() + 120_000), EventCategory.SPORTS);
 
         Reservation first = new Reservation(customer, firstEvent);
         Reservation second = new Reservation(customer, secondEvent);
@@ -41,8 +41,8 @@ public class ReservationTest {
     public void setters_updateCustomerAndEvent() {
         Customer customer1 = new Customer("one@example.com", "secret", "111");
         Customer customer2 = new Customer("two@example.com", "secret", "222");
-        Event event1 = new Event("A", "L1", "D1", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social);
-        Event event2 = new Event("B", "L2", "D2", new Date(System.currentTimeMillis() + 120_000), EventCategory.Entertainment);
+        Event event1 = new Event("A", "L1", "D1", new Date(System.currentTimeMillis() + 60_000), EventCategory.SOCIAL);
+        Event event2 = new Event("B", "L2", "D2", new Date(System.currentTimeMillis() + 120_000), EventCategory.ENTERTAINMENT);
 
         Reservation reservation = new Reservation(customer1, event1);
         reservation.setCustomer(customer2);
@@ -52,3 +52,4 @@ public class ReservationTest {
         assertEquals(event2, reservation.getEvent());
     }
 }
+

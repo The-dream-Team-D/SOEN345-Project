@@ -28,7 +28,7 @@ public class EventItem {
         this.imgURL = "";
         this.capacity = 100;
         this.attendeeCount = 0;
-        this.category = EventCategory.Entertainment;
+        this.category = EventCategory.ENTERTAINMENT;
     }
 
     public EventItem(String title, long dateTime, String location, String details) {
@@ -38,7 +38,7 @@ public class EventItem {
         this.details = details;
         this.capacity = 100;
         this.attendeeCount = 0;
-        this.category = EventCategory.Educational;
+        this.category = EventCategory.EDUCATIONAL;
     }
     public EventItem(String title, long dateTime, String location, String details, String imgURL, int capacity, EventCategory category) {
         this.title = title;

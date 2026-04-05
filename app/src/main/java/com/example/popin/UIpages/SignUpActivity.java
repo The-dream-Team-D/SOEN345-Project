@@ -19,6 +19,7 @@ import com.example.popin.logic.GenericCallback;
 import com.example.popin.logic.User;
 
 public class SignUpActivity extends AppCompatActivity {
+    private static final String INPUT_EMPTY_ERROR = "Input is Empty";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +55,10 @@ public class SignUpActivity extends AppCompatActivity {
         EditText passwordInputField = findViewById(R.id.password_input);
 
         String name = nameInputField.getText().toString();
-        String email_or_phoneNumber = emailInputField.getText().toString();
+        String emailOrPhoneNumber = emailInputField.getText().toString();
         String password = passwordInputField.getText().toString();
 
-        User.SignUp(name, email_or_phoneNumber, password, new GenericCallback() {
+        User.SignUp(name, emailOrPhoneNumber, password, new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 Toast.makeText(getApplicationContext(), "Account Created!", Toast.LENGTH_SHORT).show();
@@ -72,13 +73,13 @@ public class SignUpActivity extends AppCompatActivity {
                 switch (message) {
 
                     case "Name input is empty":
-                        nameInputField.setError("Input is Empty");
+                        nameInputField.setError(INPUT_EMPTY_ERROR);
                         break;
                     case "Email/Phone input is Empty":
-                        emailInputField.setError("Input is Empty");
+                        emailInputField.setError(INPUT_EMPTY_ERROR);
                         break;
                     case "Password input is Empty":
-                        passwordInputField.setError("Input is Empty");
+                        passwordInputField.setError(INPUT_EMPTY_ERROR);
                         break;
                     case "Must be a valid email or phone number":
                         emailInputField.setError("Not valid Email/Phone Number");
@@ -95,3 +96,4 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 }
+

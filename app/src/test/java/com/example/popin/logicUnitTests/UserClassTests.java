@@ -263,3 +263,4 @@ public class UserClassTests {
         assertNull(user.getPassword());
     }
 }
+

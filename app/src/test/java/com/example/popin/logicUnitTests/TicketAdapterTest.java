@@ -114,3 +114,4 @@ public class TicketAdapterTest {
         assertEquals("AI Study Jam", opened.get().getTitle());
     }
 }
+

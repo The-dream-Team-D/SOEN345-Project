@@ -80,3 +80,4 @@ public class UserValidationAndFactoryTest {
         assertEquals("next-pass", user.getPassword());
     }
 }
+

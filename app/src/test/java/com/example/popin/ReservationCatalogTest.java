@@ -62,7 +62,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() + 100000),
-                EventCategory.Social
+                EventCategory.SOCIAL
         );
 
         ReservationCatalog catalog = new ReservationCatalog();
@@ -79,7 +79,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() - 100000),
-                EventCategory.Social
+                EventCategory.SOCIAL
         );
 
         Customer customer = new Customer("a@test.com", "1234","5145555555");
@@ -97,7 +97,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() + 100000),
-                EventCategory.Social
+                EventCategory.SOCIAL
         );
 
         Customer customer = new Customer("a@test.com", "1234","5145555555");
@@ -115,7 +115,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() + 100000),
-                EventCategory.Social
+                EventCategory.SOCIAL
         );
 
         Customer customer = new Customer("a@test.com", "1234","5145555555");
@@ -127,3 +127,4 @@ public class ReservationCatalogTest {
         assertNull(catalog.getReservation(1));
     }
 }
+

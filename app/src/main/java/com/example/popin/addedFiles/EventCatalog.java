@@ -34,6 +34,15 @@ public class EventCatalog {
         void onError(String message);
     }
 
+    public static class EventUpdateRequest {
+        public String newName;
+        public String newLocation;
+        public String newDescription;
+        public long newDate = -1L;
+        public EventCategory newCategory;
+        public int newCapacity = -1;
+    }
+
     private Query queryByEventName(String eventName, EventActionCallback callback) {
         if (eventName == null || eventName.trim().isEmpty()) {
             callback.onError(EVENT_NAME_EMPTY_ERROR);
@@ -128,7 +137,7 @@ public class EventCatalog {
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
-                    return;
+                    break;
                 }
             }
 
@@ -140,16 +149,16 @@ public class EventCatalog {
     }
 
     public void updateEventByName(String currentEventName,
-                                  String newName,
-                                  String newLocation,
-                                  String newDescription,
-                                  long newDate,
-                                  EventCategory newCategory,
-                                  int newCapacity,
+                                  EventUpdateRequest request,
                                   EventActionCallback callback) {
 
         Query query = queryByEventName(currentEventName, callback);
         if (query == null) {
+            return;
+        }
+
+        if (request == null) {
+            callback.onError("No fields provided to update");
             return;
         }
 
@@ -161,44 +170,19 @@ public class EventCatalog {
                     return;
                 }
 
+                Map<String, Object> updates = buildUpdates(request);
+                if (updates.isEmpty()) {
+                    callback.onError("No fields provided to update");
+                    return;
+                }
+
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Map<String, Object> updates = new HashMap<>();
-
-                    if (newName != null && !newName.trim().isEmpty()) {
-                        updates.put("title", newName);
-                    }
-
-                    if (newLocation != null && !newLocation.trim().isEmpty()) {
-                        updates.put("location", newLocation);
-                    }
-
-                    if (newDescription != null && !newDescription.trim().isEmpty()) {
-                        updates.put("details", newDescription);
-                    }
-
-                    if (newDate != -1 ) {
-                        updates.put("dateTime", newDate);
-                    }
-
-                    if (newCategory != null)  {
-                        updates.put("category", newCategory);
-                    }
-
-                    if (newCapacity != -1) {
-                        updates.put("capacity", newCapacity);
-                    }
-
-                    if (updates.isEmpty()) {
-                        callback.onError("No fields provided to update");
-                        return;
-                    }
-
                     eventSnapshot.getRef().updateChildren(updates)
                             .addOnSuccessListener(unused ->
                                     callback.onSuccess("Event updated successfully"))
                             .addOnFailureListener(e ->
                                     callback.onError("Failed to update event: " + e.getMessage()));
-                    return;
+                    break;
 
                 }
             }
@@ -209,5 +193,29 @@ public class EventCatalog {
             }
         });
     }
+
+    private Map<String, Object> buildUpdates(EventUpdateRequest request) {
+        Map<String, Object> updates = new HashMap<>();
+        if (request.newName != null && !request.newName.trim().isEmpty()) {
+            updates.put("title", request.newName);
+        }
+        if (request.newLocation != null && !request.newLocation.trim().isEmpty()) {
+            updates.put("location", request.newLocation);
+        }
+        if (request.newDescription != null && !request.newDescription.trim().isEmpty()) {
+            updates.put("details", request.newDescription);
+        }
+        if (request.newDate != -1) {
+            updates.put("dateTime", request.newDate);
+        }
+        if (request.newCategory != null) {
+            updates.put("category", request.newCategory);
+        }
+        if (request.newCapacity != -1) {
+            updates.put("capacity", request.newCapacity);
+        }
+        return updates;
+    }
 }
+
 

@@ -5,3 +5,4 @@ public enum UserInputType {
     PHONE,
     UNKNOWN
 }
+

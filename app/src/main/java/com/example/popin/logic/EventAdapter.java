@@ -104,44 +104,60 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         visibleEvents.clear();
 
         long now = System.currentTimeMillis();
+        long thirtyDaysLater = now + (30L * 24 * 60 * 60 * 1000);
 
         for (EventItem event : allEvents) {
-            if (event.getDateTime() >= now || !futureOnly){
-                boolean matchesCategory = selectedCategories == null || selectedCategories.isEmpty()
-                        || selectedCategories.contains(event.getCategory());
-
-                boolean matchesThirtyDayWindow;
-                long thirtyDaysLater = now + (30L * 24 * 60 * 60 * 1000);
-
-                Log.d("FILTER", "Now: " + new Date(now));
-                Log.d("FILTER", "Event: " + new Date(event.getDateTime()));
-                Log.d("FILTER", "30 days later: " + new Date(thirtyDaysLater));
-
-                if(inNextThirtyDaysRequest){
-                    matchesThirtyDayWindow = event.getDateTime() <= thirtyDaysLater;
-                }else{
-                    matchesThirtyDayWindow = true;
-                }
-
-
-                // Check search query match
-                boolean matchesQuery;
-                if (currentQuery.isEmpty()) {
-                    matchesQuery = true;
-                } else {
-                    String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
-                            .toLowerCase(Locale.ROOT);
-                    matchesQuery = haystack.contains(currentQuery);
-                }
-
-                if (matchesCategory && matchesQuery && matchesThirtyDayWindow) {
-                    visibleEvents.add(event);
-                }
+            if (matchesAllFilters(event, selectedCategories, inNextThirtyDaysRequest, futureOnly, now, thirtyDaysLater)) {
+                visibleEvents.add(event);
             }
         }
 
-
         notifyDataSetChanged();
+    }
+
+    private boolean matchesAllFilters(
+            EventItem event,
+            Set<EventCategory> selectedCategories,
+            boolean inNextThirtyDaysRequest,
+            boolean futureOnly,
+            long now,
+            long thirtyDaysLater
+    ) {
+        return matchesDateMode(event, futureOnly, now)
+                && matchesCategory(event, selectedCategories)
+                && matchesThirtyDayWindow(event, inNextThirtyDaysRequest, now, thirtyDaysLater)
+                && matchesQuery(event);
+    }
+
+    private boolean matchesDateMode(EventItem event, boolean futureOnly, long now) {
+        return !futureOnly || event.getDateTime() >= now;
+    }
+
+    private boolean matchesCategory(EventItem event, Set<EventCategory> selectedCategories) {
+        return selectedCategories == null
+                || selectedCategories.isEmpty()
+                || selectedCategories.contains(event.getCategory());
+    }
+
+    private boolean matchesThirtyDayWindow(
+            EventItem event,
+            boolean inNextThirtyDaysRequest,
+            long now,
+            long thirtyDaysLater
+    ) {
+        Log.d("FILTER", "Now: " + new Date(now));
+        Log.d("FILTER", "Event: " + new Date(event.getDateTime()));
+        Log.d("FILTER", "30 days later: " + new Date(thirtyDaysLater));
+        return !inNextThirtyDaysRequest || event.getDateTime() <= thirtyDaysLater;
+    }
+
+    private boolean matchesQuery(EventItem event) {
+        if (currentQuery.isEmpty()) {
+            return true;
+        }
+        String haystack = (event.getTitle() + " " + event.getDateTime() + " " + event.getLocation())
+                .toLowerCase(Locale.ROOT);
+        return haystack.contains(currentQuery);
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {

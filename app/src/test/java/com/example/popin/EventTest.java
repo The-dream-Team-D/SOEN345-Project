@@ -17,20 +17,20 @@ public class EventTest {
     @Test
     public void constructor_setsFields_andDefaultsToAvailable() {
         Date date = new Date();
-        Event event = new Event("SOEN Mixer", "EV Building", "Networking event", date, EventCategory.Social);
+        Event event = new Event("SOEN Mixer", "EV Building", "Networking event", date, EventCategory.SOCIAL);
 
         assertEquals("SOEN Mixer", event.getName());
         assertEquals("EV Building", event.getLocation());
         assertEquals("Networking event", event.getDescription());
         assertEquals(date, event.getDate());
-        assertEquals(EventCategory.Social, event.getEventCategory());
+        assertEquals(EventCategory.SOCIAL, event.getEventCategory());
         assertTrue(event.isAvailable());
     }
 
     @Test
     public void constructor_assignsIncreasingIds() {
-        Event first = new Event("A", "L1", "D1", new Date(), EventCategory.Educational);
-        Event second = new Event("B", "L2", "D2", new Date(), EventCategory.Social);
+        Event first = new Event("A", "L1", "D1", new Date(), EventCategory.EDUCATIONAL);
+        Event second = new Event("B", "L2", "D2", new Date(), EventCategory.SOCIAL);
 
         assertNotEquals(first.getId(), second.getId());
         assertTrue(second.getId() > first.getId());
@@ -46,7 +46,7 @@ public class EventTest {
         event.setLocation("Hall A");
         event.setDescription("Updated details");
         event.setDate(date);
-        event.setEventCategory(EventCategory.Sports);
+        event.setEventCategory(EventCategory.SPORTS);
         event.setAvailable(false);
 
         assertEquals(77, event.getId());
@@ -54,7 +54,8 @@ public class EventTest {
         assertEquals("Hall A", event.getLocation());
         assertEquals("Updated details", event.getDescription());
         assertEquals(date, event.getDate());
-        assertEquals(EventCategory.Sports, event.getEventCategory());
+        assertEquals(EventCategory.SPORTS, event.getEventCategory());
         assertFalse(event.isAvailable());
     }
 }
+

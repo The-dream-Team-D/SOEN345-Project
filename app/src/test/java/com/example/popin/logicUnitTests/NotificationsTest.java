@@ -39,3 +39,4 @@ public class NotificationsTest {
         assertTrue(generatedCodes.size() > 1);
     }
 }
+

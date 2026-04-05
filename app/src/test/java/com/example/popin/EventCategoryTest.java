@@ -14,16 +14,17 @@ public class EventCategoryTest {
     @Test
     public void enum_containsExpectedValues() {
         assertEquals(5, EventCategory.values().length);
-        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.Social));
-        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.Educational));
-        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.Professional));
-        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.Sports));
-        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.Entertainment));
+        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.SOCIAL));
+        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.EDUCATIONAL));
+        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.PROFESSIONAL));
+        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.SPORTS));
+        assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.ENTERTAINMENT));
     }
 
     @Test
     public void valueOf_returnsMatchingEnum() {
-        assertEquals(EventCategory.Social, EventCategory.valueOf("Social"));
-        assertEquals(EventCategory.Entertainment, EventCategory.valueOf("Entertainment"));
+        assertEquals(EventCategory.SOCIAL, EventCategory.valueOf("SOCIAL"));
+        assertEquals(EventCategory.ENTERTAINMENT, EventCategory.valueOf("ENTERTAINMENT"));
     }
 }
+

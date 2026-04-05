@@ -48,3 +48,4 @@ public class ViewEventsActivityTest {
 //        assertEquals(5, recyclerView.getAdapter().getItemCount());
 //    }
 }
+

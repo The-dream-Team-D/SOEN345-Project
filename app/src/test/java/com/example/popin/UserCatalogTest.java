@@ -59,3 +59,4 @@ public class UserCatalogTest {
         assertTrue(catalog.getUser("customer@example.com") instanceof Customer);
     }
 }
+

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import com.example.popin.logic.User;
 
 public class Customer extends User {
-    private String name, email, password, phoneNumber;
+    private String phoneNumber;
     private HashMap<Integer, Reservation> reservations;
 
 
@@ -35,3 +35,4 @@ public class Customer extends User {
         reservations.remove(reservationId);
     }
 }
+

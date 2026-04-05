@@ -92,7 +92,7 @@ public class EventsPageActivity extends AppCompatActivity {
                                     "Meet other SOEN students, network, and enjoy snacks in a casual social setting.",
                                     "https://images.stockcake.com/public/9/6/d/96d4100c-ca71-4e09-b84e-d7e90c294a87_large/joyful-party-celebration-stockcake.jpg",
                                     100,
-                                    EventCategory.Social
+                                    EventCategory.SOCIAL
                             ),
                             new EventItem(
                                     "Study Time and Project Submission",
@@ -101,7 +101,7 @@ public class EventsPageActivity extends AppCompatActivity {
                                     "Submit and finish all your work.",
                                     "https://images.stockcake.com/public/9/6/d/96d4100c-ca71-4e09-b84e-d7e90c294a87_large/joyful-party-celebration-stockcake.jpg",
                                     1,
-                                    EventCategory.Educational
+                                    EventCategory.EDUCATIONAL
                             ),
                             new EventItem(
                                     "Board Games Night",
@@ -110,7 +110,7 @@ public class EventsPageActivity extends AppCompatActivity {
                                     "Join us for an evening of board games, team challenges, and friendly competition.",
                                     "https://cdn.apartmenttherapy.info/image/upload/v1667575155/stock/custom%20stock/2022-11-custom-stock/games-0228-edit.jpg",
                                     50,
-                                    EventCategory.Entertainment
+                                    EventCategory.ENTERTAINMENT
                             ),
                             new EventItem(
                                     "Hackathon Kickoff",
@@ -119,7 +119,7 @@ public class EventsPageActivity extends AppCompatActivity {
                                     "Kick off the semester hackathon with team formation, project ideas, and event rules.",
                                     "https://ezassi.com/wp-content/uploads/2024/10/hackathon.png",
                                     200,
-                                    EventCategory.Professional
+                                    EventCategory.PROFESSIONAL
                             ),
                             new EventItem(
                                     "Coffee and Code",
@@ -128,7 +128,7 @@ public class EventsPageActivity extends AppCompatActivity {
                                     "Bring your laptop, grab a coffee, and code with classmates in a relaxed environment.",
                                     "https://localist-images.azureedge.net/photos/52499165824998/card/2d55307e23bf99b05af70bcb92b61f94607cdb85.jpg",
                                     40,
-                                    EventCategory.Educational
+                                    EventCategory.EDUCATIONAL
                             ),
                             new EventItem(
                                     "AI Study Jam",
@@ -137,7 +137,7 @@ public class EventsPageActivity extends AppCompatActivity {
                                     "Review AI concepts, solve practice problems, and prepare together for upcoming exams.",
                                     "https://res.cloudinary.com/startup-grind/image/upload/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/On%20Campus%20%283%29_026JzWM.png",
                                     60,
-                                    EventCategory.Educational
+                                    EventCategory.EDUCATIONAL
                             )
                     );
 
@@ -191,3 +191,4 @@ public class EventsPageActivity extends AppCompatActivity {
 
 
 }
+

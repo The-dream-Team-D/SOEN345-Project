@@ -49,11 +49,11 @@ public class EventsFilterComponentView extends LinearLayout {
 
     private void setupButtons() {
         Map<LinearLayout, EventCategory> buttonMap = new HashMap<>();
-        buttonMap.put(findViewById(R.id.social_category), EventCategory.Social);
-        buttonMap.put(findViewById(R.id.educational_category), EventCategory.Educational);
-        buttonMap.put(findViewById(R.id.professional_category), EventCategory.Professional);
-        buttonMap.put(findViewById(R.id.sports_category), EventCategory.Sports);
-        buttonMap.put(findViewById(R.id.entertainment_category), EventCategory.Entertainment);
+        buttonMap.put(findViewById(R.id.social_category), EventCategory.SOCIAL);
+        buttonMap.put(findViewById(R.id.educational_category), EventCategory.EDUCATIONAL);
+        buttonMap.put(findViewById(R.id.professional_category), EventCategory.PROFESSIONAL);
+        buttonMap.put(findViewById(R.id.sports_category), EventCategory.SPORTS);
+        buttonMap.put(findViewById(R.id.entertainment_category), EventCategory.ENTERTAINMENT);
 
         for (Map.Entry<LinearLayout, EventCategory> entry : buttonMap.entrySet()) {
             LinearLayout button = entry.getKey();

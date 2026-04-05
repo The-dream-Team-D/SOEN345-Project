@@ -14,6 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User {
+    private static final String USERS_NODE = "Users";
+    private static final String EMAIL_FIELD = "email";
+    private static final String PHONE_FIELD = "phoneNumber";
+    private static final String PASSWORD_FIELD = "password";
+    private static final String PASSWORD_EMPTY_ERROR = "Password input is Empty";
 
     private String email;
     private String password;
@@ -190,23 +195,23 @@ public class User {
         }
 
         if (password == null || password.trim().isEmpty()) {
-            callback.onError("Password input is Empty");
+            callback.onError(PASSWORD_EMPTY_ERROR);
             return;
         }
 
         User user = null;
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         Query query = null;
         UserInputType type = identify(email_or_phoneNumber);
         String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
 
         if (type == UserInputType.EMAIL){
             user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("email").equalTo(user.email);
+            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
 
         } else if (type == UserInputType.PHONE) {
             user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+            query = usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber);
         } else {
             callback.onError("Must be a valid email or phone number");
             return;
@@ -226,10 +231,10 @@ public class User {
 
 
                 Map<String, Object> userData = new HashMap<>();
-                userData.put("email", finaluser.getEmail());
-                userData.put("phoneNumber", finaluser.getPhoneNumber());
+                userData.put(EMAIL_FIELD, finaluser.getEmail());
+                userData.put(PHONE_FIELD, finaluser.getPhoneNumber());
 
-                userData.put("password", finaluser.getPassword());
+                userData.put(PASSWORD_FIELD, finaluser.getPassword());
                 userData.put("address", finaluser.getAddress());
                 userData.put("name", finaluser.getName());
 
@@ -264,11 +269,11 @@ public class User {
         }
 
         if(password == null || password.trim().isEmpty()) {
-            callback.onError("Password input is Empty");
+            callback.onError(PASSWORD_EMPTY_ERROR);
             return;
         }
 
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         Query query = null;
         UserInputType type = identify(email_or_phoneNumber);
         String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
@@ -278,10 +283,10 @@ public class User {
         // NO Need for input validation in login, either login or you cant. This just defines type to search
         if (type == UserInputType.PHONE) {
             user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+            query = usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber);
         } else {
             user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("email").equalTo(user.email);
+            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
         }
 
         final User finalUser = user;
@@ -299,7 +304,7 @@ public class User {
 
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
-                    String dbPassword = userSnapshot.child("password").getValue(String.class);
+                    String dbPassword = userSnapshot.child(PASSWORD_FIELD).getValue(String.class);
 
                     if (password.equals(dbPassword)) {
                         System.out.println("Login successful");
@@ -346,59 +351,18 @@ public class User {
         }
 
         if (this.password == null || this.password.trim().isEmpty()) {
-            callback.onError("Password input is Empty");
+            callback.onError(PASSWORD_EMPTY_ERROR);
             return false;
         }
 
         return true;
     }
 
-    private void handleSnapshot(DataSnapshot snapshot, LoginCallback callback) {
-        if (!snapshot.exists()) {
-            callback.onError("No user with that email/phone number");
-            return;
-        }
-
-        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-            if (processUser(userSnapshot, callback)) return;
-        }
-    }
-
-    private boolean processUser(DataSnapshot userSnapshot, LoginCallback callback) {
-        String dbPassword = userSnapshot.child("password").getValue(String.class);
-
-        if (dbPassword != null && password.equals(dbPassword)) {
-
-            String dbName = userSnapshot.child("name").getValue(String.class);
-            String dbAddress = userSnapshot.child("address").getValue(String.class);
-
-            DataSnapshot phoneSnap = userSnapshot.child("phone");
-            DataSnapshot bioSnap = userSnapshot.child("bio");
-
-            String dbPhone = phoneSnap != null ? phoneSnap.getValue(String.class) : null;
-            String dbBio = bioSnap != null ? bioSnap.getValue(String.class) : null;
-
-            Boolean isAdminValue = userSnapshot.child("isAdmin").getValue(Boolean.class);
-
-            this.setName(dbName != null ? dbName : "");
-            this.setAddress(dbAddress != null ? dbAddress : "");
-            this.setPhoneNumber(dbPhone != null ? dbPhone : "");
-            this.setBio(dbBio != null ? dbBio : "");
-            this.setIsAdmin(Boolean.TRUE.equals(isAdminValue));
-
-            callback.onSuccess(this);
-            return true;
-        }
-
-        callback.onError("Incorrect password");
-        return false;
-    }
-
     public void updateProfile(GenericCallback callback) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        Query query = usersRef.orderByChild("email").equalTo(this.email);
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
+        Query query = usersRef.orderByChild(EMAIL_FIELD).equalTo(this.email);
 
-        final User Finaluser = this;
+        final User finalUser = this;
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -414,15 +378,15 @@ public class User {
 
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
-                    userSnapshot.getRef().child("name").setValue(Finaluser.getName());
+                    userSnapshot.getRef().child("name").setValue(finalUser.getName());
 
-                    userSnapshot.getRef().child("address").setValue(Finaluser.getAddress());
+                    userSnapshot.getRef().child("address").setValue(finalUser.getAddress());
 
-                    userSnapshot.getRef().child("phoneNumber").setValue(Finaluser.getPhoneNumber());
+                    userSnapshot.getRef().child("phoneNumber").setValue(finalUser.getPhoneNumber());
 
-                    userSnapshot.getRef().child("bio").setValue(Finaluser.getBio());
+                    userSnapshot.getRef().child("bio").setValue(finalUser.getBio());
 
-                    NotificationPreferenceOptions pref = Finaluser.getUserNotificationPreference();
+                    NotificationPreferenceOptions pref = finalUser.getUserNotificationPreference();
                     userSnapshot.getRef().child("NotificationPreference")
                             .setValue(pref == null ? null : pref.toString());
                     updated = true;
@@ -443,13 +407,13 @@ public class User {
 
     public void delete(GenericCallback callBack){
 
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
 
         Query query = null;
         if(this.getEmail() != null && !this.getEmail().trim().isEmpty()) {
-            query = usersRef.orderByChild("email").equalTo(this.getEmail());
+            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(this.getEmail());
         }else{
-            query = usersRef.orderByChild("phoneNumber").equalTo(this.getPhoneNumber());
+            query = usersRef.orderByChild(PHONE_FIELD).equalTo(this.getPhoneNumber());
         }
 
         final User finaluser = this;
@@ -497,7 +461,7 @@ public class User {
             return;
         }
 
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         Query query = null;
         UserInputType type = identify(email_or_phoneNumber);
         String normalizedEmailOrPhone = email_or_phoneNumber.toLowerCase().trim();
@@ -507,10 +471,10 @@ public class User {
         // NO Need for input validation in login, either login or you cant. This just defines type to search
         if (type == UserInputType.PHONE) {
             user = createUserWithPhoneNumber(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("phoneNumber").equalTo(user.phoneNumber);
+            query = usersRef.orderByChild(PHONE_FIELD).equalTo(user.phoneNumber);
         } else {
             user = createUserWithEmail(normalizedEmailOrPhone, password);
-            query = usersRef.orderByChild("email").equalTo(user.email);
+            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(user.email);
         }
 
         final User finalUser = user;
@@ -528,7 +492,7 @@ public class User {
 
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
-                    String dbPassword = userSnapshot.child("password").getValue(String.class);
+                    String dbPassword = userSnapshot.child(PASSWORD_FIELD).getValue(String.class);
 
                     if (password.equals(dbPassword)) {
                         callback.onError("New password can't be the same as old password");
@@ -571,15 +535,15 @@ public class User {
             return;
         }
 
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
         UserInputType type = identify(emailOrPhoneNumber);
         String normalizedEmailOrPhone = emailOrPhoneNumber.toLowerCase().trim();
         Query query;
 
         if (type == UserInputType.PHONE) {
-            query = usersRef.orderByChild("phoneNumber").equalTo(normalizedEmailOrPhone);
+            query = usersRef.orderByChild(PHONE_FIELD).equalTo(normalizedEmailOrPhone);
         } else {
-            query = usersRef.orderByChild("email").equalTo(normalizedEmailOrPhone);
+            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(normalizedEmailOrPhone);
         }
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -593,7 +557,7 @@ public class User {
                 }
 
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    userSnapshot.getRef().child("password").setValue(password)
+                    userSnapshot.getRef().child(PASSWORD_FIELD).setValue(password)
                             .addOnSuccessListener(unused -> {
                                 callback.onSuccess("Password Changed Successfully!");
                             })
@@ -614,3 +578,5 @@ public class User {
 
 
 }
+
+

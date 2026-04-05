@@ -141,3 +141,4 @@ public class ProfileActivityTest {
         assertEquals("bio 123", etBio.getText().toString());
     }
 }
+

@@ -19,7 +19,7 @@ public class EventItemTest {
                 "Meet other SOEN students, network, and enjoy snacks in a casual social setting.",
                 "https://images.stockcake.com/public/9/6/d/96d4100c-ca71-4e09-b84e-d7e90c294a87_large/joyful-party-celebration-stockcake.jpg",
                 100,
-                EventCategory.Social
+                EventCategory.SOCIAL
         );
 
         assertEquals("SOEN Mixer", item.getTitle());
@@ -45,3 +45,4 @@ public class EventItemTest {
         assertEquals("Sample event description", item.getDetails());
     }
 }
+

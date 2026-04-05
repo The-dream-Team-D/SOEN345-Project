@@ -12,8 +12,8 @@ import com.example.popin.BuildConfig;
 public class EmailServicer {
     public static void sendEmail(String toEmail, String subject, String message) {
 
-        String API_KEY = BuildConfig.SENDGRID_API_KEY;
-        String FROM_EMAIL = "thedreamteamd94@gmail.com";
+        String apiKey = BuildConfig.SENDGRID_API_KEY;
+        String fromEmail = "thedreamteamd94@gmail.com";
 
         new Thread(() -> {
             try {
@@ -24,7 +24,7 @@ public class EmailServicer {
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
 
-                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+                conn.setRequestProperty("Authorization", "Bearer " + apiKey);
                 conn.setRequestProperty("Content-Type", "application/json");
 
                 // Build JSON body
@@ -43,7 +43,7 @@ public class EmailServicer {
                 personalizations.put(personalization);
 
                 JSONObject from = new JSONObject();
-                from.put("email", FROM_EMAIL);
+                from.put("email", fromEmail);
 
                 JSONArray contentArray = new JSONArray();
                 JSONObject content = new JSONObject();

@@ -39,7 +39,7 @@ import java.util.List;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    private LinearLayout AdminDashboardTabs;
+    private LinearLayout adminDashboardTabs;
 
     private ScrollView sectionAddEvent;
     private ScrollView sectionUpdateEvent;
@@ -131,7 +131,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void bindViews() {
 
-        AdminDashboardTabs = findViewById(R.id.AdminDashboardTabs);
+        adminDashboardTabs = findViewById(R.id.adminDashboardTabs);
 
         sectionAddEvent = findViewById(R.id.sectionAddEvent);
         sectionUpdateEvent = findViewById(R.id.sectionUpdateEvent);
@@ -166,17 +166,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
 
         goToAddEventButton.setOnClickListener(v -> {
-            AdminDashboardTabs.setVisibility(View.GONE);
+            adminDashboardTabs.setVisibility(View.GONE);
             sectionAddEvent.setVisibility(View.VISIBLE);
             backButton.setVisibility(View.VISIBLE);
         });
         goToUpdateEventButton.setOnClickListener(v -> {
-            AdminDashboardTabs.setVisibility(View.GONE);
+            adminDashboardTabs.setVisibility(View.GONE);
             sectionUpdateEvent.setVisibility(View.VISIBLE);
             backButton.setVisibility(View.VISIBLE);
         });
         goToDeleteEventButton.setOnClickListener(v -> {
-            AdminDashboardTabs.setVisibility(View.GONE);
+            adminDashboardTabs.setVisibility(View.GONE);
             sectionDeleteEvent.setVisibility(View.VISIBLE);
             backButton.setVisibility(View.VISIBLE);
         });
@@ -189,7 +189,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
             sectionAddEvent.setVisibility(View.GONE);
             backButton.setVisibility(View.GONE);
 
-            AdminDashboardTabs.setVisibility(View.VISIBLE);
+            adminDashboardTabs.setVisibility(View.VISIBLE);
         });
 
         addEventButton.setOnClickListener(v -> addEvent());
@@ -237,7 +237,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
                         sectionAddEvent.setVisibility(View.GONE);
                         backButton.setVisibility(View.GONE);
-                        AdminDashboardTabs.setVisibility(View.VISIBLE);
+                        adminDashboardTabs.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -298,7 +298,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
                         sectionUpdateEvent.setVisibility(View.GONE);
                         backButton.setVisibility(View.GONE);
-                        AdminDashboardTabs.setVisibility(View.VISIBLE);
+                        adminDashboardTabs.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -325,7 +325,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
                 sectionDeleteEvent.setVisibility(View.GONE);
                 backButton.setVisibility(View.GONE);
-                AdminDashboardTabs.setVisibility(View.VISIBLE);
+                adminDashboardTabs.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -419,3 +419,5 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 }
+
+

@@ -283,3 +283,4 @@ public class MyTicketsActivity extends AppCompatActivity {
         return value.trim().toLowerCase(Locale.ROOT);
     }
 }
+

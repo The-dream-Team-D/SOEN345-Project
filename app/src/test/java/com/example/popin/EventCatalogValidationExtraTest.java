@@ -72,3 +72,4 @@ public class EventCatalogValidationExtraTest {
         assertEquals("Event name is empty", error.get());
     }
 }
+

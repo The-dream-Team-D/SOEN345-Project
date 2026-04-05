@@ -30,12 +30,25 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String NOT_PROVIDED = "Not provided";
 
 
-    private TextView tvName, tvEmail, tvAddress, tvPhone, tvBio, tvNotifPref;
-    private EditText etName, etAddress, etPhone, etBio;
-    private Button btnEdit, btnSave, btnLogout, btnDelete;
-    private LinearLayout displayContainer, editContainer;
+    private TextView tvName;
+    private TextView tvEmail;
+    private TextView tvAddress;
+    private TextView tvPhone;
+    private TextView tvBio;
+    private TextView tvNotifPref;
+    private EditText etName;
+    private EditText etAddress;
+    private EditText etPhone;
+    private EditText etBio;
+    private Button btnEdit;
+    private Button btnSave;
+    private Button btnLogout;
+    private Button btnDelete;
+    private LinearLayout displayContainer;
+    private LinearLayout editContainer;
 
-    private MaterialCardView SMSOption, EmailOption;
+    private MaterialCardView SMSOption;
+    private MaterialCardView EmailOption;
 
     private final boolean[] notificationPreference = {false, false};   // (email, SMS)
 
@@ -289,3 +302,4 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 }
+

@@ -36,3 +36,4 @@ public class UserInSessionExtraTest {
         assertEquals(second, UserInSession.getInstance().getUser());
     }
 }
+

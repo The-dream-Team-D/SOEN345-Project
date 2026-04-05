@@ -39,7 +39,7 @@ public class CustomerTest {
         Customer customer = new Customer("customer@example.com", "secret", "514");
         Reservation reservation = new Reservation(
                 customer,
-                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social)
+                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.SOCIAL)
         );
 
         customer.addReservation(reservation);
@@ -52,7 +52,7 @@ public class CustomerTest {
         Customer customer = new Customer("customer@example.com", "secret", "514");
         Reservation reservation = new Reservation(
                 customer,
-                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social)
+                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.SOCIAL)
         );
         customer.addReservation(reservation);
 
@@ -61,3 +61,4 @@ public class CustomerTest {
         assertNull(customer.getReservations().get(reservation.getId()));
     }
 }
+

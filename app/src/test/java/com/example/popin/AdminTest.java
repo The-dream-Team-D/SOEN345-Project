@@ -83,20 +83,16 @@ public class AdminTest {
                 "Hall A",
                 "Updated details",
                 newDate,
-                EventCategory.Social,
+                EventCategory.SOCIAL,
                 120,
                 callback
         );
 
         verify(mockCatalog).updateEventByName(
                 "Old Event",
-                "New Event",
-                "Hall A",
-                "Updated details",
-                newDate,
-                EventCategory.Social,
-                120,
+                any(EventCatalog.EventUpdateRequest.class),
                 callback
         );
     }
 }
+

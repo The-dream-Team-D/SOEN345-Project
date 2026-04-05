@@ -31,3 +31,4 @@ public class AdminUserConversionTest {
         assertTrue(admin.getIsAdmin());
     }
 }
+

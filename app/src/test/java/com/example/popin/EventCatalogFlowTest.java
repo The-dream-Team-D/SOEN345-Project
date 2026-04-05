@@ -85,6 +85,24 @@ public class EventCatalogFlowTest {
         }).when(queryToUse).addListenerForSingleValueEvent(any(ValueEventListener.class));
     }
 
+    private EventCatalog.EventUpdateRequest request(
+            String name,
+            String location,
+            String description,
+            long date,
+            EventCategory category,
+            int capacity
+    ) {
+        EventCatalog.EventUpdateRequest request = new EventCatalog.EventUpdateRequest();
+        request.newName = name;
+        request.newLocation = location;
+        request.newDescription = description;
+        request.newDate = date;
+        request.newCategory = category;
+        request.newCapacity = capacity;
+        return request;
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void addEvent_success_callsSuccessCallback() {
@@ -204,12 +222,7 @@ public class EventCatalogFlowTest {
 
         catalog.updateEventByName(
                 "SOEN Mixer",
-                null,
-                "   ",
-                "",
-                -1,
-                null,
-                -1,
+                request(null, "   ", "", -1, null, -1),
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {
@@ -228,7 +241,7 @@ public class EventCatalogFlowTest {
 
     @Test
     public void editEventByName_existingEventNull_returnsError() {
-        Event updatedEvent = new Event("New", "Hall", "Details", new Date(), EventCategory.Educational);
+        Event updatedEvent = new Event("New", "Hall", "Details", new Date(), EventCategory.EDUCATIONAL);
 
         when(snapshot.exists()).thenReturn(true);
         when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
@@ -256,11 +269,11 @@ public class EventCatalogFlowTest {
     @Test
     @SuppressWarnings("unchecked")
     public void editEventByName_success_updatesEvent() {
-        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.Social);
+        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.SOCIAL);
         existingEvent.setId(42);
         existingEvent.setAvailable(true);
 
-        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.Professional);
+        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.PROFESSIONAL);
         updatedEvent.setAvailable(false);
 
         Task<Void> updateTask = mock(Task.class);
@@ -299,9 +312,9 @@ public class EventCatalogFlowTest {
     @Test
     @SuppressWarnings("unchecked")
     public void editEventByName_failure_returnsError() {
-        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.Social);
+        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.SOCIAL);
         existingEvent.setId(42);
-        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.Professional);
+        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.PROFESSIONAL);
         Task<Void> updateTask = mock(Task.class);
 
         when(snapshot.exists()).thenReturn(true);
@@ -355,12 +368,14 @@ public class EventCatalogFlowTest {
 
         catalog.updateEventByName(
                 "SOEN Mixer",
-                "New Name",
-                "Hall A",
-                "Updated details",
-                System.currentTimeMillis(),
-                EventCategory.Educational,
-                150,
+                request(
+                        "New Name",
+                        "Hall A",
+                        "Updated details",
+                        System.currentTimeMillis(),
+                        EventCategory.EDUCATIONAL,
+                        150
+                ),
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {
@@ -399,12 +414,7 @@ public class EventCatalogFlowTest {
 
         catalog.updateEventByName(
                 "SOEN Mixer",
-                "New Name",
-                null,
-                null,
-                -1,
-                null,
-                -1,
+                request("New Name", null, null, -1, null, -1),
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {
@@ -433,7 +443,7 @@ public class EventCatalogFlowTest {
 
         EventCatalog catalog = EventCatalog.getInstance();
         AtomicReference<String> error = new AtomicReference<>();
-        catalog.editEventByName("SOEN Mixer", new Event("N", "L", "D", new Date(), EventCategory.Social), new EventCatalog.EventActionCallback() {
+        catalog.editEventByName("SOEN Mixer", new Event("N", "L", "D", new Date(), EventCategory.SOCIAL), new EventCatalog.EventActionCallback() {
             @Override
             public void onSuccess(String message) {
                 fail("Expected cancel error");
@@ -448,3 +458,4 @@ public class EventCatalogFlowTest {
         assertEquals("Database error: cancelled-edit", error.get());
     }
 }
+

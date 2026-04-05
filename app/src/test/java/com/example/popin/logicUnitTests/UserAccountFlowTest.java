@@ -590,3 +590,4 @@ public class UserAccountFlowTest {
         assertEquals("Failed to update password: update-failed", error.get());
     }
 }
+

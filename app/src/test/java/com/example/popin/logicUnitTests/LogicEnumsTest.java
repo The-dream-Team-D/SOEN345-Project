@@ -47,3 +47,4 @@ public class LogicEnumsTest {
         assertTrue(Arrays.asList(UserInputType.values()).contains(UserInputType.UNKNOWN));
     }
 }
+

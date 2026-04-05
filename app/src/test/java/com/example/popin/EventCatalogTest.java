@@ -119,15 +119,17 @@ public class EventCatalogTest {
     public void updateEventByName_emptyCurrentName_returnsErrorImmediately() {
         EventCatalog catalog = EventCatalog.getInstance();
         AtomicReference<String> error = new AtomicReference<>();
+        EventCatalog.EventUpdateRequest request = new EventCatalog.EventUpdateRequest();
+        request.newName = "New name";
+        request.newLocation = "New location";
+        request.newDescription = "New description";
+        request.newDate = System.currentTimeMillis();
+        request.newCategory = EventCategory.SOCIAL;
+        request.newCapacity = 100;
 
         catalog.updateEventByName(
                 " ",
-                "New name",
-                "New location",
-                "New description",
-                System.currentTimeMillis(),
-                EventCategory.Social,
-                100,
+                request,
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {
@@ -144,3 +146,4 @@ public class EventCatalogTest {
         assertEquals("Event name is empty", error.get());
     }
 }
+

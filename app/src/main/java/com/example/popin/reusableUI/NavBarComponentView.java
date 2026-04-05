@@ -85,3 +85,4 @@ public class NavBarComponentView extends LinearLayout {
     }
 
 }
+

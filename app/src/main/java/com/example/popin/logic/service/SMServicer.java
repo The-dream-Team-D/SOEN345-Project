@@ -9,6 +9,10 @@ import java.net.URLEncoder;
 import com.example.popin.BuildConfig;
 
 public class SMServicer {
+    private static final String UTF_8 = "UTF-8";
+
+    private SMServicer() {
+    }
 
     public static void sendSMS(String toPhone, String messageText) {
 
@@ -34,9 +38,9 @@ public class SMServicer {
                 conn.setRequestProperty("Authorization", "Basic " + encodedAuth);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-                String data = "To=" + URLEncoder.encode(toPhone, "UTF-8") +
-                        "&From=" + URLEncoder.encode(FROM, "UTF-8") +
-                        "&Body=" + URLEncoder.encode(messageText, "UTF-8");
+                String data = "To=" + URLEncoder.encode(toPhone, UTF_8) +
+                        "&From=" + URLEncoder.encode(FROM, UTF_8) +
+                        "&Body=" + URLEncoder.encode(messageText, UTF_8);
 
                 OutputStream os = conn.getOutputStream();
                 os.write(data.getBytes());
@@ -52,3 +56,4 @@ public class SMServicer {
     }
 
 }
+
