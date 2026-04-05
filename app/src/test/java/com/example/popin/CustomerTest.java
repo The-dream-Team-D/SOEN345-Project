@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import com.example.popin.addedFiles.Customer;
 import com.example.popin.addedFiles.Event;
 import com.example.popin.addedFiles.Reservation;
+import com.example.popin.logic.EventCategory;
 
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class CustomerTest {
         Customer customer = new Customer("customer@example.com", "secret", "514");
         Reservation reservation = new Reservation(
                 customer,
-                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.CONCERT)
+                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social)
         );
 
         customer.addReservation(reservation);
@@ -51,7 +52,7 @@ public class CustomerTest {
         Customer customer = new Customer("customer@example.com", "secret", "514");
         Reservation reservation = new Reservation(
                 customer,
-                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.CONCERT)
+                new Event("SOEN Mixer", "EV", "Details", new Date(System.currentTimeMillis() + 60_000), EventCategory.Social)
         );
         customer.addReservation(reservation);
 

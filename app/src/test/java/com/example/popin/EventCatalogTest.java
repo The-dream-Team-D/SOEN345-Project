@@ -3,15 +3,15 @@ package com.example.popin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import com.example.popin.addedFiles.Event;
 import com.example.popin.addedFiles.EventCatalog;
+import com.example.popin.logic.EventCategory;
+import com.example.popin.logic.EventItem;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class EventCatalogTest {
@@ -58,7 +58,7 @@ public class EventCatalogTest {
     public void addEvent_emptyName_returnsErrorImmediately() {
         EventCatalog catalog = EventCatalog.getInstance();
         AtomicReference<String> error = new AtomicReference<>();
-        Event event = new Event("   ", "Hall A", "Details", new Date(), EventCategory.CONCERT);
+        EventItem event = new EventItem("   ", System.currentTimeMillis(), "Hall A", "Details");
 
         catalog.addEvent(event, new EventCatalog.EventActionCallback() {
             @Override
@@ -125,9 +125,9 @@ public class EventCatalogTest {
                 "New name",
                 "New location",
                 "New description",
-                new Date(),
-                EventCategory.COMEDY,
-                true,
+                System.currentTimeMillis(),
+                EventCategory.Social,
+                100,
                 new EventCatalog.EventActionCallback() {
                     @Override
                     public void onSuccess(String message) {

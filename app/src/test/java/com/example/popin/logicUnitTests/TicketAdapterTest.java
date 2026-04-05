@@ -33,10 +33,14 @@ public class TicketAdapterTest {
     }
     private List<TicketItem> sampleTickets() {
         return Arrays.asList(
-                new TicketItem("t1", "SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby"),
-                new TicketItem("t2", "Hackathon Kickoff", "March 24, 2026 - 5:00 PM", "Room H-937"),
-                new TicketItem("t3", "AI Study Jam", "March 28, 2026 - 4:30 PM", "Engineering Lounge")
+                new TicketItem("t1", "SOEN Mixer", ticketDate(2026, 2, 20, 18, 0), "EV Building Lobby"),
+                new TicketItem("t2", "Hackathon Kickoff", ticketDate(2026, 2, 24, 17, 0), "Room H-937"),
+                new TicketItem("t3", "AI Study Jam", ticketDate(2026, 2, 28, 16, 30), "Engineering Lounge")
         );
+    }
+
+    private long ticketDate(int year, int month, int day, int hour, int minute) {
+        return com.example.popin.logic.EventItem.convertTimeToLong(year, month, day, hour, minute);
     }
 
     @Test

@@ -18,6 +18,10 @@ import com.example.popin.logic.EventItem;
 @Config(sdk = 34)
 public class EventAdapterTest {
 
+    private void applyFilter(EventAdapter adapter, String query) {
+        adapter.filter(query, null, false, false);
+    }
+
     private EventAdapter createAdapter() {
         List<EventItem> events = Arrays.asList(
                 new EventItem(
@@ -78,40 +82,40 @@ public class EventAdapterTest {
     @Test
     public void filter_byTitle_isCaseInsensitive() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("hackathon");
+        applyFilter(adapter, "hackathon");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("HaCkAtHoN");
+        applyFilter(adapter, "HaCkAtHoN");
         assertEquals(1, adapter.getItemCount());
     }
 
     @Test
     public void filter_byLocationAndDate_supportsTrimmedQuery() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("  hall a  ");
+        applyFilter(adapter, "  hall a  ");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("march 26");
+        applyFilter(adapter, "room h-937");
         assertEquals(1, adapter.getItemCount());
     }
 
     @Test
     public void filter_emptyOrNull_restoresAllEvents() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("ai");
+        applyFilter(adapter, "ai");
         assertEquals(1, adapter.getItemCount());
 
-        adapter.filter("");
+        applyFilter(adapter, "");
         assertEquals(5, adapter.getItemCount());
 
-        adapter.filter(null);
+        applyFilter(adapter, null);
         assertEquals(5, adapter.getItemCount());
     }
 
     @Test
     public void filter_noMatch_showsNoEvents() {
         EventAdapter adapter = createAdapter();
-        adapter.filter("this does not exist");
+        applyFilter(adapter, "this does not exist");
         assertEquals(0, adapter.getItemCount());
     }
 }

@@ -8,16 +8,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.popin.addedFiles.Admin;
-import com.example.popin.addedFiles.Event;
 import com.example.popin.addedFiles.EventCatalog;
 import com.example.popin.logic.EventCategory;
+import com.example.popin.logic.EventItem;
 
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-
-import java.util.Date;
 
 public class AdminTest {
 
@@ -44,15 +42,15 @@ public class AdminTest {
     public void addEvent_delegatesToEventCatalog() {
         EventCatalog mockCatalog = mock(EventCatalog.class);
         EventCatalog.EventActionCallback callback = mock(EventCatalog.EventActionCallback.class);
-        Date date = new Date();
+        long date = System.currentTimeMillis() + 60_000;
 
         mockedEventCatalog = Mockito.mockStatic(EventCatalog.class);
         mockedEventCatalog.when(EventCatalog::getInstance).thenReturn(mockCatalog);
 
         Admin admin = new Admin("admin@example.com", "secret", "admin-1");
-        admin.addEvent("SOEN Mixer", "EV Building", "Networking", date, EventCategory.Educational, callback);
+        admin.addEvent("SOEN Mixer", "EV Building", "Networking", date, callback);
 
-        verify(mockCatalog, times(1)).addEvent(any(Event.class), eq(callback));
+        verify(mockCatalog, times(1)).addEvent(any(EventItem.class), eq(callback));
     }
 
     @Test
@@ -73,7 +71,7 @@ public class AdminTest {
     public void updateEvent_delegatesToEventCatalog() {
         EventCatalog mockCatalog = mock(EventCatalog.class);
         EventCatalog.EventActionCallback callback = mock(EventCatalog.EventActionCallback.class);
-        Date newDate = new Date();
+        long newDate = System.currentTimeMillis() + 120_000;
 
         mockedEventCatalog = Mockito.mockStatic(EventCatalog.class);
         mockedEventCatalog.when(EventCatalog::getInstance).thenReturn(mockCatalog);
@@ -86,7 +84,7 @@ public class AdminTest {
                 "Updated details",
                 newDate,
                 EventCategory.Social,
-                false,
+                120,
                 callback
         );
 
@@ -97,7 +95,7 @@ public class AdminTest {
                 "Updated details",
                 newDate,
                 EventCategory.Social,
-                false,
+                120,
                 callback
         );
     }

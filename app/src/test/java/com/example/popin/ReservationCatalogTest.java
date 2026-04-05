@@ -11,6 +11,7 @@ import com.example.popin.addedFiles.Customer;
 import com.example.popin.addedFiles.Event;
 import com.example.popin.addedFiles.Reservation;
 import com.example.popin.addedFiles.ReservationCatalog;
+import com.example.popin.logic.EventCategory;
 
 import org.junit.After;
 import org.junit.Before;
@@ -61,7 +62,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() + 100000),
-                EventCategory.CONCERT
+                EventCategory.Social
         );
 
         ReservationCatalog catalog = new ReservationCatalog();
@@ -78,7 +79,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() - 100000),
-                EventCategory.CONCERT
+                EventCategory.Social
         );
 
         Customer customer = new Customer("a@test.com", "1234","5145555555");
@@ -96,7 +97,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() + 100000),
-                EventCategory.CONCERT
+                EventCategory.Social
         );
 
         Customer customer = new Customer("a@test.com", "1234","5145555555");
@@ -114,7 +115,7 @@ public class ReservationCatalogTest {
                 "Hall",
                 "Desc",
                 new Date(System.currentTimeMillis() + 100000),
-                EventCategory.CONCERT
+                EventCategory.Social
         );
 
         Customer customer = new Customer("a@test.com", "1234","5145555555");

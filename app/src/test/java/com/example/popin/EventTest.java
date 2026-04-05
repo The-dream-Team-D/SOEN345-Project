@@ -23,7 +23,7 @@ public class EventTest {
         assertEquals("EV Building", event.getLocation());
         assertEquals("Networking event", event.getDescription());
         assertEquals(date, event.getDate());
-        assertEquals(EventCategory.Educational, event.getEventCategory());
+        assertEquals(EventCategory.Social, event.getEventCategory());
         assertTrue(event.isAvailable());
     }
 

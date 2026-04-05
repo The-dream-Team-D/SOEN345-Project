@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.popin.R;
 import com.example.popin.UIpages.ProfileActivity;
+import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 
@@ -36,6 +37,7 @@ public class ProfileActivityTest {
         testUser.setPhoneNumber("123456789");
         testUser.setBio("bio 123");
         testUser.setIsAdmin(true);
+        testUser.setUserNotificationPreference(NotificationPreferenceOptions.Email);
 
         UserInSession.create(testUser);
 
@@ -63,7 +65,7 @@ public class ProfileActivityTest {
         TextView tvAddress = activity.findViewById(R.id.tvAddress);
         TextView tvPhone = activity.findViewById(R.id.tvPhone);
         TextView tvBio = activity.findViewById(R.id.tvBio);
-        TextView tvRole = activity.findViewById(R.id.tvRole);
+        TextView tvNotifPref = activity.findViewById(R.id.tvNotifPref);
 
         EditText etName = activity.findViewById(R.id.etName);
         EditText etAddress = activity.findViewById(R.id.etAddress);
@@ -78,7 +80,7 @@ public class ProfileActivityTest {
         assertNotNull(tvAddress);
         assertNotNull(tvPhone);
         assertNotNull(tvBio);
-        assertNotNull(tvRole);
+        assertNotNull(tvNotifPref);
         assertNotNull(etName);
         assertNotNull(etAddress);
         assertNotNull(etPhone);
@@ -94,14 +96,14 @@ public class ProfileActivityTest {
         TextView tvAddress = activity.findViewById(R.id.tvAddress);
         TextView tvPhone = activity.findViewById(R.id.tvPhone);
         TextView tvBio = activity.findViewById(R.id.tvBio);
-        TextView tvRole = activity.findViewById(R.id.tvRole);
+        TextView tvNotifPref = activity.findViewById(R.id.tvNotifPref);
 
         assertEquals("Name: HOSSAM THE GOAT", tvName.getText().toString());
         assertEquals("Email: hos@email.com", tvEmail.getText().toString());
         assertEquals("Address: 123 concordia", tvAddress.getText().toString());
         assertEquals("Phone: 123456789", tvPhone.getText().toString());
         assertEquals("Bio: bio 123", tvBio.getText().toString());
-        assertEquals("Account Type: Admin", tvRole.getText().toString());
+        assertEquals("Notification Preference:Email", tvNotifPref.getText().toString());
     }
 
     @Test

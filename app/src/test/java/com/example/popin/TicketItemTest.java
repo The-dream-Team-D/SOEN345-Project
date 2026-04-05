@@ -3,17 +3,20 @@ package com.example.popin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import com.example.popin.logic.TicketItem;
+
 import org.junit.Test;
 
 public class TicketItemTest {
 
     @Test
     public void constructor_setsTicketIdAndInheritedFields() {
-        TicketItem item = new TicketItem("ticket-1", "SOEN Mixer", "March 20, 2026 - 6:00 PM", "EV Building Lobby");
+        long when = System.currentTimeMillis() + 60_000;
+        TicketItem item = new TicketItem("ticket-1", "SOEN Mixer", when, "EV Building Lobby");
 
         assertEquals("ticket-1", item.getTicketId());
         assertEquals("SOEN Mixer", item.getTitle());
-        assertEquals("March 20, 2026 - 6:00 PM", item.getDateTime());
+        assertEquals(when, item.getDateTime());
         assertEquals("EV Building Lobby", item.getLocation());
     }
 
