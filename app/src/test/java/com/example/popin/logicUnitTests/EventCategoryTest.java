@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.logicUnitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +25,11 @@ public class EventCategoryTest {
     public void valueOf_returnsMatchingEnum() {
         assertEquals(EventCategory.SOCIAL, EventCategory.valueOf("SOCIAL"));
         assertEquals(EventCategory.ENTERTAINMENT, EventCategory.valueOf("ENTERTAINMENT"));
+    }
+
+    @Test
+    public void toStringOverrideWorks() {
+        assertEquals("Entertainment", EventCategory.ENTERTAINMENT.toString());
     }
 }
 

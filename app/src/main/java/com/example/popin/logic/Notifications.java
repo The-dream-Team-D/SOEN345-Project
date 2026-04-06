@@ -32,7 +32,6 @@ public class Notifications {
                 html = "We are sorry to see you go " + user.getName() + "!<br><br>Your account has been successfully deleted.";
                 message = "We are sorry to see you go " + user.getName() + "!\n\nYour account has been successfully deleted.";
                 break;
-
             case CANCEL_TICKET:
                 subject = "Event Registration Cancelled";
                 html = "Your registration for the event " + eventTitle + " has been cancelled.<br><br>"
@@ -40,9 +39,7 @@ public class Notifications {
                 message = "Your registration for the event " + eventTitle + " has been cancelled.\n\n"
                         + "If you did not perform this action, please contact us at support@example.com.";
                 break;
-
             case CHANGE_PASSWORD:
-
                 subject = "Password Reset Code";
                 html = "You requested a password reset for your account.<br><br>"
                         + "Your verification code is: <strong>" + code + "</strong><br><br>"
@@ -53,12 +50,7 @@ public class Notifications {
                         + "This code will expire in 10 minutes.\n\n"
                         + "If you did not request this, please contact us at support@example.com.";
                 break;
-
-            default:
-                subject = "";
-                html = "";
-                message = "";
-                break;
+            default: throw new IllegalArgumentException("Code shouldn't ever reach here, switch case is exhaustive");
         }
 
         if (user.getUserNotificationPreference() == NotificationPreferenceOptions.SMS) {

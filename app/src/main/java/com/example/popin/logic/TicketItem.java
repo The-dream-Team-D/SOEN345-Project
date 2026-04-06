@@ -1,8 +1,5 @@
 package com.example.popin.logic;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

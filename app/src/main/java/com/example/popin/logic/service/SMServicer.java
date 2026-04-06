@@ -11,9 +11,6 @@ import com.example.popin.BuildConfig;
 public class SMServicer {
     private static final String UTF_8 = "UTF-8";
 
-    private SMServicer() {
-    }
-
     public static void sendSMS(String toPhone, String messageText) {
 
         new Thread(() -> {

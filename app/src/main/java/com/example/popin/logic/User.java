@@ -91,17 +91,11 @@ public class User {
         if(email != null){
         this.email = email.toLowerCase().trim();
         }
-        else{
-            this.email = email;
-        }
     }
 
     public void setPhoneNumber(String phoneNumber) {
         if(phoneNumber != null){
             this.phoneNumber = phoneNumber.toLowerCase().trim();
-        }
-        else{
-            this.phoneNumber = phoneNumber;
         }
     }
     public void setBio(String bio) { this.bio = bio; }

@@ -1,4 +1,4 @@
-package com.example.popin;
+package com.example.popin.logicUnitTests;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
