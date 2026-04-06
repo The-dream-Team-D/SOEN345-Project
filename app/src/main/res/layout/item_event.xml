@@ -1,49 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     android:background="@drawable/bg_cyan_rounded"
-    android:orientation="horizontal"
     android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+    <ImageView
+        android:id="@+id/ivEventImage"
+        android:layout_width="122dp"
+        android:layout_height="98dp"
+        android:background="@drawable/bg_event_image_placeholder"
+        android:clipToOutline="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_placeholder"
 
-        <TextView
-            android:id="@+id/tvEventTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#082238"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvEventDateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textColor="#082238" />
-
-        <TextView
-            android:id="@+id/tvEventLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="#082238" />
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginStart="12dp"
-        android:background="@drawable/bg_event_image_placeholder"
-        android:gravity="center"
-        android:text="Event\nImage"
-        android:textAlignment="center"
-        android:textColor="#0A7FA8"
-        android:textStyle="bold" />
-</LinearLayout>
+        android:id="@+id/tvEventTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:textColor="#082238"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/ivEventImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEventDateTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="#082238"
+        app:layout_constraintEnd_toStartOf="@id/ivEventImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventTitle" />
+
+    <TextView
+        android:id="@+id/tvEventLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="#082238"
+        app:layout_constraintEnd_toStartOf="@id/ivEventImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventDateTime" />
+
+    <TextView
+        android:id="@+id/tvEventCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:paddingTop="2dp"
+        android:paddingHorizontal="4dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/ivEventImage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventLocation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

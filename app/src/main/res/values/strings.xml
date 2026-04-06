@@ -1,15 +1,37 @@
 <resources>
     <string name="app_name">PopIn</string>
     <string name="logoDescription">logo</string>
+    <string name="waveDesignDescription">Page wave design</string>
+    <string name="designImageDescription">small image to add style</string>
+    <string name="questionMarkImageDesc">small indicator to user that they are guest</string>
 
-    <string name="loginTitle">Login</string>
+
+    <string name="Welcome">Welcome</string>
+    <string name="joinText">or, Join as a guest</string>
+
+    <string name="ReturningUser">Login</string>
+    <string name="NewUser">Register</string>
+
+
+
+
+    <string name="loginTitle">Log In</string>
     <string name="loginCatchyPhrase">PopIn, and Join our Events!</string>
     <string name="loginButton">Let\'s Go! =&gt;</string>
 
-    <string name="emailInputHint">Email or Phone Number</string>
+    <string name="emailInputHint">demo123@gmail.com or +123456789</string>
     <string name="passwordInputHint">Password</string>
 
-    <string name="signUpButton">Don\'t have an account? Sign Up</string>
+    <string name="signupTitle">Sign Up</string>
+    <string name="EmailOrPhoneNumber">Email/Phone Number</string>
+
+    <string name="passwordText">Password</string>
+
+    <string name="userNameText">Username</string>
+    <string name="usernameHint">ex: JohnSmith123</string>
+
+    <string name="signUpButton">Create Account!</string>
+
 
     <string name="EventsTitle">Events</string>
     <string name="MyTicketsTitle">My Tickets</string>
@@ -30,6 +52,47 @@
     <string name="MyTicketsPageSearchBarHint">Search registered events...</string>
     <string name="cancelTicketButton">Cancel</string>
     <string name="buyTicketButton">Buy Ticket</string>
+    <string name="ticketPurchasedButton">Already registered to event</string>
+    <string name="CapacityFullButton">Event Capacity Reached!</string>
+
+    <string name="passwordResetTitle">Reset Password</string>
+    <string name="forgotPassword">Forgot your password?</string>
+    <string name="newPasswordText">New Password</string>
+    <string name="newPasswordInputHint">New Password</string>
+
+    <string name="sendResetCode">Send Reset Code Notification</string>
+    <string name="resetCodeText">Reset Code in Notification</string>
+    <string name="changePasswordButton">Change Password</string>
+    <string name="resetCodeHint">ex: H36y4</string>
+
+
+    <string name="guestUserTicketPurchaseButton">Login To Buy Tickets</string>
+
+    <string name="guestUserTicketViewButton">Login To View Your Tickets</string>
+    <string name="guestUserProfileViewButton">Login To View Profile Details</string>
+
+    <string name="EventTimeFilter">Within next 30 days</string>
+
+
+
     <string name="backToEventsButton">Back to Events</string>
     <string name="ticketsEmptyState">No tickets found.</string>
+    <string name="eventsEmptyState">No events found.</string>
+
+    <string name="upcomingEventReservations">Upcoming Reservations</string>
+    <string name="pastEventTickets">Past Tickets</string>
+
+
+    <string name="deleteAccount">Delete Account</string>
+
+    <string name="warningText">Are you sure?</string>
+
+    <string name="addEvent">Create Event</string>
+    <string name="updateEvent">Update Event Details</string>
+    <string name="deleteEvent">Delete Event</string>
+
+    <string name="backButton">Go Back</string>
+
+
+
 </resources>

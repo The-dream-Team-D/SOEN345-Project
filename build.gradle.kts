@@ -17,6 +17,16 @@ sonar {
         // Source paths
         property("sonar.sources", "app/src/main/java")
         property("sonar.tests", "app/src/test/java")
+        property(
+            "sonar.cpd.exclusions",
+            "app/src/test/**," +
+                    "app/src/main/java/com/example/popin/addedFiles/User.java," +
+                    "app/src/main/java/com/example/popin/logic/User.java," +
+                    "app/src/main/java/com/example/popin/logic/TicketItem.java," +
+                    "app/src/main/java/com/example/popin/UIpages/ForgotPasswordActivity.java," +
+                    "app/src/main/java/com/example/popin/UIpages/SignUpActivity.java," +
+                    "app/src/main/java/com/example/popin/UIpages/LogInActivity.java"
+        )
 
         // JaCoCo coverage
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")

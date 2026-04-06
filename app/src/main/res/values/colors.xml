@@ -5,12 +5,22 @@
     <color name="splash_bg">#00AFEE</color>
 
 
-    <color name="primary">#00AFEE</color>
-    <color name="secondary">#008080</color>
+    <color name="primary">#003D4C</color>
+    <color name="secondary">#00897B</color>
     <color name="action">#FF8559</color>
     <color name="bg">#F0F8FF</color>
 
     <color name="grey">#51DED5D5</color>
 
+    <color name="warning">#B22222</color>
+
+
+    <color name="categorySocialColor">#FF7043</color>
+    <color name="categoryEducationalColor">#7E57C2</color>
+    <color name="categoryProfessionalColor">#1E88E5</color>
+    <color name="categorySportsColor">#43A047</color>
+    <color name="categoryEntertainmentColor">#E91E8C</color>
+    <color name="categoryCommunityColor">#00897B</color>
+    <color name="categoryDefaultColor">#9E9E9E</color>
 
 </resources>

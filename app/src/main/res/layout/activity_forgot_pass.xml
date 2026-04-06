@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/forgotPassword"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UIpages.ForgotPasswordActivity"
+    tools:theme="@style/Base.Theme.PopIn">
+
+    <ImageView
+        android:id="@+id/wave_image"
+        android:layout_width="546dp"
+        android:layout_height="382dp"
+        android:contentDescription="@string/waveDesignDescription"
+        android:scaleType="centerCrop"
+        android:scaleX="1"
+        android:scaleY="-1"
+        android:src="@drawable/wave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.example.popin.reusableui.BackButtonComponentView
+        android:id="@+id/backButtonComponent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/PasswordResetTitle"
+        android:layout_width="373dp"
+        android:layout_height="68dp"
+        android:text="@string/passwordResetTitle"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.236"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.357"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/BeforeEmailCheck"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/PasswordResetTitle">
+
+        <TextView
+            android:id="@+id/EmailOrPhoneText"
+            android:layout_width="187dp"
+            android:layout_height="23dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginStart="24dp"
+            android:text="@string/EmailOrPhoneNumber"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/emailAndPhoneIcon"
+            android:layout_width="45dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/email_phone_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/EmailOrPhoneText" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="1dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/action"
+            app:layout_constraintStart_toEndOf="@id/emailAndPhoneIcon"
+            app:layout_constraintTop_toTopOf="@id/emailAndPhoneIcon"
+            app:layout_constraintBottom_toBottomOf="@id/emailAndPhoneIcon" />
+
+        <EditText
+            android:id="@+id/emailInput"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/emailInputHint"
+            android:inputType="textEmailAddress"
+            android:textColorHint="#AAAAAA"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/divider"
+            app:layout_constraintBottom_toBottomOf="@id/divider" />
+
+        <TextView
+            android:id="@+id/NewPasswordText"
+            android:layout_width="149dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="24dp"
+            android:text="@string/newPasswordText"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emailAndPhoneIcon" />
+
+        <ImageView
+            android:id="@+id/password_icon"
+            android:layout_width="45dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/password_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/NewPasswordText" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="1dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/action"
+            app:layout_constraintStart_toEndOf="@id/password_icon"
+            app:layout_constraintTop_toTopOf="@id/password_icon"
+            app:layout_constraintBottom_toBottomOf="@id/password_icon" />
+
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="56dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/newPasswordInputHint"
+            android:inputType="textPassword"
+            android:textColorHint="#AAAAAA"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/divider2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/divider2"
+            app:layout_constraintBottom_toBottomOf="@id/divider2" />
+
+        <ImageView
+            android:id="@+id/eye_password_icon"
+            android:layout_width="45dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/closed_eye_pass_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/password_input"
+            app:layout_constraintBottom_toBottomOf="@id/password_input" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sendResetCodeButton"
+            android:layout_width="298dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/sendResetCode"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            android:textSize="16sp"
+
+            android:onClick="sendResetCode"
+
+
+            app:backgroundTint="#FF8559"
+            app:cornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/password_icon"
+            app:strokeColor="#000000"
+            app:strokeWidth="2dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/AfterEmailCheck"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/PasswordResetTitle">
+
+        <TextView
+            android:id="@+id/ResetCodeText"
+            android:layout_width="239dp"
+            android:layout_height="21dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="44dp"
+            android:text="@string/resetCodeText"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/resetCodeIcon"
+            android:layout_width="31dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/reset_code_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ResetCodeText" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="1dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/action"
+            app:layout_constraintStart_toEndOf="@id/resetCodeIcon"
+            app:layout_constraintTop_toTopOf="@id/resetCodeIcon"
+            app:layout_constraintBottom_toBottomOf="@id/resetCodeIcon" />
+
+        <EditText
+            android:id="@+id/resetCodeInput"
+            android:layout_width="316dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/resetCodeHint"
+            android:inputType="textEmailAddress"
+            android:textColorHint="#AAAAAA"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/divider3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/divider3"
+            app:layout_constraintTop_toTopOf="@id/divider3" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ChangePasswordButton"
+            android:layout_width="298dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/changePasswordButton"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+
+            android:onClick="changePassword"
+
+
+            android:textSize="16sp"
+            app:backgroundTint="#FF8559"
+            app:cornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/resetCodeIcon"
+            app:strokeColor="#000000"
+            app:strokeWidth="2dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PopIn">
         <activity
-            android:name=".MainActivity"
+            android:name=".uipages.MainActivity"
             android:theme="@style/Theme.PopIn.Starting"
             android:exported="true">
             <intent-filter>
@@ -24,11 +24,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".EventsPageActivity" />
-        <activity android:name=".MyTicketsActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".AdminDashboardActivity" />
-        <activity android:name=".EventDetailActivity" />
+        <activity android:name=".uipages.EventsPageActivity" />
+        <activity android:name=".uipages.ForgotPasswordActivity" />
+        <activity android:name=".uipages.LogInActivity" />
+        <activity android:name=".uipages.SignUpActivity" />
+        <activity android:name=".uipages.MyTicketsActivity" />
+        <activity android:name=".uipages.ProfileActivity" />
+        <activity android:name=".uipages.AdminDashboardActivity" />
+        <activity android:name=".uipages.EventDetailActivity" />
         
     </application>
 

@@ -9,3 +9,5 @@
 .cxx
 local.properties
 /app/build
+gradle.properties
+.gradle-user-home
