@@ -137,7 +137,8 @@ public class EventItem {
         calendar.setLenient(false);
 
         try {
-            calendar.set(year, month, day, hour, minute);
+            calendar.set(year, month, day, hour, minute, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
             return calendar.getTimeInMillis();
 
