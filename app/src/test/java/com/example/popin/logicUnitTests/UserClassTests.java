@@ -254,6 +254,12 @@ public class UserClassTests {
         assertEquals("Hello I am John", user.getBio());
         assertTrue(user.getIsAdmin());
         assertEquals(NotificationPreferenceOptions.EMAIL, user.getUserNotificationPreference());
+
+        String password = null;
+        user.setPassword(password);
+
+        assertEquals("", user.getPassword());
+
     }
 
     @Test

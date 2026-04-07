@@ -1,8 +1,9 @@
-package com.example.popin;
+package com.example.popin.logicUnitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.example.popin.FirebaseTestAssistant;
 import com.example.popin.addedfiles.EventCatalog;
 
 import org.junit.After;

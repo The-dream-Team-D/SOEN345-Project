@@ -1,8 +1,12 @@
 package com.example.popin.logicUnitTests;
 
+import static com.example.popin.logic.Notifications.sendNotification;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import com.example.popin.logic.NotificationType;
 import com.example.popin.logic.Notifications;
@@ -41,7 +45,7 @@ public class NotificationDispatchTest {
         User user = User.createUserWithEmail("user@example.com", "pw");
         user.setName("Kevin");
 
-        Notifications.sendNotification(user, "SOEN Mixer", NotificationType.REGISTER_EVENT, "");
+        sendNotification(user, "SOEN Mixer", NotificationType.REGISTER_EVENT, "");
 
         mockedEmail.verify(() ->
                 EmailServicer.sendEmail(
@@ -56,7 +60,7 @@ public class NotificationDispatchTest {
         User user = User.createUserWithPhoneNumber("+15145551234", "pw");
         user.setName("Kevin");
 
-        Notifications.sendNotification(user, "SOEN Mixer", NotificationType.CANCEL_TICKET, "");
+        sendNotification(user, "SOEN Mixer", NotificationType.CANCEL_TICKET, "");
 
         mockedSms.verify(() ->
                 SMServicer.sendSMS(
@@ -70,7 +74,7 @@ public class NotificationDispatchTest {
         User user = User.createUserWithEmail("user@example.com", "pw");
         user.setName("Kevin");
 
-        Notifications.sendNotification(user, "", NotificationType.CHANGE_PASSWORD, "ABC123");
+        sendNotification(user, "", NotificationType.CHANGE_PASSWORD, "ABC123");
 
         mockedEmail.verify(() ->
                 EmailServicer.sendEmail(
@@ -79,5 +83,47 @@ public class NotificationDispatchTest {
                         contains("ABC123")
                 ));
     }
+
+    @Test
+    public void sendNotificationsRegisterAccountMessage() {
+        User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setName("Kevin");
+
+        sendNotification(user, "", NotificationType.REGISTER_ACCOUNT, "");
+
+        mockedEmail.verify(() ->
+                EmailServicer.sendEmail(
+                        eq("user@example.com"),
+                        eq("Welcome to PopIn!"),
+                        contains("Your PopIn account has been successfully created.")
+                ));
+    }
+
+    @Test
+    public void sendNotificationsDeleteAccountMessage() {
+        User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setName("Kevin");
+
+        sendNotification(user, "", NotificationType.DELETE_ACCOUNT, "");
+
+        mockedEmail.verify(() ->
+                EmailServicer.sendEmail(
+                        eq("user@example.com"),
+                        eq("Account Deleted"),
+                        contains("Your account has been successfully deleted.")
+                ));
+    }
+
+    @Test
+    public void IncorrectNotificationTypeResultsInError() {
+        User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setName("Kevin");
+
+        NotificationType invalid = mock(NotificationType.class);
+        when(invalid.ordinal()).thenReturn(6);
+
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> sendNotification(user, "", invalid, ""));
+    }
+
 }
 

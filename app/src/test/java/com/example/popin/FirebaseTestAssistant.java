@@ -43,6 +43,12 @@ public class FirebaseTestAssistant {
             return null;
         }).when(mockQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            listener.onDataChange(mockSnapshot);
+            return null;
+        }).when(mockRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
         when(mockRef.addValueEventListener(any(ValueEventListener.class)))
                 .thenReturn(mock(ValueEventListener.class));
 

@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockedStatic;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -30,7 +29,6 @@ import com.example.popin.logic.NotificationPreferenceOptions;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 import com.example.popin.reusableui.NavBarComponentView;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -81,7 +79,10 @@ public class NavBarComponentViewTest {
     @Test
     public void exploreTab_click_whenAlreadyOnEventsPage_doesNotLaunchNewActivity() {
         AppCompatActivity eventsActivity =
-                Robolectric.buildActivity(EventsPageActivity.class).create().get();
+                Robolectric.buildActivity(EventsPageActivity.class).create()
+                .start()
+                .resume()
+                .get();
         NavBarComponentView navBarOnEvents = new NavBarComponentView(eventsActivity, null);
 
         navBarOnEvents.findViewById(R.id.nav_explore_container).performClick();
