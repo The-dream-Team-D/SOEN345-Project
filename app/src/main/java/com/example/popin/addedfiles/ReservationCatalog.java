@@ -1,5 +1,4 @@
 package com.example.popin.addedfiles;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -10,18 +9,14 @@ public class ReservationCatalog{
         this.reservations = new HashMap<>();
     }
 
-    String resCatalogTag = "Reservation Catalog: ";
     public void addReservation(Event event, Customer customer){
 
         //few checks before adding the reservation
         if(!event.isAvailable()){
-            Log.d(resCatalogTag, "Event is not available for reservation.");
             return;
         }else if (customer == null){
-            Log.d(resCatalogTag, "Customer information is required for reservation.");
             return;
         } else if (event.getDate().before(new java.util.Date())){
-            Log.d(resCatalogTag, "Cannot reserve an event that has already occurred.");
             return;
         }
 

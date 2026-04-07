@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -19,19 +19,18 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".uipages.EventsPageActivity" />
-        <activity android:name=".uipages.ForgotPasswordActivity" />
-        <activity android:name=".uipages.LogInActivity" />
-        <activity android:name=".uipages.SignUpActivity" />
-        <activity android:name=".uipages.MyTicketsActivity" />
-        <activity android:name=".uipages.ProfileActivity" />
-        <activity android:name=".uipages.AdminDashboardActivity" />
-        <activity android:name=".uipages.EventDetailActivity" />
+        <activity android:name=".uipages.EventsPageActivity"     android:exported="false" />
+        <activity android:name=".uipages.ForgotPasswordActivity" android:exported="false" />
+        <activity android:name=".uipages.LogInActivity"          android:exported="false" />
+        <activity android:name=".uipages.SignUpActivity"         android:exported="false" />
+        <activity android:name=".uipages.MyTicketsActivity"      android:exported="false" />
+        <activity android:name=".uipages.ProfileActivity"        android:exported="false" />
+        <activity android:name=".uipages.AdminDashboardActivity" android:exported="false" />
+        <activity android:name=".uipages.EventDetailActivity"    android:exported="false" />
         
     </application>
 

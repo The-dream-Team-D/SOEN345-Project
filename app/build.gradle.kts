@@ -54,7 +54,8 @@ android {
             enableAndroidTestCoverage = false   //This android E2E tests are not needed for the checks rn
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -134,7 +135,7 @@ val jacocoTestCoverageVerification = tasks.register<JacocoCoverageVerification>(
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"
-                minimum = 0.55.toBigDecimal()
+                minimum = 0.7.toBigDecimal()
             }
         }
     }

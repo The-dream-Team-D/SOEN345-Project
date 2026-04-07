@@ -10,10 +10,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.popin.R;
 import com.example.popin.logic.GenericCallback;
 import com.example.popin.logic.User;
