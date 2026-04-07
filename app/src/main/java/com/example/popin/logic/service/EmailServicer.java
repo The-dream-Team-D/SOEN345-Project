@@ -1,5 +1,4 @@
 package com.example.popin.logic.service;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,11 +61,7 @@ public class EmailServicer {
                 os.write(json.toString().getBytes());
                 os.close();
 
-                int responseCode = conn.getResponseCode();
-                Log.d("EMAIL", "Response Code: " + responseCode);
-
             } catch (Exception e) {
-                Log.e("EMAIL", "Error sending email", e);
             }
         }).start();
     }

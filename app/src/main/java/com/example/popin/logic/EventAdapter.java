@@ -2,10 +2,8 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.EventItem.formatTime;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +21,9 @@ import com.example.popin.R;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
@@ -146,9 +142,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             long now,
             long thirtyDaysLater
     ) {
-        Log.d(FILTER_TAG, "Now: " + new Date(now));
-        Log.d(FILTER_TAG, "Event: " + new Date(event.getDateTime()));
-        Log.d(FILTER_TAG, "30 days later: " + new Date(thirtyDaysLater));
         return !inNextThirtyDaysRequest || event.getDateTime() <= thirtyDaysLater;
     }
 

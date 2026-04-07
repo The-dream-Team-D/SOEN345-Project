@@ -1,20 +1,16 @@
 package com.example.popin.uipages;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.popin.R;
 import com.example.popin.logic.EventAdapter;
-import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 import com.example.popin.reusableui.EventsFilterComponentView;
 import com.example.popin.reusableui.NavBarComponentView;
@@ -23,9 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class EventsPageActivity extends AppCompatActivity {
@@ -92,7 +86,6 @@ public class EventsPageActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("EventsPageActivity", "Database error: " + error.getMessage());
                 Toast.makeText(EventsPageActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
                 updateEmptyState();
             }

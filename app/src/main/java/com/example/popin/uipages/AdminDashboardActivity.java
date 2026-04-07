@@ -4,7 +4,6 @@ import static com.example.popin.logic.EventItem.convertTimeToLong;
 import static java.lang.Integer.parseInt;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -377,7 +376,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("EventsPageActivity", "Database error: " + error.getMessage());
                 Toast.makeText(AdminDashboardActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
             }
         });

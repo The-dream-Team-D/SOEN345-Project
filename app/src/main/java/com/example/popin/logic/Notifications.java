@@ -1,10 +1,7 @@
 package com.example.popin.logic;
 
-import android.util.Log;
-
 import com.example.popin.logic.service.EmailServicer;
 import com.example.popin.logic.service.SMServicer;
-
 import java.security.SecureRandom;
 
 public class Notifications {

@@ -1,7 +1,5 @@
 package com.example.popin.logic.service;
 
-import android.util.Log;
-
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,11 +41,7 @@ public class SMServicer {
                 os.write(data.getBytes());
                 os.close();
 
-                int responseCode = conn.getResponseCode();
-                Log.d("SMS", "Response: " + responseCode);
-
             } catch (Exception e) {
-                Log.e("SMS", "Error", e);
             }
         }).start();
     }

@@ -3,7 +3,6 @@ package com.example.popin.addedfiles;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.User;
 import com.example.popin.logic.EventItem;
-import java.util.Date;
 
 public class Admin extends User {
     private String id;
