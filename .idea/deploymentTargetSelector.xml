@@ -13,10 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="MainActivityRegisterAccount()">
+      <SelectionState runConfigName="RegisterAccountFailurePath()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AT2LogIn">
+      <SelectionState runConfigName="RegisterAccountSuccessPath2()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="LoginFailPath()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ViewEventsSuccess()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ViewEventsFailNoEvents()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

@@ -11,13 +11,18 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import android.os.SystemClock;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.popin.R;
 import com.example.popin.uipages.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+
+
+@RunWith(AndroidJUnit4.class)
 public class AT3ResetPassword {
     @Rule
     public ActivityScenarioRule<MainActivity> activityRule =

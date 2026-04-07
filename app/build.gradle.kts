@@ -23,6 +23,10 @@ android {
         buildConfig = true
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     defaultConfig {
         applicationId = "com.example.popin"
         minSdk = 25
