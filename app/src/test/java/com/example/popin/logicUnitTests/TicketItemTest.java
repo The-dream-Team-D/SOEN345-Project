@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,8 +16,10 @@ import com.example.popin.logic.TicketItem;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Test;
 
@@ -104,7 +107,7 @@ public class TicketItemTest {
                 return mockTask;
             }).when(mockTask).addOnFailureListener(any());
 
-            TicketItem.cancelTicket("user1", "event1", "ticket1", callback);
+            TicketItem.cancelTicket("event1", "ticket1", callback);
 
             assertEquals(2, success[0]);
             assertEquals("Cancellation failed.", errorMessage[0]);
@@ -115,19 +118,32 @@ public class TicketItemTest {
     }
 
 
-
     @Test
+    @SuppressWarnings("unchecked")
     public void cancelTicket_Success_triggersOnSuccess() {
         setupMockFirebase();
 
         try {
-            DatabaseReference mockRef = FirebaseDatabase.getInstance().getReference("test");
+            DatabaseReference mockRef = FirebaseDatabase.getInstance().getReference("any");
             Task<Void> mockTask = mock(Task.class);
 
-            when(mockRef.removeValue()).thenReturn(mockTask);
+            DataSnapshot mockSnapshot = mock(DataSnapshot.class);
+            when(mockSnapshot.exists()).thenReturn(true);
+            when(mockSnapshot.child(anyString())).thenReturn(mockSnapshot);
 
-            when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+            when(mockRef.removeValue()).thenReturn(mockTask);
+            when(mockTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
+                OnSuccessListener<Void> listener = invocation.getArgument(0);
+                listener.onSuccess(null);
+                return mockTask;
+            });
             when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+            doAnswer(invocation -> {
+                ValueEventListener listener = invocation.getArgument(0);
+                listener.onDataChange(mockSnapshot);
+                return null;
+            }).when(mockRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
             final int[] success = {0};
             final String[] errorMessage = {null};
@@ -138,22 +154,13 @@ public class TicketItemTest {
                     success[0] = 1;
                     errorMessage[0] = message;
                 }
-
                 @Override
                 public void onError(String message) {
-                    success[0] = 2;
-                    fail("The test should not result in On Error");
-
+                    fail("The test should not result in On Error: " + message);
                 }
             };
 
-            doAnswer(invocation -> {
-                OnSuccessListener<Void> listener = invocation.getArgument(0);
-                listener.onSuccess(null);
-                return mockTask;
-            }).when(mockTask).addOnSuccessListener(any());
-
-            TicketItem.cancelTicket("user1", "event1", "ticket1", callback);
+            TicketItem.cancelTicket("event1", "ticket1", callback);
 
             assertEquals(1, success[0]);
             assertEquals("Ticket cancelled successfully", errorMessage[0]);

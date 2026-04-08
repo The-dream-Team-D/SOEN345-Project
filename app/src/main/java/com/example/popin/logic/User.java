@@ -2,6 +2,8 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 
+import android.util.Log;
+
 import com.example.popin.addedfiles.Admin;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +26,9 @@ public class User {
     private static final String NO_USER_ERROR = "No user with that email/phone number";
     private static final String EMAIL_PHONE_EMPTY_ERROR = "Email/Phone input is Empty";
 
+
+
+    private String UserID;
     private String email;
     private String password;
     private String address;
@@ -72,6 +77,10 @@ public class User {
     }
 
     //setters
+    public void setUserID(String uID) {
+        this.UserID = uID;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }
@@ -101,6 +110,9 @@ public class User {
     public void setBio(String bio) { this.bio = bio; }
 
     public String getBio() { return this.bio; }
+    public String getUserID() {
+        return this.UserID;
+    }
 
     public String setUserNotificationPreference(NotificationPreferenceOptions pref) {
         if (pref == null) {
@@ -311,6 +323,7 @@ public class User {
     }
 
     private static void populateUserFromSnapshot(User user, DataSnapshot snapshot) {
+        user.setUserID(snapshot.getKey());
         user.setName(snapshot.child("name").getValue(String.class));
         user.setAddress(snapshot.child(ADDRESS_FIELD).getValue(String.class));
         user.setIsAdmin(Boolean.TRUE.equals(snapshot.child("isAdmin").getValue(boolean.class)));
@@ -325,11 +338,12 @@ public class User {
 
     public void updateProfile(GenericCallback callback) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
-        Query query = usersRef.orderByChild(EMAIL_FIELD).equalTo(this.email);
+        DatabaseReference userRef = usersRef.child(this.UserID);
+
 
         final User finalUser = this;
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
@@ -338,29 +352,16 @@ public class User {
                     return;
                 }
 
-                boolean updated = false;
+                userRef.child("name").setValue(finalUser.getName());
+                userRef.child(ADDRESS_FIELD).setValue(finalUser.getAddress());
+                userRef.child("phoneNumber").setValue(finalUser.getPhoneNumber());
+                userRef.child("bio").setValue(finalUser.getBio());
 
+                NotificationPreferenceOptions pref = finalUser.getUserNotificationPreference();
+                userRef.child(NOTIF_PREF_FIELD)
+                        .setValue(pref == null ? null : pref.name());
 
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-
-                    userSnapshot.getRef().child("name").setValue(finalUser.getName());
-
-                    userSnapshot.getRef().child(ADDRESS_FIELD).setValue(finalUser.getAddress());
-
-                    userSnapshot.getRef().child("phoneNumber").setValue(finalUser.getPhoneNumber());
-
-                    userSnapshot.getRef().child("bio").setValue(finalUser.getBio());
-
-                    NotificationPreferenceOptions pref = finalUser.getUserNotificationPreference();
-                    userSnapshot.getRef().child(NOTIF_PREF_FIELD)
-                            .setValue(pref == null ? null : pref.name());
-                    updated = true;
-                }
-                if (updated) {
-                    callback.onSuccess("User Profile Updated");
-                } else {
-                    callback.onError("User not found");
-                }
+                callback.onSuccess("User Profile Updated");
             }
 
             @Override
@@ -373,27 +374,19 @@ public class User {
     public void delete(GenericCallback callBack){
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(USERS_NODE);
-
-        Query query = null;
-        if(this.getEmail() != null && !this.getEmail().trim().isEmpty()) {
-            query = usersRef.orderByChild(EMAIL_FIELD).equalTo(this.getEmail());
-        }else{
-            query = usersRef.orderByChild(PHONE_FIELD).equalTo(this.getPhoneNumber());
-        }
+        DatabaseReference userRef = usersRef.child(this.UserID);
 
         final User finalUser = this;
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
                 if (!snapshot.exists()) {
                     callBack.onError("Error encountered locating user in DB");
                     return;
                 }
 
-                DataSnapshot userSnapshot = snapshot.getChildren().iterator().next();
-
-                userSnapshot.getRef().removeValue()
+                userRef.removeValue()
                         .addOnSuccessListener(unused -> {
                             callBack.onSuccess("Deleted Account Successfully!");
                             sendNotification(finalUser, "", NotificationType.DELETE_ACCOUNT, "");
@@ -408,7 +401,6 @@ public class User {
                 callBack.onError(error.getMessage());
             }
         });
-
     }
 
 

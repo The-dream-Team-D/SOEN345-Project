@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
@@ -12,7 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TicketItem extends EventItem {
-    private static final String TITLE_KEY = "title";
+    private static final String EVENTID_KEY = "eventID";
+    private static final String USERID_KEY = "userID";
+
     private static final String EVENT_DATABASE = "Event database";
     private static final String USER_TICKETS = "User tickets";
     private String ticketId;
@@ -35,50 +38,37 @@ public class TicketItem extends EventItem {
     }
 
 
-    public static void buyTicket(String userKey, String title, GenericCallback callback) {
-        DatabaseReference userTicketsRef = FirebaseDatabase.getInstance()
-                .getReference(USER_TICKETS)
-                .child(userKey);
+    public static void buyTicket(String userId, String eventId, GenericCallback callback) {
 
-        userTicketsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference ticketsRef = FirebaseDatabase.getInstance().getReference(USER_TICKETS);
+
+        Query userTicketsQuery = ticketsRef.orderByChild(USERID_KEY).equalTo(userId);
+
+        userTicketsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
-                    String existingTitle = ticketSnapshot.child(TITLE_KEY).getValue(String.class);
-                    if (safeEquals(existingTitle, title)) {
+                    String existingEventId = ticketSnapshot.child(EVENTID_KEY).getValue(String.class);
+
+                    if (eventId.equals(existingEventId)) {
                         callback.onError("Ticket Already Owned");
                         return;
                     }
                 }
 
-                DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference(EVENT_DATABASE);
+                Map<String, Object> ticket = new HashMap<>();
+                ticket.put(USERID_KEY, userId);
+                ticket.put(EVENTID_KEY, eventId);
 
-                eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                ticketsRef.push().setValue(ticket)
+                        .addOnSuccessListener(unused -> callback.onSuccess("Ticket Bought successfully"))
+                        .addOnFailureListener(e -> callback.onError("Purchase failed."));
 
-                    @Override
-                    public void onDataChange(DataSnapshot eventsSnapshot) {
-                        for (DataSnapshot eventSnapshot : eventsSnapshot.getChildren()) {
-                            String eventTitle = eventSnapshot.child(TITLE_KEY).getValue(String.class);
-
-                            if (safeEquals(eventTitle, title)) {
-                                adjustAttendeeCount(eventSnapshot.getRef().child("attendeeCount"), 1, callback);
-                                break;
-                            }
-                        }
-
-                        Map<String, Object> ticket = new HashMap<>();
-                        ticket.put(TITLE_KEY, title);
-                        userTicketsRef.push()
-                                .setValue(ticket)
-                                .addOnSuccessListener(unused -> callback.onSuccess("Ticket Bought successfully"))
-                                .addOnFailureListener(unused -> callback.onError("Purchase failed."));
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError("Failed to load events.");
-                    }
-                });
+                DatabaseReference eventRef = FirebaseDatabase.getInstance()
+                        .getReference(EVENT_DATABASE)
+                        .child(eventId);
+                adjustAttendeeCount(eventRef.child("attendeeCount"), 1, null);
             }
 
             @Override
@@ -86,11 +76,6 @@ public class TicketItem extends EventItem {
                 callback.onError("Purchase failed.");
             }
         });
-    }
-
-    private static boolean safeEquals(String a, String b) {
-        if (a == null || b == null) return false;
-        return a.trim().equalsIgnoreCase(b.trim());
     }
 
     private static void adjustAttendeeCount(DatabaseReference ref, int delta, GenericCallback callback) {
@@ -110,18 +95,22 @@ public class TicketItem extends EventItem {
         });
     }
 
-    private static void updateAttendeeCountForEvent(String title, int delta, GenericCallback callback) {
+    private static void updateAttendeeCountForEvent(String eventId, int delta, GenericCallback callback) {
         DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference(EVENT_DATABASE);
-        eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        DatabaseReference eventRef = eventsRef.child(eventId);
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot eventsSnapshot) {
-                for (DataSnapshot eventSnapshot : eventsSnapshot.getChildren()) {
-                    String eventTitle = eventSnapshot.child(TITLE_KEY).getValue(String.class);
-                    if (safeEquals(eventTitle, title)) {
-                        adjustAttendeeCount(eventSnapshot.getRef().child("attendeeCount"), delta, callback);
-                        break;
-                    }
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    callback.onError("Failed to load events.");
+                    return;
                 }
+
+                adjustAttendeeCount(eventRef.child("attendeeCount"), delta, callback);
+
                 callback.onSuccess("Ticket cancelled successfully");
             }
 
@@ -132,17 +121,14 @@ public class TicketItem extends EventItem {
         });
     }
 
-    public static void cancelTicket(String userKey, String title, String ticketId, GenericCallback callback) {
+    public static void cancelTicket(String eventID, String ticketId, GenericCallback callback) {
         DatabaseReference userTicketsRef = FirebaseDatabase.getInstance()
-                .getReference(USER_TICKETS)
-                .child(userKey);
+                .getReference(USER_TICKETS);
 
         userTicketsRef.child(ticketId).removeValue()
-                .addOnSuccessListener(unused -> updateAttendeeCountForEvent(title, -1, callback))
+                .addOnSuccessListener(unused -> updateAttendeeCountForEvent(eventID, -1, callback))
                 .addOnFailureListener(unused -> callback.onError("Cancellation failed."));
     }
-
-
 
 }
 

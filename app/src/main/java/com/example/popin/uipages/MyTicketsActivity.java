@@ -36,7 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+
 import java.util.Map;
 
 public class MyTicketsActivity extends AppCompatActivity {
@@ -86,13 +86,12 @@ public class MyTicketsActivity extends AppCompatActivity {
             ticketAdapter = new TicketAdapter(ticketList, this::cancelReservation, this::openTicketDetails);
             recyclerView.setAdapter(ticketAdapter);
 
-            String userKey = sanitizeKey(session.getUser().getEmail());
+            String userKey = session.getUser().getUserID();
             userTicketsRef = FirebaseDatabase.getInstance()
-                    .getReference("User tickets")
-                    .child(userKey);
+                    .getReference("User tickets");
             eventsRef = FirebaseDatabase.getInstance().getReference("Event database");
 
-            fetchTickets();
+            fetchTickets(userKey);
 
             searchInput.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -146,16 +145,28 @@ public class MyTicketsActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchTickets() {
+    private void fetchTickets(String userKey) {
         userTicketsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 ticketList.clear();
 
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
-                    String title = ticketSnapshot.child("title").getValue(String.class);
-                    if (title != null && !title.trim().isEmpty()) {
-                        TicketItem ticket = new TicketItem(ticketSnapshot.getKey(), title, 0, "");
+                    String eventID = ticketSnapshot.child("eventID").getValue(String.class);
+                    String userID = ticketSnapshot.child("userID").getValue(String.class);
+
+                    if (!userKey.equals(userID)) continue;
+
+                    if (eventID != null) {
+
+                        TicketItem ticket = new TicketItem(
+                                ticketSnapshot.getKey(),
+                                "",
+                                0,
+                                ""
+                        );
+
+                        ticket.setEventID(eventID);
                         ticketList.add(ticket);
                     }
                 }
@@ -174,27 +185,27 @@ public class MyTicketsActivity extends AppCompatActivity {
         eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                Map<String, EventItem> eventsByTitle = new HashMap<>();
+
+                Map<String, EventItem> eventsById = new HashMap<>();
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
                     EventItem event = eventSnapshot.getValue(EventItem.class);
-                    if (event != null && event.getTitle() != null) {
-                        eventsByTitle.put(normalize(event.getTitle()), event);
+                    if (event != null) {
+                        event.setEventID(eventSnapshot.getKey());
+                        eventsById.put(event.getEventID(), event);
                     }
                 }
 
                 for (TicketItem ticket : ticketList) {
-                    EventItem event = eventsByTitle.get(normalize(ticket.getTitle()));
+                    EventItem event = eventsById.get(ticket.getEventID());
                     if (event != null) {
+                        ticket.setTitle(event.getTitle());
                         ticket.setDateTime(event.getDateTime());
                         ticket.setLocation(event.getLocation());
                         ticket.setDetails(event.getDetails());
-
                         ticket.setImgURL(event.getImgURL());
-
                         ticket.setCategory(event.getCategory());
                         ticket.setCapacity(event.getCapacity());
                         ticket.setAttendeeCount(event.getAttendeeCount());
-
                     }
                 }
 
@@ -216,9 +227,8 @@ public class MyTicketsActivity extends AppCompatActivity {
             return;
         }
 
-        String userKey = sanitizeKey(UserInSession.getInstance().getUser().getEmail());
 
-        TicketItem.cancelTicket(userKey, ticket.getTitle(), ticket.getTicketId(), new GenericCallback() {
+        TicketItem.cancelTicket(ticket.getEventID(), ticket.getTicketId(), new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 Toast.makeText(MyTicketsActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -238,6 +248,7 @@ public class MyTicketsActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(MyTicketsActivity.this, EventDetailActivity.class);
+        intent.putExtra("EventID", ticket.getEventID());
         intent.putExtra("title", ticket.getTitle());
         intent.putExtra("dateTime", formatTime(ticket.getDateTime()));
         intent.putExtra("location", ticket.getLocation());
@@ -269,13 +280,6 @@ public class MyTicketsActivity extends AppCompatActivity {
                 .replace("[", "_")
                 .replace("]", "_")
                 .replace("/", "_");
-    }
-
-    private String normalize(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.trim().toLowerCase(Locale.ROOT);
     }
 }
 

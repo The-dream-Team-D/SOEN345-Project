@@ -77,6 +77,7 @@ public class EventsPageActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     EventItem event = dataSnapshot.getValue(EventItem.class);
                     if (event != null) {
+                        event.setEventID(dataSnapshot.getKey());
                         eventList.add(event);
                     }
                 }
