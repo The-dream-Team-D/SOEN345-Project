@@ -57,17 +57,17 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    private void buyTicket(String title, String dateTime, String location) {
+    private void buyTicket(String title, String eventID) {
         UserInSession session = UserInSession.getInstance();
         if (session == null || session.getUser() == null) {
             Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String userKey = sanitizeKey(session.getUser().getEmail());
+        String userKey = session.getUser().getUserID();
         boolean isFull = getIntent().getIntExtra(EXTRA_CAPACITY, 0) <= getIntent().getIntExtra(EXTRA_ATTENDEES, 0);
 
-        TicketItem.buyTicket(userKey, title, new GenericCallback() {
+        TicketItem.buyTicket(userKey, eventID, new GenericCallback() {
             @Override
             public void onSuccess(String message) {
                 Toast.makeText(EventDetailActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -127,6 +127,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         eventImageURL = findViewById(R.id.EventImage);
 
+        String eventID = getIntent().getStringExtra("EventID");
         String title = getIntent().getStringExtra("title");
         String dateTime = getIntent().getStringExtra("dateTime");
         String location = getIntent().getStringExtra("location");
@@ -160,9 +161,9 @@ public class EventDetailActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LogInActivity.class)));
 
 
-        checkRegistrationStatus(title);
+        checkRegistrationStatus(eventID);
 
-        btnBuyTicket.setOnClickListener(v -> buyTicket(title, dateTime, location));
+        btnBuyTicket.setOnClickListener(v -> buyTicket(title, eventID));
         btnBack.setOnClickListener(v -> finish());
     }
 
@@ -191,7 +192,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    private void checkRegistrationStatus(String title) {
+    private void checkRegistrationStatus(String eventId) {
         UserInSession session = UserInSession.getInstance();
         if (session == null || session.getUser() == null) {
             btnBuyTicket.setVisibility(View.GONE);
@@ -201,10 +202,10 @@ public class EventDetailActivity extends AppCompatActivity {
             return;
         }
 
-        String userKey = sanitizeKey(session.getUser().getEmail());
+
+        String userKey = session.getUser().getUserID();
         DatabaseReference userTicketsRef = FirebaseDatabase.getInstance()
-                .getReference("User tickets")
-                .child(userKey);
+                .getReference("User tickets");
 
         boolean isFull = getIntent().getIntExtra(EXTRA_CAPACITY, 0) <= getIntent().getIntExtra(EXTRA_ATTENDEES, 0);
 
@@ -212,9 +213,12 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 boolean isRegistered = false;
+
                 for (DataSnapshot ticketSnapshot : snapshot.getChildren()) {
-                    String existingTicketTitle = ticketSnapshot.child("title").getValue(String.class);
-                    if (safeEquals(existingTicketTitle, title)) {
+                    String ticketUserId = ticketSnapshot.child("userID").getValue(String.class);
+                    String ticketEventId = ticketSnapshot.child("eventID").getValue(String.class);
+
+                    if (userKey.equals(ticketUserId) && eventId.equals(ticketEventId)) {
                         isRegistered = true;
                         break;
                     }

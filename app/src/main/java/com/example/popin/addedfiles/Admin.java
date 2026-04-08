@@ -13,6 +13,7 @@ public class Admin extends User {
     }
 
     public Admin(User user) {
+        this.setUserID(user.getUserID());
         this.setName(user.getName());
         this.setEmail(user.getEmail());
         this.setPhoneNumber(user.getPhoneNumber());

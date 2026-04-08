@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class EventItem {
+
+    private String EventID;
     private String title;
     private long dateTime;
     private String location;
@@ -50,6 +52,16 @@ public class EventItem {
         this.attendeeCount = 0;
         this.category = category;
     }
+
+    public String getEventID() {
+        return EventID;
+    }
+
+    public void setEventID(String eID) {
+        this.EventID = eID;
+    }
+
+
     public String getTitle() {
         return title;
     }

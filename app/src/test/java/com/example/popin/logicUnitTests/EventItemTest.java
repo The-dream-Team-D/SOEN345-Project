@@ -36,6 +36,7 @@ public class EventItemTest {
 
         assertNull(item.getTitle());
 
+        item.setEventID("1234");
         item.setTitle("New Title");
         item.setDateTime(2024, 0, 1, 12, 0);
         item.setLocation("Montreal");
@@ -49,7 +50,7 @@ public class EventItemTest {
         item.setCategory(EventCategory.ENTERTAINMENT);
 
 
-
+        assertEquals("1234", item.getEventID());
         assertEquals("New Title", item.getTitle());
         assertEquals(EventItem.convertTimeToLong(2024, 0, 1, 12, 0), item.getDateTime());
         assertEquals("Montreal", item.getLocation());

@@ -238,6 +238,7 @@ public class UserClassTests {
     public void testSettersAndGetters() {
         User user = new User("test@example.com", "pass123");
 
+        user.setUserID("12343");
         user.setName("John Smith");
         user.setAddress("456 Oak St");
         user.setPassword("newPass456");
@@ -246,6 +247,7 @@ public class UserClassTests {
         user.setIsAdmin(true);
         user.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
 
+        assertEquals("12343", user.getUserID());
         assertEquals("John Smith", user.getName());
         assertEquals("456 Oak St", user.getAddress());
         assertEquals("newPass456", user.getPassword());

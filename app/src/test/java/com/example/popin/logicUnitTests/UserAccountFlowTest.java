@@ -38,7 +38,7 @@ public class UserAccountFlowTest {
     private MockedStatic<Notifications> mockedNotifications;
 
     private FirebaseDatabase mockDb;
-    private DatabaseReference usersRef;
+    private DatabaseReference usersRef, userRef;
     private Query emailQuery;
     private Query phoneQuery;
     private DataSnapshot snapshot;
@@ -52,7 +52,9 @@ public class UserAccountFlowTest {
         phoneQuery = mock(Query.class);
         snapshot = mock(DataSnapshot.class);
         userSnapshot = mock(DataSnapshot.class);
+        userRef = mock(DatabaseReference.class);
 
+        when(usersRef.child(anyString())).thenReturn(userRef);
         when(mockDb.getReference("Users")).thenReturn(usersRef);
         when(usersRef.orderByChild("email")).thenReturn(emailQuery);
         when(usersRef.orderByChild("phoneNumber")).thenReturn(phoneQuery);
@@ -233,10 +235,18 @@ public class UserAccountFlowTest {
 
     @Test
     public void updateProfile_userNotFound_returnsError() {
-        when(snapshot.exists()).thenReturn(false);
-        callbackSnapshot(emailQuery, snapshot);
+        DatabaseReference userRef = mock(DatabaseReference.class);
+        when(usersRef.child(anyString())).thenReturn(userRef);
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            when(snapshot.exists()).thenReturn(false);
+            listener.onDataChange(snapshot);
+            return null;
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
         User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setUserID("testUID");
+
         AtomicReference<String> error = new AtomicReference<>();
 
         user.updateProfile(new GenericCallback() {
@@ -257,20 +267,21 @@ public class UserAccountFlowTest {
     @Test
     public void delete_withMissingUser_returnsError() {
         when(snapshot.exists()).thenReturn(false);
-        callbackSnapshot(emailQuery, snapshot);
-        AtomicReference<String> error = new AtomicReference<>();
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            listener.onDataChange(snapshot);
+            return null;
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
         User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setUserID("testUID");
+        AtomicReference<String> error = new AtomicReference<>();
+
         user.delete(new GenericCallback() {
             @Override
-            public void onSuccess(String message) {
-                fail("Expected delete error");
-            }
-
+            public void onSuccess(String message) { fail("Expected delete error"); }
             @Override
-            public void onError(String message) {
-                error.set(message);
-            }
+            public void onError(String message) { error.set(message); }
         });
 
         assertEquals("Error encountered locating user in DB", error.get());
@@ -279,22 +290,23 @@ public class UserAccountFlowTest {
     @Test
     public void delete_withBlankEmail_usesPhoneQueryBranch() {
         when(snapshot.exists()).thenReturn(false);
-        callbackSnapshot(phoneQuery, snapshot);
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            listener.onDataChange(snapshot);
+            return null;
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
         User user = User.createUserWithPhoneNumber("+15145551234", "pw");
+        user.setUserID("testUID");
 
         user.delete(new GenericCallback() {
             @Override
-            public void onSuccess(String message) {
-                fail("Expected error path");
-            }
-
+            public void onSuccess(String message) { fail("Expected error path"); }
             @Override
             public void onError(String message) {
                 assertEquals("Error encountered locating user in DB", message);
             }
         });
-
-        verify(usersRef).orderByChild("phoneNumber");
     }
 
     @Test
@@ -426,12 +438,15 @@ public class UserAccountFlowTest {
         DatabaseReference userRef = mock(DatabaseReference.class);
         DatabaseReference childRef = mock(DatabaseReference.class);
 
-        when(snapshot.exists()).thenReturn(true);
-        when(snapshot.getChildren()).thenReturn(Collections.singletonList(userSnapshot));
-        when(userSnapshot.getRef()).thenReturn(userRef);
+        when(usersRef.child(anyString())).thenReturn(userRef);
         when(userRef.child(anyString())).thenReturn(childRef);
-        when(childRef.setValue(any())).thenReturn(mock(Task.class));
-        callbackSnapshot(emailQuery, snapshot);
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            when(snapshot.exists()).thenReturn(true);
+            listener.onDataChange(snapshot);
+            return null;
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
 
         User user = User.createUserWithEmail("user@example.com", "pw");
         user.setName("Kevin");
@@ -439,6 +454,7 @@ public class UserAccountFlowTest {
         user.setPhoneNumber("+15145551234");
         user.setBio("bio");
         user.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL);
+        user.setUserID("testUID");
 
         AtomicReference<String> success = new AtomicReference<>();
         user.updateProfile(new GenericCallback() {
@@ -458,16 +474,22 @@ public class UserAccountFlowTest {
 
     @Test
     public void updateProfile_queryCancelled_returnsError() {
+
+        DatabaseReference userRef = mock(DatabaseReference.class);
+        when(usersRef.child(anyString())).thenReturn(userRef);
         DatabaseError dbError = mock(DatabaseError.class);
         when(dbError.getMessage()).thenReturn("cancelled");
         doAnswer(invocation -> {
             ValueEventListener listener = invocation.getArgument(0);
             listener.onCancelled(dbError);
             return null;
-        }).when(emailQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
         AtomicReference<String> error = new AtomicReference<>();
         User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setUserID("testUID");
+
+
         user.updateProfile(new GenericCallback() {
             @Override
             public void onSuccess(String message) {
@@ -486,12 +508,9 @@ public class UserAccountFlowTest {
     @Test
     @SuppressWarnings("unchecked")
     public void delete_success_returnsSuccessMessage() {
-        DatabaseReference userRef = mock(DatabaseReference.class);
         Task<Void> removeTask = mock(Task.class);
 
         when(snapshot.exists()).thenReturn(true);
-        when(snapshot.getChildren()).thenReturn(Collections.singletonList(userSnapshot));
-        when(userSnapshot.getRef()).thenReturn(userRef);
         when(userRef.removeValue()).thenReturn(removeTask);
         when(removeTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
             com.google.android.gms.tasks.OnSuccessListener<Void> listener = invocation.getArgument(0);
@@ -499,10 +518,16 @@ public class UserAccountFlowTest {
             return removeTask;
         });
         when(removeTask.addOnFailureListener(any())).thenReturn(removeTask);
-        callbackSnapshot(emailQuery, snapshot);
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            listener.onDataChange(snapshot);
+            return null;
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
         AtomicReference<String> success = new AtomicReference<>();
         User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setUserID("testUID");
+
         user.delete(new GenericCallback() {
             @Override
             public void onSuccess(String message) {
@@ -521,12 +546,9 @@ public class UserAccountFlowTest {
     @Test
     @SuppressWarnings("unchecked")
     public void delete_failure_returnsErrorMessage() {
-        DatabaseReference userRef = mock(DatabaseReference.class);
         Task<Void> removeTask = mock(Task.class);
 
         when(snapshot.exists()).thenReturn(true);
-        when(snapshot.getChildren()).thenReturn(Collections.singletonList(userSnapshot));
-        when(userSnapshot.getRef()).thenReturn(userRef);
         when(userRef.removeValue()).thenReturn(removeTask);
         when(removeTask.addOnSuccessListener(any())).thenReturn(removeTask);
         when(removeTask.addOnFailureListener(any())).thenAnswer(invocation -> {
@@ -534,10 +556,17 @@ public class UserAccountFlowTest {
             listener.onFailure(new RuntimeException("remove-failed"));
             return removeTask;
         });
-        callbackSnapshot(emailQuery, snapshot);
+        doAnswer(invocation -> {
+            ValueEventListener listener = invocation.getArgument(0);
+            listener.onDataChange(snapshot);
+            return null;
+        }).when(userRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
 
         AtomicReference<String> error = new AtomicReference<>();
         User user = User.createUserWithEmail("user@example.com", "pw");
+        user.setUserID("testUID");
+
         user.delete(new GenericCallback() {
             @Override
             public void onSuccess(String message) {

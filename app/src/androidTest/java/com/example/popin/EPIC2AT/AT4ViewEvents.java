@@ -73,7 +73,7 @@ public class AT4ViewEvents {
     @Test
     public void ViewEventsSuccess() {
 
-        checkAndUploadSampleData();
+//        checkAndUploadSampleData();
 
         onView(withId(R.id.btnReturningUser)).check(matches(isDisplayed()));
         onView(withId(R.id.btnNewUser)).check(matches(isDisplayed()));
