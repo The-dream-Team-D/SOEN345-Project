@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.popin.R;
-import com.example.popin.addedfiles.Admin;
-import com.example.popin.addedfiles.EventCatalog;
+import com.example.popin.logic.Admin;
+import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 import com.google.firebase.database.DataSnapshot;

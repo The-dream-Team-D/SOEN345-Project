@@ -2,9 +2,6 @@ package com.example.popin.logic;
 
 import static com.example.popin.logic.Notifications.sendNotification;
 
-import android.util.Log;
-
-import com.example.popin.addedfiles.Admin;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

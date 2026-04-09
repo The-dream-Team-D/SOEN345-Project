@@ -1,6 +1,4 @@
-package com.example.popin.addedfiles;
-
-import com.example.popin.logic.EventCategory;
+package com.example.popin.logic;
 
 import java.util.Date;
 

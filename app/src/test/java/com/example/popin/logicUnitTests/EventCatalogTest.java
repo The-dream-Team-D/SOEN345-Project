@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.example.popin.FirebaseTestAssistant;
-import com.example.popin.addedfiles.EventCatalog;
+import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 

@@ -1,7 +1,5 @@
-package com.example.popin.addedfiles;
+package com.example.popin.logic;
 
-import com.example.popin.logic.EventCategory;
-import com.example.popin.logic.EventItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
