@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="BzWtxRqW0uJ3r5ZGMYV0">
-    <mxGraphModel dx="1871" dy="1203" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1612" dy="1061" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -53,7 +53,7 @@
           <mxGeometry height="30" width="297" y="280" as="geometry" />
         </mxCell>
         <mxCell id="Th-IZAqsfduWeTKm_n0z-19" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=33;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="&lt;div&gt;&lt;div&gt;&lt;font&gt;&amp;lt;&amp;lt;Object table&amp;gt;&amp;gt;&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;&lt;font&gt;Users&lt;/font&gt;" vertex="1">
-          <mxGeometry height="273" width="310" x="562" y="173.5" as="geometry" />
+          <mxGeometry height="303" width="310" x="562" y="158.5" as="geometry" />
         </mxCell>
         <mxCell id="Th-IZAqsfduWeTKm_n0z-20" parent="Th-IZAqsfduWeTKm_n0z-19" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="UserID (PK): VARCHAR (255&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: transparent;&quot;&gt;)&lt;/span&gt;&amp;nbsp;" vertex="1">
           <mxGeometry height="30" width="310" y="33" as="geometry" />
@@ -76,8 +76,11 @@
         <mxCell id="Th-IZAqsfduWeTKm_n0z-26" parent="Th-IZAqsfduWeTKm_n0z-19" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="NotificationPreference:&amp;nbsp;&lt;span style=&quot;text-align: center;&quot;&gt;ENUM (EMAIL, SMS)&lt;/span&gt;" vertex="1">
           <mxGeometry height="30" width="310" y="213" as="geometry" />
         </mxCell>
-        <mxCell id="Th-IZAqsfduWeTKm_n0z-27" parent="Th-IZAqsfduWeTKm_n0z-19" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="isAdmin: BOOLEAN" vertex="1">
+        <mxCell id="3lItcBGCnTg7Rwrdj5X--1" parent="Th-IZAqsfduWeTKm_n0z-19" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="bio: VARCHAR (255&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: transparent;&quot;&gt;)&lt;/span&gt;" vertex="1">
           <mxGeometry height="30" width="310" y="243" as="geometry" />
+        </mxCell>
+        <mxCell id="Th-IZAqsfduWeTKm_n0z-27" parent="Th-IZAqsfduWeTKm_n0z-19" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="isAdmin: BOOLEAN" vertex="1">
+          <mxGeometry height="30" width="310" y="273" as="geometry" />
         </mxCell>
         <mxCell id="Th-IZAqsfduWeTKm_n0z-29" edge="1" parent="1" source="Th-IZAqsfduWeTKm_n0z-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=12 12;endArrow=none;endFill=0;fillColor=#ffe6cc;strokeColor=#000000;startArrow=open;startFill=0;" target="Th-IZAqsfduWeTKm_n0z-3">
           <mxGeometry relative="1" as="geometry" />

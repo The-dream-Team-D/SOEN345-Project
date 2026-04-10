@@ -27,11 +27,9 @@ import java.util.Locale;
 import java.util.Set;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
-    private static final String FILTER_TAG = "FILTER";
     private final List<EventItem> allEvents;
     private final List<EventItem> visibleEvents;
     private String currentQuery = "";
-    private final Set<EventCategory> selectedCategories = new HashSet<>();
     public EventAdapter(List<EventItem> events) {
         this.allEvents = new ArrayList<>(events);
         this.visibleEvents = new ArrayList<>(events);

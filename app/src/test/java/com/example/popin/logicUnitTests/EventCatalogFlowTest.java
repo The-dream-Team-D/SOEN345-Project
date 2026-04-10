@@ -10,7 +10,8 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.popin.logic.Event;
+import android.media.metrics.Event;
+
 import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
@@ -241,11 +242,13 @@ public class EventCatalogFlowTest {
 
     @Test
     public void editEventByName_existingEventNull_returnsError() {
-        Event updatedEvent = new Event("New", "Hall", "Details", new Date(), EventCategory.EDUCATIONAL);
+        EventItem updatedEvent = new EventItem("New",177578034432L, "Hall", "Details");
+        updatedEvent.setCategory(EventCategory.EDUCATIONAL);
+
 
         when(snapshot.exists()).thenReturn(true);
         when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
-        when(eventSnapshot.getValue(Event.class)).thenReturn(null);
+        when(eventSnapshot.getValue(EventItem.class)).thenReturn(null);
         callbackSnapshot(query, snapshot);
 
         EventCatalog catalog = EventCatalog.getInstance();
@@ -269,18 +272,18 @@ public class EventCatalogFlowTest {
     @Test
     @SuppressWarnings("unchecked")
     public void editEventByName_success_updatesEvent() {
-        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.SOCIAL);
-        existingEvent.setId(42);
-        existingEvent.setAvailable(true);
+        EventItem existingEvent = new EventItem("Old", 177578034432L, "Old Hall", "Old");
+        existingEvent.setEventID("212341234132");
+        existingEvent.setCategory(EventCategory.SOCIAL);
 
-        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.PROFESSIONAL);
-        updatedEvent.setAvailable(false);
+        EventItem updatedEvent = new EventItem("New", 177578034432L, "New Hall", "New");
+        updatedEvent.setCategory(EventCategory.PROFESSIONAL);
 
         Task<Void> updateTask = mock(Task.class);
 
         when(snapshot.exists()).thenReturn(true);
         when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
-        when(eventSnapshot.getValue(Event.class)).thenReturn(existingEvent);
+        when(eventSnapshot.getValue(EventItem.class)).thenReturn(existingEvent);
         when(eventRef.setValue(any())).thenReturn(updateTask);
         when(updateTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
             com.google.android.gms.tasks.OnSuccessListener<Void> listener = invocation.getArgument(0);
@@ -306,20 +309,25 @@ public class EventCatalogFlowTest {
         });
 
         assertEquals("Event updated successfully", success.get());
-        assertEquals(42, updatedEvent.getId());
+        assertEquals("212341234132", updatedEvent.getEventID());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void editEventByName_failure_returnsError() {
-        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.SOCIAL);
-        existingEvent.setId(42);
-        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.PROFESSIONAL);
+        EventItem existingEvent = new EventItem("Old", 1775780675572L, "Old Hall", "Old");
+        existingEvent.setEventID("42");
+        existingEvent.setCategory(EventCategory.SOCIAL);
+
+        EventItem updatedEvent = new EventItem("New", 1775780675572L, "New Hall", "New");
+        updatedEvent.setCategory(EventCategory.PROFESSIONAL);
+
+
         Task<Void> updateTask = mock(Task.class);
 
         when(snapshot.exists()).thenReturn(true);
         when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
-        when(eventSnapshot.getValue(Event.class)).thenReturn(existingEvent);
+        when(eventSnapshot.getValue(EventItem.class)).thenReturn(existingEvent);
         when(eventRef.setValue(any())).thenReturn(updateTask);
         when(updateTask.addOnSuccessListener(any())).thenReturn(updateTask);
         when(updateTask.addOnFailureListener(any())).thenAnswer(invocation -> {
@@ -443,7 +451,10 @@ public class EventCatalogFlowTest {
 
         EventCatalog catalog = EventCatalog.getInstance();
         AtomicReference<String> error = new AtomicReference<>();
-        catalog.editEventByName("SOEN Mixer", new Event("N", "L", "D", new Date(), EventCategory.SOCIAL), new EventCatalog.EventActionCallback() {
+        EventItem newEvent = new EventItem("N", 177578034432L, "L", "D");
+        newEvent.setCategory(EventCategory.SOCIAL);
+
+        catalog.editEventByName("SOEN Mixer", newEvent, new EventCatalog.EventActionCallback() {
             @Override
             public void onSuccess(String message) {
                 fail("Expected cancel error");

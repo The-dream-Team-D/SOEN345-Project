@@ -110,7 +110,7 @@ public class EventCatalog {
         });
     }
 
-    public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
+    public void editEventByName(String eventName, EventItem updatedEvent, EventActionCallback callback) {
         Query query = queryByEventName(eventName, callback);
         if (query == null) {
             return;
@@ -130,18 +130,14 @@ public class EventCatalog {
                 }
 
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Event existingEvent = eventSnapshot.getValue(Event.class);
+                    EventItem existingEvent = eventSnapshot.getValue(EventItem.class);
 
                     if (existingEvent == null) {
                         callback.onError("Failed to read event data");
                         return;
                     }
 
-                    updatedEvent.setId(existingEvent.getId());
-
-                    if (!updatedEvent.isAvailable()) {
-                        updatedEvent.setAvailable(existingEvent.isAvailable());
-                    }
+                    updatedEvent.setEventID(existingEvent.getEventID());
 
                     eventSnapshot.getRef().setValue(updatedEvent)
                             .addOnSuccessListener(unused ->
