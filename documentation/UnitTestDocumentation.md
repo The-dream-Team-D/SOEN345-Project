@@ -1,314 +1,676 @@
 ﻿# Unit Test Documentation
 
-This document covers all unit tests found under app/src/test/java.
+## Scope
 
-Total unit tests documented: 103
+- Source: app/src/test/java
+- Total unit tests: 103
+- Last updated: 2026-04-10
 
-Generated on: 2026-04-10
+## Documentation Format
+
+- Intent: Behavior verified by the test.
+- Expected checks: Assertions/verifications extracted from test code.
 
 ## AdminTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/AdminTest.java
-
-- addEvent_delegatesToEventCatalog
-  Verifies: add Event delegates To Event Catalog.
-- constructorAndUserAccessors_workCorrectly
-  Verifies: constructor And User Accessors work Correctly.
-- removeEvent_delegatesToEventCatalog
-  Verifies: remove Event delegates To Event Catalog.
-- updateEvent_delegatesToEventCatalog
-  Verifies: update Event delegates To Event Catalog.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/AdminTest.java
+- Test: addEvent_delegatesToEventCatalog
+- Intent: add Event delegates To Event Catalog.
+- Expected checks:
+  - verify(mockCatalog, times(1)).addEvent(any(EventItem.class), eq(callback));
+- Test: constructorAndUserAccessors_workCorrectly
+- Intent: constructor And User Accessors work Correctly.
+- Expected checks:
+  - assertNotNull(admin);
+  - assertEquals("admin@example.com", admin.getEmail());
+  - assertEquals("secret", admin.getPassword());
+- Test: removeEvent_delegatesToEventCatalog
+- Intent: remove Event delegates To Event Catalog.
+- Expected checks:
+  - verify(mockCatalog).deleteEventByName("SOEN Mixer", callback);
+- Test: updateEvent_delegatesToEventCatalog
+- Intent: update Event delegates To Event Catalog.
+- Expected checks:
+  - verify(mockCatalog).updateEventByName(
 
 ## AdminUserConversionTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/AdminUserConversionTest.java
-
-- adminConstructor_fromUserCopiesFieldsAndSetsAdminTrue
-  Verifies: admin Constructor from User Copies Fields And Sets Admin True.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/AdminUserConversionTest.java
+- Test: adminConstructor_fromUserCopiesFieldsAndSetsAdminTrue
+- Intent: admin Constructor from User Copies Fields And Sets Admin True.
+- Expected checks:
+  - assertEquals("Kevin", admin.getName());
+  - assertEquals("user@example.com", admin.getEmail());
+  - assertEquals("+15145551234", admin.getPhoneNumber());
+  - assertEquals("123 Main", admin.getAddress());
+  - assertEquals("about", admin.getBio());
+  - assertEquals(NotificationPreferenceOptions.EMAIL, admin.getUserNotificationPreference());
+  - assertTrue(admin.getIsAdmin());
 
 ## BackButtonComponentViewTest
 
-Source file: app/src/test/java/com/example/popin/activityUnitTests/BackButtonComponentViewTest.java
-
-- backButtonGoesToMainActivity
-  Verifies: back Button Goes To Main Activity.
+- Source file: app/src/test/java/com/example/popin/activityUnitTests/BackButtonComponentViewTest.java
+- Test: backButtonGoesToMainActivity
+- Intent: back Button Goes To Main Activity.
+- Expected checks:
+  - assertNotNull("Expected an Intent to be started", started);
+  - assertEquals(MainActivity.class.getName(),
 
 ## EventAdapterTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/EventAdapterTest.java
-
-- filter_byLocationAndDate_supportsTrimmedQuery
-  Verifies: filter by Location And Date supports Trimmed Query.
-- filter_byTitle_isCaseInsensitive
-  Verifies: filter by Title is Case Insensitive.
-- filter_emptyOrNull_restoresAllEvents
-  Verifies: filter empty Or Null restores All Events.
-- filter_noMatch_showsNoEvents
-  Verifies: filter no Match shows No Events.
-- initialState_showsAllEvents
-  Verifies: initial State shows All Events.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/EventAdapterTest.java
+- Test: filter_byLocationAndDate_supportsTrimmedQuery
+- Intent: filter by Location And Date supports Trimmed Query.
+- Expected checks:
+  - assertEquals(1, adapter.getItemCount());
+  - assertEquals(1, adapter.getItemCount());
+- Test: filter_byTitle_isCaseInsensitive
+- Intent: filter by Title is Case Insensitive.
+- Expected checks:
+  - assertEquals(1, adapter.getItemCount());
+  - assertEquals(1, adapter.getItemCount());
+- Test: filter_emptyOrNull_restoresAllEvents
+- Intent: filter empty Or Null restores All Events.
+- Expected checks:
+  - assertEquals(1, adapter.getItemCount());
+  - assertEquals(5, adapter.getItemCount());
+  - assertEquals(5, adapter.getItemCount());
+- Test: filter_noMatch_showsNoEvents
+- Intent: filter no Match shows No Events.
+- Expected checks:
+  - assertEquals(0, adapter.getItemCount());
+- Test: initialState_showsAllEvents
+- Intent: initial State shows All Events.
+- Expected checks:
+  - assertEquals(5, adapter.getItemCount());
 
 ## EventCatalogFlowTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCatalogFlowTest.java
-
-- addEvent_failure_callsErrorCallback
-  Verifies: add Event failure calls Error Callback.
-- addEvent_success_callsSuccessCallback
-  Verifies: add Event success calls Success Callback.
-- deleteEventByName_missingEvent_returnsError
-  Verifies: delete Event By Name missing Event returns Error.
-- deleteEventByName_queryCancelled_returnsDatabaseError
-  Verifies: delete Event By Name query Cancelled returns Database Error.
-- updateEventByName_failure_returnsErrorCallback
-  Verifies: update Event By Name failure returns Error Callback.
-- updateEventByName_noFieldsProvided_returnsError
-  Verifies: update Event By Name no Fields Provided returns Error.
-- updateEventByName_success_callsSuccessCallback
-  Verifies: update Event By Name success calls Success Callback.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCatalogFlowTest.java
+- Test: addEvent_failure_callsErrorCallback
+- Intent: add Event failure calls Error Callback.
+- Expected checks:
+  - fail("Expected failure");
+  - assertEquals("Failed to add event: write-failed", error.get());
+- Test: addEvent_success_callsSuccessCallback
+- Intent: add Event success calls Success Callback.
+- Expected checks:
+  - fail("Expected success");
+  - assertEquals("Event added successfully", success.get());
+- Test: deleteEventByName_missingEvent_returnsError
+- Intent: delete Event By Name missing Event returns Error.
+- Expected checks:
+  - fail("Expected missing-event error");
+  - assertEquals("No event found with that name", error.get());
+- Test: deleteEventByName_queryCancelled_returnsDatabaseError
+- Intent: delete Event By Name query Cancelled returns Database Error.
+- Expected checks:
+  - fail("Expected cancellation error");
+  - assertEquals("Database error: cancelled", error.get());
+- Test: updateEventByName_failure_returnsErrorCallback
+- Intent: update Event By Name failure returns Error Callback.
+- Expected checks:
+  - fail("Expected update failure");
+  - assertEquals("Failed to update event: update-failed", error.get());
+- Test: updateEventByName_noFieldsProvided_returnsError
+- Intent: update Event By Name no Fields Provided returns Error.
+- Expected checks:
+  - fail("Expected no-fields error");
+  - assertEquals("No fields provided to update", error.get());
+- Test: updateEventByName_success_callsSuccessCallback
+- Intent: update Event By Name success calls Success Callback.
+- Expected checks:
+  - fail("Expected update success");
+  - assertEquals("Event updated successfully", success.get());
+  - verify(eventRef).updateChildren(any());
 
 ## EventCatalogTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCatalogTest.java
-
-- addEvent_emptyName_returnsErrorImmediately
-  Verifies: add Event empty Name returns Error Immediately.
-- addEvent_nullEvent_returnsErrorImmediately
-  Verifies: add Event null Event returns Error Immediately.
-- deleteEventByName_emptyName_returnsErrorImmediately
-  Verifies: delete Event By Name empty Name returns Error Immediately.
-- updateEventByName_emptyCurrentName_returnsErrorImmediately
-  Verifies: update Event By Name empty Current Name returns Error Immediately.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCatalogTest.java
+- Test: addEvent_emptyName_returnsErrorImmediately
+- Intent: add Event empty Name returns Error Immediately.
+- Expected checks:
+  - fail("Expected error");
+  - assertEquals("Event name is empty", error.get());
+- Test: addEvent_nullEvent_returnsErrorImmediately
+- Intent: add Event null Event returns Error Immediately.
+- Expected checks:
+  - fail("Expected error");
+  - assertEquals("Event is null", error.get());
+- Test: deleteEventByName_emptyName_returnsErrorImmediately
+- Intent: delete Event By Name empty Name returns Error Immediately.
+- Expected checks:
+  - fail("Expected error");
+  - assertEquals("Event name is empty", error.get());
+- Test: updateEventByName_emptyCurrentName_returnsErrorImmediately
+- Intent: update Event By Name empty Current Name returns Error Immediately.
+- Expected checks:
+  - fail("Expected error");
+  - assertEquals("Event name is empty", error.get());
 
 ## EventCatalogValidationExtraTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCatalogValidationExtraTest.java
-
-- deleteEventByName_nullName_returnsErrorImmediately
-  Verifies: delete Event By Name null Name returns Error Immediately.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCatalogValidationExtraTest.java
+- Test: deleteEventByName_nullName_returnsErrorImmediately
+- Intent: delete Event By Name null Name returns Error Immediately.
+- Expected checks:
+  - fail("Expected error");
+  - assertEquals("Event name is empty", error.get());
 
 ## EventCategoryTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCategoryTest.java
-
-- enum_containsExpectedValues
-  Verifies: enum contains Expected Values.
-- toStringOverrideWorks
-  Verifies: to String Override Works.
-- valueOf_returnsMatchingEnum
-  Verifies: value Of returns Matching Enum.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/EventCategoryTest.java
+- Test: enum_containsExpectedValues
+- Intent: enum contains Expected Values.
+- Expected checks:
+  - assertEquals(5, EventCategory.values().length);
+  - assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.SOCIAL));
+  - assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.EDUCATIONAL));
+  - assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.PROFESSIONAL));
+  - assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.SPORTS));
+  - assertTrue(Arrays.asList(EventCategory.values()).contains(EventCategory.ENTERTAINMENT));
+- Test: toStringOverrideWorks
+- Intent: to String Override Works.
+- Expected checks:
+  - assertEquals("Entertainment", EventCategory.ENTERTAINMENT.toString());
+- Test: valueOf_returnsMatchingEnum
+- Intent: value Of returns Matching Enum.
+- Expected checks:
+  - assertEquals(EventCategory.SOCIAL, EventCategory.valueOf("SOCIAL"));
+  - assertEquals(EventCategory.ENTERTAINMENT, EventCategory.valueOf("ENTERTAINMENT"));
 
 ## EventItemTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/EventItemTest.java
-
-- constructor_setsAllFields
-  Verifies: constructor sets All Fields.
-- convertTimeToLongFailOptions
-  Verifies: convert Time To Long Fail Options.
-- emptyConstructor_and_setters
-  Verifies: empty Constructor and setters.
-- setDateTimeFail
-  Verifies: set Date Time Fail.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/EventItemTest.java
+- Test: constructor_setsAllFields
+- Intent: constructor sets All Fields.
+- Expected checks:
+  - assertEquals("SOEN Mixer", item.getTitle());
+  - assertEquals(EventItem.convertTimeToLong(2026, 2, 20, 18, 0), item.getDateTime());
+  - assertEquals("EV Building Lobby", item.getLocation());
+  - assertEquals("Meet other SOEN students, network, and enjoy snacks in a casual social setting.", item.getDetails());
+- Test: convertTimeToLongFailOptions
+- Intent: convert Time To Long Fail Options.
+- Expected checks:
+  - assertEquals(-1L, result);
+  - assertEquals(-1L, result);
+  - assertEquals(-1L, result);
+  - assertEquals(-1L, result);
+  - assertEquals(-1, result);
+- Test: emptyConstructor_and_setters
+- Intent: empty Constructor and setters.
+- Expected checks:
+  - assertNull(item.getTitle());
+  - assertEquals("1234", item.getEventID());
+  - assertEquals("New Title", item.getTitle());
+  - assertEquals(EventItem.convertTimeToLong(2024, 0, 1, 12, 0), item.getDateTime());
+  - assertEquals("Montreal", item.getLocation());
+  - assertEquals("Sample event description", item.getDetails());
+  - assertEquals(20, item.getCapacity());
+  - assertEquals(15, item.getAttendeeCount());
+  - assertEquals(imgUrl, item.getImgURL());
+  - assertEquals(EventCategory.ENTERTAINMENT, item.getCategory());
+  - assertEquals(time, item.getDateTime());
+- Test: setDateTimeFail
+- Intent: set Date Time Fail.
+- Expected checks:
+  - assertNull(item.getTitle());
+  - assertEquals(0, item.getDateTime());
+  - assertFalse(result);
 
 ## LogicEnumsTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/LogicEnumsTest.java
-
-- eventFilterDateType_containsExpectedValues
-  Verifies: event Filter Date Type contains Expected Values.
-- notificationPreferenceOptions_containsExpectedValues
-  Verifies: notification Preference Options contains Expected Values.
-- notificationType_containsExpectedValues
-  Verifies: notification Type contains Expected Values.
-- userInputType_containsExpectedValues
-  Verifies: user Input Type contains Expected Values.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/LogicEnumsTest.java
+- Test: eventFilterDateType_containsExpectedValues
+- Intent: event Filter Date Type contains Expected Values.
+- Expected checks:
+  - assertEquals(3, EventFilterDateType.values().length);
+  - assertTrue(Arrays.asList(EventFilterDateType.values()).contains(EventFilterDateType.PAST));
+  - assertTrue(Arrays.asList(EventFilterDateType.values()).contains(EventFilterDateType.UPCOMING));
+  - assertTrue(Arrays.asList(EventFilterDateType.values()).contains(EventFilterDateType.ALL));
+- Test: notificationPreferenceOptions_containsExpectedValues
+- Intent: notification Preference Options contains Expected Values.
+- Expected checks:
+  - assertEquals(2, NotificationPreferenceOptions.values().length);
+  - assertTrue(Arrays.asList(NotificationPreferenceOptions.values()).contains(NotificationPreferenceOptions.EMAIL));
+  - assertTrue(Arrays.asList(NotificationPreferenceOptions.values()).contains(NotificationPreferenceOptions.SMS));
+- Test: notificationType_containsExpectedValues
+- Intent: notification Type contains Expected Values.
+- Expected checks:
+  - assertEquals(5, NotificationType.values().length);
+  - assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.REGISTER_EVENT));
+  - assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.REGISTER_ACCOUNT));
+  - assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.DELETE_ACCOUNT));
+  - assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.CANCEL_TICKET));
+  - assertTrue(Arrays.asList(NotificationType.values()).contains(NotificationType.CHANGE_PASSWORD));
+- Test: userInputType_containsExpectedValues
+- Intent: user Input Type contains Expected Values.
+- Expected checks:
+  - assertEquals(3, UserInputType.values().length);
+  - assertTrue(Arrays.asList(UserInputType.values()).contains(UserInputType.EMAIL));
+  - assertTrue(Arrays.asList(UserInputType.values()).contains(UserInputType.PHONE));
+  - assertTrue(Arrays.asList(UserInputType.values()).contains(UserInputType.UNKNOWN));
 
 ## NavBarComponentViewTest
 
-Source file: app/src/test/java/com/example/popin/activityUnitTests/NavBarComponentViewTest.java
-
-- adminDashboardNotVisibleToNonAdminUser
-  Verifies: admin Dashboard Not Visible To Non Admin User.
-- adminDashboardVisibleToAdminUser
-  Verifies: admin Dashboard Visible To Admin User.
-- exploreTab_click_launchesEventsPageActivity
-  Verifies: explore Tab click launches Events Page Activity.
-- exploreTab_click_whenAlreadyOnEventsPage_doesNotLaunchNewActivity
-  Verifies: explore Tab click when Already On Events Page does Not Launch New Activity.
-- profileTab_click_launchesProfileActivity
-  Verifies: profile Tab click launches Profile Activity.
-- profileTab_click_whenAlreadyOnProfile_doesNotLaunchNewActivity
-  Verifies: profile Tab click when Already On Profile does Not Launch New Activity.
-- ticketsTab_click_launchesMyTicketsActivity
-  Verifies: tickets Tab click launches My Tickets Activity.
-- ticketsTab_click_whenAlreadyOnMyTickets_doesNotLaunchNewActivity
-  Verifies: tickets Tab click when Already On My Tickets does Not Launch New Activity.
+- Source file: app/src/test/java/com/example/popin/activityUnitTests/NavBarComponentViewTest.java
+- Test: adminDashboardNotVisibleToNonAdminUser
+- Intent: admin Dashboard Not Visible To Non Admin User.
+- Expected checks:
+  - assertEquals(View.GONE, adminNavBarOption.getVisibility());
+- Test: adminDashboardVisibleToAdminUser
+- Intent: admin Dashboard Visible To Admin User.
+- Expected checks:
+  - assertNotNull(started);
+  - assertEquals(AdminDashboardActivity.class.getName(),
+- Test: exploreTab_click_launchesEventsPageActivity
+- Intent: explore Tab click launches Events Page Activity.
+- Expected checks:
+  - assertNotNull("Expected an Intent to be started", started);
+  - assertEquals(EventsPageActivity.class.getName(),
+- Test: exploreTab_click_whenAlreadyOnEventsPage_doesNotLaunchNewActivity
+- Intent: explore Tab click when Already On Events Page does Not Launch New Activity.
+- Expected checks:
+  - assertNull("Should not start a new Activity when already on EventsPageActivity",
+- Test: profileTab_click_launchesProfileActivity
+- Intent: profile Tab click launches Profile Activity.
+- Expected checks:
+  - assertNotNull(started);
+  - assertEquals(ProfileActivity.class.getName(),
+- Test: profileTab_click_whenAlreadyOnProfile_doesNotLaunchNewActivity
+- Intent: profile Tab click when Already On Profile does Not Launch New Activity.
+- Expected checks:
+  - assertNull(shadowOf(profileActivity).getNextStartedActivity());
+- Test: ticketsTab_click_launchesMyTicketsActivity
+- Intent: tickets Tab click launches My Tickets Activity.
+- Expected checks:
+  - assertNotNull(started);
+  - assertEquals(MyTicketsActivity.class.getName(),
+- Test: ticketsTab_click_whenAlreadyOnMyTickets_doesNotLaunchNewActivity
+- Intent: tickets Tab click when Already On My Tickets does Not Launch New Activity.
+- Expected checks:
+  - assertNull(shadowOf(ticketsActivity).getNextStartedActivity());
 
 ## NotificationDispatchTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/NotificationDispatchTest.java
-
-- IncorrectNotificationTypeResultsInError
-  Verifies: Incorrect Notification Type Results In Error.
-- sendNotification_changePassword_includesVerificationCode
-  Verifies: send Notification change Password includes Verification Code.
-- sendNotification_emailPreference_usesEmailServicer
-  Verifies: send Notification email Preference uses Email Servicer.
-- sendNotification_smsPreference_usesSmsServicer
-  Verifies: send Notification sms Preference uses Sms Servicer.
-- sendNotificationsDeleteAccountMessage
-  Verifies: send Notifications Delete Account Message.
-- sendNotificationsRegisterAccountMessage
-  Verifies: send Notifications Register Account Message.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/NotificationDispatchTest.java
+- Test: IncorrectNotificationTypeResultsInError
+- Intent: Incorrect Notification Type Results In Error.
+- Expected checks:
+  - assertThrows(ArrayIndexOutOfBoundsException.class, () -> sendNotification(user, "", invalid, ""));
+- Test: sendNotification_changePassword_includesVerificationCode
+- Intent: send Notification change Password includes Verification Code.
+- Expected checks:
+  - mockedEmail.verify(() ->
+- Test: sendNotification_emailPreference_usesEmailServicer
+- Intent: send Notification email Preference uses Email Servicer.
+- Expected checks:
+  - mockedEmail.verify(() ->
+- Test: sendNotification_smsPreference_usesSmsServicer
+- Intent: send Notification sms Preference uses Sms Servicer.
+- Expected checks:
+  - mockedSms.verify(() ->
+- Test: sendNotificationsDeleteAccountMessage
+- Intent: send Notifications Delete Account Message.
+- Expected checks:
+  - mockedEmail.verify(() ->
+- Test: sendNotificationsRegisterAccountMessage
+- Intent: send Notifications Register Account Message.
+- Expected checks:
+  - mockedEmail.verify(() ->
 
 ## NotificationsTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/NotificationsTest.java
-
-- buildCode_containsOnlyAlphaNumericCharacters
-  Verifies: build Code contains Only Alpha Numeric Characters.
-- buildCode_multipleCallsProduceNonConstantValues
-  Verifies: build Code multiple Calls Produce Non Constant Values.
-- buildCode_returnsSixCharacterString
-  Verifies: build Code returns Six Character String.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/NotificationsTest.java
+- Test: buildCode_containsOnlyAlphaNumericCharacters
+- Intent: build Code contains Only Alpha Numeric Characters.
+- Expected checks:
+  - assertTrue(Character.isLetterOrDigit(c));
+- Test: buildCode_multipleCallsProduceNonConstantValues
+- Intent: build Code multiple Calls Produce Non Constant Values.
+- Expected checks:
+  - assertTrue(generatedCodes.size() > 1);
+- Test: buildCode_returnsSixCharacterString
+- Intent: build Code returns Six Character String.
+- Expected checks:
+  - assertEquals(6, code.length());
 
 ## ProfileActivityTest
 
-Source file: app/src/test/java/com/example/popin/activityUnitTests/ProfileActivityTest.java
-
-- activityShouldLaunch
-  Verifies: activity Should Launch.
-- clickingEditShouldShowEditMode
-  Verifies: clicking Edit Should Show Edit Mode.
-- editFieldsShouldBePrefilled
-  Verifies: edit Fields Should Be Prefilled.
-- userDataShouldDisplayCorrectly
-  Verifies: user Data Should Display Correctly.
-- viewsShouldExist
-  Verifies: views Should Exist.
+- Source file: app/src/test/java/com/example/popin/activityUnitTests/ProfileActivityTest.java
+- Test: activityShouldLaunch
+- Intent: activity Should Launch.
+- Expected checks:
+  - assertNotNull(activity);
+- Test: clickingEditShouldShowEditMode
+- Intent: clicking Edit Should Show Edit Mode.
+- Expected checks:
+  - assertEquals(EditText.VISIBLE, etName.getVisibility());
+  - assertEquals(EditText.VISIBLE, etAddress.getVisibility());
+  - assertEquals(EditText.VISIBLE, etPhone.getVisibility());
+  - assertEquals(EditText.VISIBLE, etBio.getVisibility());
+  - assertEquals(Button.VISIBLE, btnSave.getVisibility());
+  - assertEquals(Button.GONE, btnEdit.getVisibility());
+- Test: editFieldsShouldBePrefilled
+- Intent: edit Fields Should Be Prefilled.
+- Expected checks:
+  - assertEquals("HOSSAM THE GOAT", etName.getText().toString());
+  - assertEquals("123 concordia", etAddress.getText().toString());
+  - assertEquals("123456789", etPhone.getText().toString());
+  - assertEquals("bio 123", etBio.getText().toString());
+- Test: userDataShouldDisplayCorrectly
+- Intent: user Data Should Display Correctly.
+- Expected checks:
+  - assertEquals("Name: HOSSAM THE GOAT", tvName.getText().toString());
+  - assertEquals("Email: hos@email.com", tvEmail.getText().toString());
+  - assertEquals("Address: 123 concordia", tvAddress.getText().toString());
+  - assertEquals("Phone: 123456789", tvPhone.getText().toString());
+  - assertEquals("Bio: bio 123", tvBio.getText().toString());
+  - assertEquals("Notification Preference:Email", tvNotifPref.getText().toString());
+- Test: viewsShouldExist
+- Intent: views Should Exist.
+- Expected checks:
+  - assertNotNull(tvName);
+  - assertNotNull(tvEmail);
+  - assertNotNull(tvAddress);
+  - assertNotNull(tvPhone);
+  - assertNotNull(tvBio);
+  - assertNotNull(tvNotifPref);
+  - assertNotNull(etName);
+  - assertNotNull(etAddress);
+  - assertNotNull(etPhone);
+  - assertNotNull(etBio);
+  - assertNotNull(btnEdit);
+  - assertNotNull(btnSave);
 
 ## TicketAdapterTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/TicketAdapterTest.java
-
-- cancelButtonClick_callsCancelListener_forBoundTicket
-  Verifies: cancel Button Click calls Cancel Listener for Bound Ticket.
-- filter_nullOrEmpty_restoresAllTickets
-  Verifies: filter null Or Empty restores All Tickets.
-- initialState_showsAllTickets
-  Verifies: initial State shows All Tickets.
-- rowClick_callsTicketClickListener_forBoundTicket
-  Verifies: row Click calls Ticket Click Listener for Bound Ticket.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/TicketAdapterTest.java
+- Test: cancelButtonClick_callsCancelListener_forBoundTicket
+- Intent: cancel Button Click calls Cancel Listener for Bound Ticket.
+- Expected checks:
+  - assertNotNull(cancelled.get());
+  - assertEquals("t2", cancelled.get().getTicketId());
+  - assertEquals("Hackathon Kickoff", cancelled.get().getTitle());
+- Test: filter_nullOrEmpty_restoresAllTickets
+- Intent: filter null Or Empty restores All Tickets.
+- Expected checks:
+  - assertEquals(1, adapter.getItemCount());
+  - assertEquals(3, adapter.getItemCount());
+  - assertEquals(3, adapter.getItemCount());
+- Test: initialState_showsAllTickets
+- Intent: initial State shows All Tickets.
+- Expected checks:
+  - assertEquals(3, adapter.getItemCount());
+- Test: rowClick_callsTicketClickListener_forBoundTicket
+- Intent: row Click calls Ticket Click Listener for Bound Ticket.
+- Expected checks:
+  - assertNotNull(opened.get());
+  - assertEquals("t3", opened.get().getTicketId());
+  - assertEquals("AI Study Jam", opened.get().getTitle());
 
 ## TicketItemTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/TicketItemTest.java
-
-- cancelTicket_failure_triggersOnError
-  Verifies: cancel Ticket failure triggers On Error.
-- cancelTicket_Success_triggersOnSuccess
-  Verifies: cancel Ticket Success triggers On Success.
-- constructor_setsTicketIdAndInheritedFields
-  Verifies: constructor sets Ticket Id And Inherited Fields.
-- emptyConstructor_startsWithNullTicketId
-  Verifies: empty Constructor starts With Null Ticket Id.
-- setTicketId_updatesValue
-  Verifies: set Ticket Id updates Value.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/TicketItemTest.java
+- Test: cancelTicket_failure_triggersOnError
+- Intent: cancel Ticket failure triggers On Error.
+- Expected checks:
+  - fail("The test should not result in On Success");
+  - assertEquals(2, success[0]);
+  - assertEquals("Cancellation failed.", errorMessage[0]);
+- Test: cancelTicket_Success_triggersOnSuccess
+- Intent: cancel Ticket Success triggers On Success.
+- Expected checks:
+  - fail("The test should not result in On Error: " + message);
+  - assertEquals(1, success[0]);
+  - assertEquals("Ticket cancelled successfully", errorMessage[0]);
+- Test: constructor_setsTicketIdAndInheritedFields
+- Intent: constructor sets Ticket Id And Inherited Fields.
+- Expected checks:
+  - assertEquals("ticket-1", item.getTicketId());
+  - assertEquals("SOEN Mixer", item.getTitle());
+  - assertEquals(when, item.getDateTime());
+  - assertEquals("EV Building Lobby", item.getLocation());
+- Test: emptyConstructor_startsWithNullTicketId
+- Intent: empty Constructor starts With Null Ticket Id.
+- Expected checks:
+  - assertNull(item.getTicketId());
+- Test: setTicketId_updatesValue
+- Intent: set Ticket Id updates Value.
+- Expected checks:
+  - assertEquals("ticket-99", item.getTicketId());
 
 ## UserAccountFlowTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/UserAccountFlowTest.java
-
-- changePassword_failure_returnsErrorMessage
-  Verifies: change Password failure returns Error Message.
-- changePassword_success_callsSuccessCallback
-  Verifies: change Password success calls Success Callback.
-- changePassword_userMissing_returnsError
-  Verifies: change Password user Missing returns Error.
-- delete_failure_returnsErrorMessage
-  Verifies: delete failure returns Error Message.
-- delete_success_returnsSuccessMessage
-  Verifies: delete success returns Success Message.
-- delete_withBlankEmail_usesPhoneQueryBranch
-  Verifies: delete with Blank Email uses Phone Query Branch.
-- delete_withMissingUser_returnsError
-  Verifies: delete with Missing User returns Error.
-- forgotPassword_noUser_returnsError
-  Verifies: forgot Password no User returns Error.
-- forgotPassword_samePassword_returnsError
-  Verifies: forgot Password same Password returns Error.
-- forgotPassword_success_returnsUserWithPreference
-  Verifies: forgot Password success returns User With Preference.
-- signUp_duplicateUser_returnsError
-  Verifies: sign Up duplicate User returns Error.
-- signUp_emptyName_returnsValidationError
-  Verifies: sign Up empty Name returns Validation Error.
-- signUp_pushFailure_returnsError
-  Verifies: sign Up push Failure returns Error.
-- signUp_pushSuccess_callsSuccessAndNotification
-  Verifies: sign Up push Success calls Success And Notification.
-- signUp_queryCancelled_returnsDatabaseError
-  Verifies: sign Up query Cancelled returns Database Error.
-- updateProfile_queryCancelled_returnsError
-  Verifies: update Profile query Cancelled returns Error.
-- updateProfile_success_returnsUpdatedMessage
-  Verifies: update Profile success returns Updated Message.
-- updateProfile_userNotFound_returnsError
-  Verifies: update Profile user Not Found returns Error.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/UserAccountFlowTest.java
+- Test: changePassword_failure_returnsErrorMessage
+- Intent: change Password failure returns Error Message.
+- Expected checks:
+  - fail("Expected failure callback");
+  - assertEquals("Failed to update password: update-failed", error.get());
+- Test: changePassword_success_callsSuccessCallback
+- Intent: change Password success calls Success Callback.
+- Expected checks:
+  - fail("Expected success");
+  - assertEquals("Password Changed Successfully!", success.get());
+- Test: changePassword_userMissing_returnsError
+- Intent: change Password user Missing returns Error.
+- Expected checks:
+  - fail("Expected missing-user error");
+  - assertEquals("No user with that email/phone number", error.get());
+- Test: delete_failure_returnsErrorMessage
+- Intent: delete failure returns Error Message.
+- Expected checks:
+  - fail("Expected delete failure");
+  - assertEquals("Failed to Delete DB Account", error.get());
+- Test: delete_success_returnsSuccessMessage
+- Intent: delete success returns Success Message.
+- Expected checks:
+  - fail("Expected delete success");
+  - assertEquals("Deleted Account Successfully!", success.get());
+- Test: delete_withBlankEmail_usesPhoneQueryBranch
+- Intent: delete with Blank Email uses Phone Query Branch.
+- Expected checks:
+  - public void onSuccess(String message) { fail("Expected error path"); }
+  - assertEquals("Error encountered locating user in DB", message);
+- Test: delete_withMissingUser_returnsError
+- Intent: delete with Missing User returns Error.
+- Expected checks:
+  - public void onSuccess(String message) { fail("Expected delete error"); }
+  - assertEquals("Error encountered locating user in DB", error.get());
+- Test: forgotPassword_noUser_returnsError
+- Intent: forgot Password no User returns Error.
+- Expected checks:
+  - fail("Expected no-user error");
+  - assertEquals("No user with that email/phone number", error.get());
+- Test: forgotPassword_samePassword_returnsError
+- Intent: forgot Password same Password returns Error.
+- Expected checks:
+  - fail("Expected error for unchanged password");
+  - assertEquals("New password can't be the same as old password", error.get());
+- Test: forgotPassword_success_returnsUserWithPreference
+- Intent: forgot Password success returns User With Preference.
+- Expected checks:
+  - assertEquals("+15145551234", user.getPhoneNumber());
+  - assertEquals(NotificationPreferenceOptions.SMS, user.getUserNotificationPreference());
+  - fail("Expected forgotPassword success");
+- Test: signUp_duplicateUser_returnsError
+- Intent: sign Up duplicate User returns Error.
+- Expected checks:
+  - fail("Expected duplicate user error");
+  - assertEquals("An account with this Email/Phone Number already exists", error.get());
+- Test: signUp_emptyName_returnsValidationError
+- Intent: sign Up empty Name returns Validation Error.
+- Expected checks:
+  - fail("Expected validation error");
+  - assertEquals("Name input is empty", error.get());
+- Test: signUp_pushFailure_returnsError
+- Intent: sign Up push Failure returns Error.
+- Expected checks:
+  - fail("Expected signup error");
+  - assertEquals("Couldn't Push Values", error.get());
+- Test: signUp_pushSuccess_callsSuccessAndNotification
+- Intent: sign Up push Success calls Success And Notification.
+- Expected checks:
+  - fail("Expected signup success");
+  - assertEquals("Success", success.get());
+  - mockedNotifications.verify(() ->
+- Test: signUp_queryCancelled_returnsDatabaseError
+- Intent: sign Up query Cancelled returns Database Error.
+- Expected checks:
+  - fail("Expected database error");
+  - assertEquals("Database error: permission-denied", error.get());
+- Test: updateProfile_queryCancelled_returnsError
+- Intent: update Profile query Cancelled returns Error.
+- Expected checks:
+  - fail("Expected cancelled error");
+  - assertEquals("cancelled", error.get());
+- Test: updateProfile_success_returnsUpdatedMessage
+- Intent: update Profile success returns Updated Message.
+- Expected checks:
+  - fail("Expected update success");
+  - assertEquals("User Profile Updated", success.get());
+- Test: updateProfile_userNotFound_returnsError
+- Intent: update Profile user Not Found returns Error.
+- Expected checks:
+  - fail("Expected user not found");
+  - assertEquals("User not found", error.get());
 
 ## UserClassTests
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/UserClassTests.java
-
-- login_correctCredentials_callsOnSuccess
-  Verifies: login correct Credentials calls On Success.
-- login_databaseCancelled_callsOnError
-  Verifies: login database Cancelled calls On Error.
-- login_emailNotFound_callsOnError
-  Verifies: login email Not Found calls On Error.
-- login_emptyEmail_returnsError
-  Verifies: login empty Email returns Error.
-- login_emptyPassword_returnsError
-  Verifies: login empty Password returns Error.
-- login_nullEmail_returnsError
-  Verifies: login null Email returns Error.
-- login_nullPassword_returnsError
-  Verifies: login null Password returns Error.
-- login_wrongPassword_callsOnError
-  Verifies: login wrong Password calls On Error.
-- testEmptyConstructor
-  Verifies: test Empty Constructor.
-- testSettersAndGetters
-  Verifies: test Setters And Getters.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/UserClassTests.java
+- Test: login_correctCredentials_callsOnSuccess
+- Intent: login correct Credentials calls On Success.
+- Expected checks:
+  - assertNotNull(u);
+  - assertEquals(NAME_IN_DB, u.getName());
+  - assertEquals(ADDRESS_IN_DB, u.getAddress());
+  - assertEquals(EMAIL_IN_DB, u.getEmail());
+  - assertEquals(IS_ADMIN_IN_DB, u.getIsAdmin());
+  - assertNotNull(UserInSession.getInstance().getUser());
+  - fail("Expected success, got error: " + message);
+- Test: login_databaseCancelled_callsOnError
+- Intent: login database Cancelled calls On Error.
+- Expected checks:
+  - @Override public void onSuccess(User u) { fail("Should not succeed on cancel"); }
+  - @Override public void onError(String msg) { assertEquals("Database error: Connection lost", msg); }
+  - verify(mockError).getMessage();
+- Test: login_emailNotFound_callsOnError
+- Intent: login email Not Found calls On Error.
+- Expected checks:
+  - @Override public void onSuccess(User u) { fail("Expected error, got success"); }
+  - assertEquals("No user with that email/phone number", message);
+- Test: login_emptyEmail_returnsError
+- Intent: login empty Email returns Error.
+- Expected checks:
+  - @Override public void onSuccess(User u) { fail("Expected error, got success"); }
+  - assertEquals("Email/Phone input is Empty", message);
+- Test: login_emptyPassword_returnsError
+- Intent: login empty Password returns Error.
+- Expected checks:
+  - @Override public void onSuccess(User u) { fail("Expected error, got success"); }
+  - assertEquals("Password input is Empty", message);
+- Test: login_nullEmail_returnsError
+- Intent: login null Email returns Error.
+- Expected checks:
+  - @Override public void onSuccess(User u) { fail("Expected error, got success"); }
+  - assertEquals("Email/Phone input is Empty", message);
+- Test: login_nullPassword_returnsError
+- Intent: login null Password returns Error.
+- Expected checks:
+  - fail("Expected error, got success");
+  - assertEquals("Password input is Empty", message);
+- Test: login_wrongPassword_callsOnError
+- Intent: login wrong Password calls On Error.
+- Expected checks:
+  - @Override public void onSuccess(User u) { fail("Expected error, got success"); }
+  - assertNull(UserInSession.getInstance());
+  - assertEquals("Incorrect password", message);
+- Test: testEmptyConstructor
+- Intent: test Empty Constructor.
+- Expected checks:
+  - assertNull(user.getEmail());
+  - assertNull(user.getPassword());
+- Test: testSettersAndGetters
+- Intent: test Setters And Getters.
+- Expected checks:
+  - assertEquals("12343", user.getUserID());
+  - assertEquals("John Smith", user.getName());
+  - assertEquals("456 Oak St", user.getAddress());
+  - assertEquals("newPass456", user.getPassword());
+  - assertEquals("test@example.com", user.getEmail());
+  - assertEquals("5141234567", user.getPhoneNumber());
+  - assertEquals("Hello I am John", user.getBio());
+  - assertTrue(user.getIsAdmin());
+  - assertEquals(NotificationPreferenceOptions.EMAIL, user.getUserNotificationPreference());
+  - assertEquals("", user.getPassword());
 
 ## UserInSessionTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/UserInSessionTest.java
-
-- updateUser_withInstance_replacesCurrentUser
-  Verifies: update User with Instance replaces Current User.
-- updateUser_withoutInstance_doesNothing
-  Verifies: update User without Instance does Nothing.
-- userInSessionCanChange
-  Verifies: user In Session Can Change.
-- userInSessionCreateAffectsGetInstanceAndGetUser
-  Verifies: user In Session Create Affects Get Instance And Get User.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/UserInSessionTest.java
+- Test: updateUser_withInstance_replacesCurrentUser
+- Intent: update User with Instance replaces Current User.
+- Expected checks:
+  - assertEquals(second, UserInSession.getInstance().getUser());
+- Test: updateUser_withoutInstance_doesNothing
+- Intent: update User without Instance does Nothing.
+- Expected checks:
+  - assertNull(UserInSession.getInstance());
+- Test: userInSessionCanChange
+- Intent: user In Session Can Change.
+- Expected checks:
+  - assertEquals(u, UserInSession.getInstance().getUser());
+  - assertNull(UserInSession.getInstance());
+  - assertEquals(u2, UserInSession.getInstance().getUser());
+- Test: userInSessionCreateAffectsGetInstanceAndGetUser
+- Intent: user In Session Create Affects Get Instance And Get User.
+- Expected checks:
+  - assertEquals(u, UserInSession.getInstance().getUser());
 
 ## UserValidationAndFactoryTest
 
-Source file: app/src/test/java/com/example/popin/logicUnitTests/UserValidationAndFactoryTest.java
-
-- createUserWithEmail_setsEmailPreferenceAndTrimmedPassword
-  Verifies: create User With Email sets Email Preference And Trimmed Password.
-- createUserWithPhoneNumber_setsSmsPreferenceAndTrimmedPassword
-  Verifies: create User With Phone Number sets Sms Preference And Trimmed Password.
-- emailAndPhoneValidation_acceptsAndRejectsExpectedFormats
-  Verifies: email And Phone Validation accepts And Rejects Expected Formats.
-- identify_returnsExpectedInputType
-  Verifies: identify returns Expected Input Type.
-- setters_normalizeEmailPhoneAndPassword
-  Verifies: setters normalize Email Phone And Password.
-- setUserNotificationPreference_rejectsInvalidOrMissingContactInfo
-  Verifies: set User Notification Preference rejects Invalid Or Missing Contact Info.
+- Source file: app/src/test/java/com/example/popin/logicUnitTests/UserValidationAndFactoryTest.java
+- Test: createUserWithEmail_setsEmailPreferenceAndTrimmedPassword
+- Intent: create User With Email sets Email Preference And Trimmed Password.
+- Expected checks:
+  - assertEquals("user@example.com", user.getEmail());
+  - assertEquals("", user.getPhoneNumber());
+  - assertEquals("pass123", user.getPassword());
+  - assertEquals(NotificationPreferenceOptions.EMAIL, user.getUserNotificationPreference());
+- Test: createUserWithPhoneNumber_setsSmsPreferenceAndTrimmedPassword
+- Intent: create User With Phone Number sets Sms Preference And Trimmed Password.
+- Expected checks:
+  - assertEquals("", user.getEmail());
+  - assertEquals("+15145551234", user.getPhoneNumber());
+  - assertEquals("pass123", user.getPassword());
+  - assertEquals(NotificationPreferenceOptions.SMS, user.getUserNotificationPreference());
+- Test: emailAndPhoneValidation_acceptsAndRejectsExpectedFormats
+- Intent: email And Phone Validation accepts And Rejects Expected Formats.
+- Expected checks:
+  - assertTrue(User.isValidEmail("valid.user+tag@example.com"));
+  - assertFalse(User.isValidEmail("invalid-email"));
+  - assertFalse(User.isValidEmail(""));
+  - assertTrue(User.isValidPhoneNumber("+15145551234"));
+  - assertFalse(User.isValidPhoneNumber("5145551234"));
+  - assertFalse(User.isValidPhoneNumber(""));
+- Test: identify_returnsExpectedInputType
+- Intent: identify returns Expected Input Type.
+- Expected checks:
+  - assertEquals(UserInputType.EMAIL, User.identify("person@example.com"));
+  - assertEquals(UserInputType.PHONE, User.identify("+15145551234"));
+  - assertEquals(UserInputType.UNKNOWN, User.identify("not-an-email-or-phone"));
+  - assertEquals(UserInputType.UNKNOWN, User.identify(null));
+- Test: setters_normalizeEmailPhoneAndPassword
+- Intent: setters normalize Email Phone And Password.
+- Expected checks:
+  - assertEquals("user@example.com", user.getEmail());
+  - assertEquals("+15145551234", user.getPhoneNumber());
+  - assertEquals("next-pass", user.getPassword());
+- Test: setUserNotificationPreference_rejectsInvalidOrMissingContactInfo
+- Intent: set User Notification Preference rejects Invalid Or Missing Contact Info.
+- Expected checks:
+  - assertEquals("Invalid preference selected", noContactUser.setUserNotificationPreference(null));
+  - assertEquals(
+  - assertEquals(
+  - assertNull(noContactUser.getUserNotificationPreference());
 
