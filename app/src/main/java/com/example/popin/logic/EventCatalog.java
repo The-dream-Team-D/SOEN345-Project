@@ -110,50 +110,6 @@ public class EventCatalog {
         });
     }
 
-    public void editEventByName(String eventName, EventItem updatedEvent, EventActionCallback callback) {
-        Query query = queryByEventName(eventName, callback);
-        if (query == null) {
-            return;
-        }
-
-        if (updatedEvent == null) {
-            callback.onError("Updated event is null");
-            return;
-        }
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onError(NO_EVENT_FOUND_ERROR);
-                    return;
-                }
-
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    EventItem existingEvent = eventSnapshot.getValue(EventItem.class);
-
-                    if (existingEvent == null) {
-                        callback.onError("Failed to read event data");
-                        return;
-                    }
-
-                    updatedEvent.setEventID(existingEvent.getEventID());
-
-                    eventSnapshot.getRef().setValue(updatedEvent)
-                            .addOnSuccessListener(unused ->
-                                    callback.onSuccess("Event updated successfully"))
-                            .addOnFailureListener(e ->
-                                    callback.onError("Failed to update event: " + e.getMessage()));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError(DB_ERROR_PREFIX + error.getMessage());
-            }
-        });
-    }
-
     public void updateEventByName(String currentEventName,
                                   EventUpdateRequest request,
                                   EventActionCallback callback) {
