@@ -1,4 +1,3 @@
-import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import java.util.Properties
@@ -104,6 +103,7 @@ val jacocoTestReport = tasks.register<JacocoReport>("jacocoTestReport") {
             "**/*Activity*.*",    // Excludes MainActivity and any other Activity
             "**/*Fragment*.*",    // Excludes UI Fragments
             "**/*Adapter*.*",     // Excludes RecyclerView Adapters (they are UI)
+            "**/api",           // Excludes service since it just uses API calls
             "android/**/*.*",      // Excludes Android system classes
             "**/*Test*.*"          // Excludes any tests
         )
@@ -135,7 +135,7 @@ val jacocoTestCoverageVerification = tasks.register<JacocoCoverageVerification>(
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"
-                minimum = 0.7.toBigDecimal()
+                minimum = 0.8.toBigDecimal()
             }
         }
     }
@@ -150,6 +150,7 @@ val jacocoTestCoverageVerification = tasks.register<JacocoCoverageVerification>(
             "**/*Activity*.*",    // Excludes MainActivity and any other Activity
             "**/*Fragment*.*",    // Excludes UI Fragments
             "**/*Adapter*.*",     // Excludes RecyclerView Adapters (they are UI)
+            "**/api",
             "android/**/*.*",      // Excludes Android system classes
             "**/*Test*.*"          // Excludes any tests
         )

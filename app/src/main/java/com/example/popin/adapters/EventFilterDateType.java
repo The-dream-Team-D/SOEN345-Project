@@ -1,4 +1,4 @@
-package com.example.popin.logic;
+package com.example.popin.adapters;
 
 public enum EventFilterDateType {
     PAST,

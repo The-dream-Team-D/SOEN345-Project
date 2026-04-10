@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.example.popin.logic.EventAdapter;
+import com.example.popin.adapters.EventAdapter;
 import com.example.popin.logic.EventItem;
 import com.example.popin.reusableui.EventsFilterComponentView;
 import com.example.popin.reusableui.NavBarComponentView;
@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.popin.R;
-import com.example.popin.addedfiles.Admin;
-import com.example.popin.addedfiles.EventCatalog;
+import com.example.popin.logic.Admin;
+import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.User;
 import com.example.popin.logic.UserInSession;
 import com.google.firebase.database.DataSnapshot;
@@ -368,6 +368,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     EventItem event = dataSnapshot.getValue(EventItem.class);
                     if (event != null) {
+                        event.setEventID(dataSnapshot.getKey());
                         eventList.add(event);
                     }
                 }

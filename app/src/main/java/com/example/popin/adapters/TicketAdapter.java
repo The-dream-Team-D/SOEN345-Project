@@ -1,4 +1,4 @@
-package com.example.popin.logic;
+package com.example.popin.adapters;
 
 import static com.example.popin.logic.EventItem.formatTime;
 
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.popin.R;
+import com.example.popin.logic.TicketItem;
 
 import java.util.ArrayList;
 import java.util.List;

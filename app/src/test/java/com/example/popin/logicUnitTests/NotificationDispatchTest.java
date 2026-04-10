@@ -9,10 +9,9 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import com.example.popin.logic.NotificationType;
-import com.example.popin.logic.Notifications;
 import com.example.popin.logic.User;
-import com.example.popin.logic.service.EmailServicer;
-import com.example.popin.logic.service.SMServicer;
+import com.example.popin.api.EmailServicer;
+import com.example.popin.api.SMServicer;
 
 import org.junit.After;
 import org.junit.Before;

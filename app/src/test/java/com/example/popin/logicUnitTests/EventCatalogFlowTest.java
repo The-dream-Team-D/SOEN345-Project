@@ -10,8 +10,9 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.popin.addedfiles.Event;
-import com.example.popin.addedfiles.EventCatalog;
+import android.media.metrics.Event;
+
+import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 import com.google.android.gms.tasks.Task;
@@ -239,113 +240,6 @@ public class EventCatalogFlowTest {
         assertEquals("No fields provided to update", error.get());
     }
 
-    @Test
-    public void editEventByName_existingEventNull_returnsError() {
-        Event updatedEvent = new Event("New", "Hall", "Details", new Date(), EventCategory.EDUCATIONAL);
-
-        when(snapshot.exists()).thenReturn(true);
-        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
-        when(eventSnapshot.getValue(Event.class)).thenReturn(null);
-        callbackSnapshot(query, snapshot);
-
-        EventCatalog catalog = EventCatalog.getInstance();
-        AtomicReference<String> error = new AtomicReference<>();
-
-        catalog.editEventByName("SOEN Mixer", updatedEvent, new EventCatalog.EventActionCallback() {
-            @Override
-            public void onSuccess(String message) {
-                fail("Expected read error");
-            }
-
-            @Override
-            public void onError(String message) {
-                error.set(message);
-            }
-        });
-
-        assertEquals("Failed to read event data", error.get());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void editEventByName_success_updatesEvent() {
-        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.SOCIAL);
-        existingEvent.setId(42);
-        existingEvent.setAvailable(true);
-
-        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.PROFESSIONAL);
-        updatedEvent.setAvailable(false);
-
-        Task<Void> updateTask = mock(Task.class);
-
-        when(snapshot.exists()).thenReturn(true);
-        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
-        when(eventSnapshot.getValue(Event.class)).thenReturn(existingEvent);
-        when(eventRef.setValue(any())).thenReturn(updateTask);
-        when(updateTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
-            com.google.android.gms.tasks.OnSuccessListener<Void> listener = invocation.getArgument(0);
-            listener.onSuccess(null);
-            return updateTask;
-        });
-        when(updateTask.addOnFailureListener(any())).thenReturn(updateTask);
-        callbackSnapshot(query, snapshot);
-
-        EventCatalog catalog = EventCatalog.getInstance();
-        AtomicReference<String> success = new AtomicReference<>();
-
-        catalog.editEventByName("SOEN Mixer", updatedEvent, new EventCatalog.EventActionCallback() {
-            @Override
-            public void onSuccess(String message) {
-                success.set(message);
-            }
-
-            @Override
-            public void onError(String message) {
-                fail("Expected edit success");
-            }
-        });
-
-        assertEquals("Event updated successfully", success.get());
-        assertEquals(42, updatedEvent.getId());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void editEventByName_failure_returnsError() {
-        Event existingEvent = new Event("Old", "Old Hall", "Old", new Date(), EventCategory.SOCIAL);
-        existingEvent.setId(42);
-        Event updatedEvent = new Event("New", "New Hall", "New", new Date(), EventCategory.PROFESSIONAL);
-        Task<Void> updateTask = mock(Task.class);
-
-        when(snapshot.exists()).thenReturn(true);
-        when(snapshot.getChildren()).thenReturn(Collections.singletonList(eventSnapshot));
-        when(eventSnapshot.getValue(Event.class)).thenReturn(existingEvent);
-        when(eventRef.setValue(any())).thenReturn(updateTask);
-        when(updateTask.addOnSuccessListener(any())).thenReturn(updateTask);
-        when(updateTask.addOnFailureListener(any())).thenAnswer(invocation -> {
-            com.google.android.gms.tasks.OnFailureListener listener = invocation.getArgument(0);
-            listener.onFailure(new RuntimeException("edit-failed"));
-            return updateTask;
-        });
-        callbackSnapshot(query, snapshot);
-
-        EventCatalog catalog = EventCatalog.getInstance();
-        AtomicReference<String> error = new AtomicReference<>();
-
-        catalog.editEventByName("SOEN Mixer", updatedEvent, new EventCatalog.EventActionCallback() {
-            @Override
-            public void onSuccess(String message) {
-                fail("Expected edit failure");
-            }
-
-            @Override
-            public void onError(String message) {
-                error.set(message);
-            }
-        });
-
-        assertEquals("Failed to update event: edit-failed", error.get());
-    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -429,33 +323,6 @@ public class EventCatalogFlowTest {
         );
 
         assertEquals("Failed to update event: update-failed", error.get());
-    }
-
-    @Test
-    public void editEventByName_queryCancelled_returnsDatabaseError() {
-        DatabaseError dbError = mock(DatabaseError.class);
-        when(dbError.getMessage()).thenReturn("cancelled-edit");
-        doAnswer(invocation -> {
-            ValueEventListener listener = invocation.getArgument(0);
-            listener.onCancelled(dbError);
-            return null;
-        }).when(query).addListenerForSingleValueEvent(any(ValueEventListener.class));
-
-        EventCatalog catalog = EventCatalog.getInstance();
-        AtomicReference<String> error = new AtomicReference<>();
-        catalog.editEventByName("SOEN Mixer", new Event("N", "L", "D", new Date(), EventCategory.SOCIAL), new EventCatalog.EventActionCallback() {
-            @Override
-            public void onSuccess(String message) {
-                fail("Expected cancel error");
-            }
-
-            @Override
-            public void onError(String message) {
-                error.set(message);
-            }
-        });
-
-        assertEquals("Database error: cancelled-edit", error.get());
     }
 }
 

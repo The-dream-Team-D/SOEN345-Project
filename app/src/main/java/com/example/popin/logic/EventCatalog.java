@@ -1,7 +1,5 @@
-package com.example.popin.addedfiles;
+package com.example.popin.logic;
 
-import com.example.popin.logic.EventCategory;
-import com.example.popin.logic.EventItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -103,54 +101,6 @@ public class EventCatalog {
                                 callback.onSuccess("Event deleted successfully"))
                         .addOnFailureListener(e ->
                                 callback.onError("Failed to delete event: " + e.getMessage()));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                callback.onError(DB_ERROR_PREFIX + error.getMessage());
-            }
-        });
-    }
-
-    public void editEventByName(String eventName, Event updatedEvent, EventActionCallback callback) {
-        Query query = queryByEventName(eventName, callback);
-        if (query == null) {
-            return;
-        }
-
-        if (updatedEvent == null) {
-            callback.onError("Updated event is null");
-            return;
-        }
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onError(NO_EVENT_FOUND_ERROR);
-                    return;
-                }
-
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Event existingEvent = eventSnapshot.getValue(Event.class);
-
-                    if (existingEvent == null) {
-                        callback.onError("Failed to read event data");
-                        return;
-                    }
-
-                    updatedEvent.setId(existingEvent.getId());
-
-                    if (!updatedEvent.isAvailable()) {
-                        updatedEvent.setAvailable(existingEvent.isAvailable());
-                    }
-
-                    eventSnapshot.getRef().setValue(updatedEvent)
-                            .addOnSuccessListener(unused ->
-                                    callback.onSuccess("Event updated successfully"))
-                            .addOnFailureListener(e ->
-                                    callback.onError("Failed to update event: " + e.getMessage()));
-                }
             }
 
             @Override

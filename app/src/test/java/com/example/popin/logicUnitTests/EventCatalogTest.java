@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.example.popin.FirebaseTestAssistant;
-import com.example.popin.addedfiles.EventCatalog;
+import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 
@@ -96,25 +96,6 @@ public class EventCatalogTest {
         assertEquals("Event name is empty", error.get());
     }
 
-    @Test
-    public void editEventByName_nullUpdatedEvent_returnsErrorImmediately() {
-        EventCatalog catalog = EventCatalog.getInstance();
-        AtomicReference<String> error = new AtomicReference<>();
-
-        catalog.editEventByName("SOEN Mixer", null, new EventCatalog.EventActionCallback() {
-            @Override
-            public void onSuccess(String message) {
-                fail("Expected error");
-            }
-
-            @Override
-            public void onError(String message) {
-                error.set(message);
-            }
-        });
-
-        assertEquals("Updated event is null", error.get());
-    }
 
     @Test
     public void updateEventByName_emptyCurrentName_returnsErrorImmediately() {

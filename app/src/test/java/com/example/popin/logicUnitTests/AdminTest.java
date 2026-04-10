@@ -1,14 +1,15 @@
 package com.example.popin.logicUnitTests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.popin.addedfiles.Admin;
-import com.example.popin.addedfiles.EventCatalog;
+import com.example.popin.logic.Admin;
+import com.example.popin.logic.EventCatalog;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 
@@ -29,13 +30,13 @@ public class AdminTest {
     }
 
     @Test
-    public void constructorAndIdAccessors_workCorrectly() {
-        Admin admin = new Admin("admin@example.com", "secret", "admin-1");
+    public void constructorAndUserAccessors_workCorrectly() {
+        Admin admin = new Admin("admin@example.com", "secret");
 
-        assertEquals("admin-1", admin.getId());
+        assertNotNull(admin);
+        assertEquals("admin@example.com", admin.getEmail());
+        assertEquals("secret", admin.getPassword());
 
-        admin.setId("admin-2");
-        assertEquals("admin-2", admin.getId());
     }
 
     @Test
@@ -47,7 +48,7 @@ public class AdminTest {
         mockedEventCatalog = Mockito.mockStatic(EventCatalog.class);
         mockedEventCatalog.when(EventCatalog::getInstance).thenReturn(mockCatalog);
 
-        Admin admin = new Admin("admin@example.com", "secret", "admin-1");
+        Admin admin = new Admin("admin@example.com", "secret");
         admin.addEvent("SOEN Mixer", "EV Building", "Networking", date, callback);
 
         verify(mockCatalog, times(1)).addEvent(any(EventItem.class), eq(callback));
@@ -61,7 +62,7 @@ public class AdminTest {
         mockedEventCatalog = Mockito.mockStatic(EventCatalog.class);
         mockedEventCatalog.when(EventCatalog::getInstance).thenReturn(mockCatalog);
 
-        Admin admin = new Admin("admin@example.com", "secret", "admin-1");
+        Admin admin = new Admin("admin@example.com", "secret");
         admin.removeEvent("SOEN Mixer", callback);
 
         verify(mockCatalog).deleteEventByName("SOEN Mixer", callback);
@@ -76,7 +77,7 @@ public class AdminTest {
         mockedEventCatalog = Mockito.mockStatic(EventCatalog.class);
         mockedEventCatalog.when(EventCatalog::getInstance).thenReturn(mockCatalog);
 
-        Admin admin = new Admin("admin@example.com", "secret", "admin-1");
+        Admin admin = new Admin("admin@example.com", "secret");
         admin.updateEvent(
                 "Old Event",
                 "New Event",

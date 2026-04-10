@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.example.popin.FirebaseTestAssistant;
-import com.example.popin.addedfiles.EventCatalog;
+import com.example.popin.logic.EventCatalog;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,25 +33,6 @@ public class EventCatalogValidationExtraTest {
         instanceField.set(null, null);
     }
 
-    @Test
-    public void editEventByName_emptyName_returnsErrorImmediately() {
-        EventCatalog catalog = EventCatalog.getInstance();
-        AtomicReference<String> error = new AtomicReference<>();
-
-        catalog.editEventByName("   ", null, new EventCatalog.EventActionCallback() {
-            @Override
-            public void onSuccess(String message) {
-                fail("Expected error");
-            }
-
-            @Override
-            public void onError(String message) {
-                error.set(message);
-            }
-        });
-
-        assertEquals("Event name is empty", error.get());
-    }
 
     @Test
     public void deleteEventByName_nullName_returnsErrorImmediately() {
