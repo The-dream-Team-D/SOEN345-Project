@@ -1,4 +1,4 @@
-package com.example.popin.logic.service;
+package com.example.popin.api;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;

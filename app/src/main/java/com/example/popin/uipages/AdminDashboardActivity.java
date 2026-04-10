@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.example.popin.logic.EventAdapter;
+import com.example.popin.adapters.EventAdapter;
 import com.example.popin.logic.EventItem;
 import com.example.popin.reusableui.EventsFilterComponentView;
 import com.example.popin.reusableui.NavBarComponentView;

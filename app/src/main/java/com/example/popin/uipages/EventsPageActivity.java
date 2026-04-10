@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.popin.R;
-import com.example.popin.logic.EventAdapter;
+import com.example.popin.adapters.EventAdapter;
 import com.example.popin.logic.EventItem;
 import com.example.popin.reusableui.EventsFilterComponentView;
 import com.example.popin.reusableui.NavBarComponentView;

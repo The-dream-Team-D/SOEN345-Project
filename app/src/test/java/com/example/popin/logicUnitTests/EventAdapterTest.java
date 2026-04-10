@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-import com.example.popin.logic.EventAdapter;
+import com.example.popin.adapters.EventAdapter;
 import com.example.popin.logic.EventCategory;
 import com.example.popin.logic.EventItem;
 

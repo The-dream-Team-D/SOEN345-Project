@@ -1,11 +1,9 @@
 package com.example.popin.logic;
 
 public class Admin extends User {
-    private String id;
 
-    public Admin(String email, String password, String id) {
+    public Admin(String email, String password) {
         super(email, password);
-        this.id = id;
     }
 
     public Admin(User user) {
@@ -17,14 +15,6 @@ public class Admin extends User {
         this.setBio(user.getBio());
         this.setIsAdmin(true);
         this.setUserNotificationPreference(user.getUserNotificationPreference());
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void addEvent(String name, String location, String description, long date,

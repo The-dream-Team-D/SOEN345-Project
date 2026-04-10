@@ -103,7 +103,7 @@ val jacocoTestReport = tasks.register<JacocoReport>("jacocoTestReport") {
             "**/*Activity*.*",    // Excludes MainActivity and any other Activity
             "**/*Fragment*.*",    // Excludes UI Fragments
             "**/*Adapter*.*",     // Excludes RecyclerView Adapters (they are UI)
-            "**/service",           // Excludes service since it just uses API calls
+            "**/api",           // Excludes service since it just uses API calls
             "android/**/*.*",      // Excludes Android system classes
             "**/*Test*.*"          // Excludes any tests
         )
@@ -150,7 +150,7 @@ val jacocoTestCoverageVerification = tasks.register<JacocoCoverageVerification>(
             "**/*Activity*.*",    // Excludes MainActivity and any other Activity
             "**/*Fragment*.*",    // Excludes UI Fragments
             "**/*Adapter*.*",     // Excludes RecyclerView Adapters (they are UI)
-            "**/service",
+            "**/api",
             "android/**/*.*",      // Excludes Android system classes
             "**/*Test*.*"          // Excludes any tests
         )

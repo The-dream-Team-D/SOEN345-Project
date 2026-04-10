@@ -1,4 +1,4 @@
-package com.example.popin.logic.service;
+package com.example.popin.api;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

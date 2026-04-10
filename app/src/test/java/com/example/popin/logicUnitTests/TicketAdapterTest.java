@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import androidx.test.core.app.ApplicationProvider;
 
 import com.example.popin.R;
-import com.example.popin.logic.TicketAdapter;
+import com.example.popin.adapters.TicketAdapter;
 import com.example.popin.logic.TicketItem;
 
 import org.junit.Before;

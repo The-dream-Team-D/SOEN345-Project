@@ -1,4 +1,4 @@
-package com.example.popin.logic;
+package com.example.popin.adapters;
 
 import static com.example.popin.logic.EventItem.formatTime;
 
@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.popin.logic.EventCategory;
+import com.example.popin.logic.EventItem;
 import com.example.popin.uipages.EventDetailActivity;
 import com.example.popin.R;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
