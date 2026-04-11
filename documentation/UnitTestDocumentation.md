@@ -774,7 +774,7 @@ Expected checks:
 Intent: set User Notification Preference rejects Invalid Or Missing Contact Info.
 Expected checks:
 - assertEquals("Invalid preference selected", noContactUser.setUserNotificationPreference(null));
-- assertEquals(
-- assertEquals(
+- assertEquals("No email address found, please add an email to use this preference", noContactUser.setUserNotificationPreference(NotificationPreferenceOptions.EMAIL));
+- assertEquals("No phone number found, please add a phone number to use this preference", noContactUser.setUserNotificationPreference(NotificationPreferenceOptions.SMS));
 - assertNull(noContactUser.getUserNotificationPreference());
 
